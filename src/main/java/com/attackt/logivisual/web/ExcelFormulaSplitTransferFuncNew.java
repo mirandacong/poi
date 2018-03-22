@@ -92,7 +92,7 @@ public class ExcelFormulaSplitTransferFuncNew {
                 Iterator<Cell> cellIterator = row.cellIterator();
                 while (cellIterator.hasNext()) {
                     Cell cell = cellIterator.next();
-                    if (cell.getCellType().getCode() == CellType.FORMULA.getCode()) {
+                    if (cell.getCellTypeEnum().getCode() == CellType.FORMULA.getCode()) {
                         try {
                             // 公式基本信息
                             int srcCellRowIndex = cell.getRowIndex();
