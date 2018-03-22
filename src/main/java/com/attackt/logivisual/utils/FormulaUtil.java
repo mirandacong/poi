@@ -401,7 +401,7 @@ public class FormulaUtil {
                     int funcValueType = 0;
                     String funcValue = null;
                     Map<String, Object> map = null;
-                    if(cell.getCellType().getCode() == CellType.NUMERIC.getCode())
+                    if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC)
                     {
                         excelId = new ThreadUtil().getExcelUid();
                         funcValueType = Integer.parseInt(SourceValueType.valueOf(NumberEval.class.getSimpleName()).toString());
@@ -418,7 +418,7 @@ public class FormulaUtil {
                             // 更改有效性数据
                             operationUtils.updateData(recordId, jsonArray.toJSONString());
                         }
-                    }else if(cell.getCellType().getCode() == CellType.STRING.getCode())
+                    }else if(cell.getCellType() == Cell.CELL_TYPE_STRING)
                     {
                         excelId = new ThreadUtil().getExcelUid();
                         funcValueType = Integer.parseInt(SourceValueType.valueOf(StringEval.class.getSimpleName()).toString());
@@ -435,7 +435,7 @@ public class FormulaUtil {
                             // 更改有效性数据
                             operationUtils.updateData(recordId, jsonArray.toJSONString());
                         }
-                    }else if(cell.getCellType().getCode() == CellType.BOOLEAN.getCode())
+                    }else if(cell.getCellType() == Cell.CELL_TYPE_BOOLEAN)
                     {
                         excelId = new ThreadUtil().getExcelUid();
                         funcValueType = Integer.parseInt(SourceValueType.valueOf(BoolEval.class.getSimpleName()).toString());
