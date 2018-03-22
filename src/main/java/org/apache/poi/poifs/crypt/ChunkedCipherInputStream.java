@@ -27,16 +27,11 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.ShortBufferException;
 
 import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.util.IOUtils;
 import org.apache.poi.util.Internal;
 import org.apache.poi.util.LittleEndianInputStream;
 
 @Internal
 public abstract class ChunkedCipherInputStream extends LittleEndianInputStream {
-
-    //arbitrarily selected; may need to increase
-    private static final int MAX_RECORD_LENGTH = 100_000;
-
     private final int chunkSize;
     private final int chunkBits;
 
@@ -46,7 +41,7 @@ public abstract class ChunkedCipherInputStream extends LittleEndianInputStream {
 
     private int lastIndex;
     private long pos;
-    private boolean chunkIsValid;
+    private boolean chunkIsValid = false;
 
     public ChunkedCipherInputStream(InputStream stream, long size, int chunkSize)
     throws GeneralSecurityException {
@@ -60,8 +55,8 @@ public abstract class ChunkedCipherInputStream extends LittleEndianInputStream {
         this.pos = initialPos;
         this.chunkSize = chunkSize;
         int cs = chunkSize == -1 ? 4096 : chunkSize;
-        this.chunk = IOUtils.safelyAllocate(cs, MAX_RECORD_LENGTH);
-        this.plain = IOUtils.safelyAllocate(cs, MAX_RECORD_LENGTH);
+        this.chunk = new byte[cs];
+        this.plain = new byte[cs];
         this.chunkBits = Integer.bitCount(chunk.length-1);
         this.lastIndex = (int)(pos >> chunkBits);
         this.cipher = initCipherForBlock(null, lastIndex);

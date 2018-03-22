@@ -87,11 +87,11 @@ public class ExternSheetRecord extends StandardRecord {
 	
 	
 	public ExternSheetRecord() {
-		_list = new ArrayList<>();
+		_list = new ArrayList<RefSubRecord>();
 	}
 
 	public ExternSheetRecord(RecordInputStream in) {
-		_list = new ArrayList<>();
+		_list = new ArrayList<RefSubRecord>();
 		
 		int nItems  = in.readShort();
 		
@@ -243,7 +243,7 @@ public class ExternSheetRecord extends StandardRecord {
     }
 
 	/**
-     * Add a zero-based reference to a {@link SupBookRecord}.
+     * Add a zero-based reference to a {@link org.apache.poi.hssf.record.SupBookRecord}.
      * <p>
      *  If the type of the SupBook record is same-sheet referencing, Add-In referencing,
      *  DDE data source referencing, or OLE data source referencing,
@@ -255,12 +255,12 @@ public class ExternSheetRecord extends StandardRecord {
      *    <li><code>&gt;=0</code> Sheet-level reference. This specifies the first sheet in the reference.
      *    <p>If the SupBook type is unused or external workbook referencing,
      *    then this value specifies the zero-based index of an external sheet name,
-     *    see {@link SupBookRecord#getSheetNames()}.
+     *    see {@link org.apache.poi.hssf.record.SupBookRecord#getSheetNames()}.
      *    This referenced string specifies the name of the first sheet within the external workbook that is in scope.
      *    This sheet MUST be a worksheet or macro sheet.</p>
      *    
      *    <p>If the supporting link type is self-referencing, then this value specifies the zero-based index of a
-     *    {@link BoundSheetRecord} record in the workbook stream that specifies
+     *    {@link org.apache.poi.hssf.record.BoundSheetRecord} record in the workbook stream that specifies
      *    the first sheet within the scope of this reference. This sheet MUST be a worksheet or a macro sheet.
      *    </p>
      *    </li>

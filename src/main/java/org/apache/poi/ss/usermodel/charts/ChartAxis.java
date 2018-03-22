@@ -17,15 +17,14 @@
 
 package org.apache.poi.ss.usermodel.charts;
 
-import org.apache.poi.util.Removal;
+import org.apache.poi.util.Beta;
 
 /**
  * High level representation of chart axis.
  *
- * @deprecated use XDDFChartAxis instead
+ * @author Roman Kashitsyn
  */
-@Deprecated
-@Removal(version="4.2")
+@Beta
 public interface ChartAxis {
 
 	/**
@@ -154,7 +153,7 @@ public interface ChartAxis {
      * @param tickMark minor tick mark type.
      */
     void setMinorTickMark(AxisTickMark tickMark);
-
+    
     /**
      * Use this to check before retrieving a number format, as calling {@link #getNumberFormat()} may create a default one if none exists.
      * @return true if a number format element is defined, false if not

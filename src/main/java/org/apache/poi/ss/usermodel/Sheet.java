@@ -91,12 +91,7 @@ public interface Sheet extends Iterable<Row> {
     int getPhysicalNumberOfRows();
 
     /**
-     * Gets the first row on the sheet.
-     *
-     * Note: rows which had content before and were set to empty later might
-     * still be counted as rows by Excel and Apache POI, so the result of this
-     * method will include such rows and thus the returned value might be lower
-     * than expected!
+     * Gets the first row on the sheet
      *
      * @return the number of the first logical row on the sheet (0-based)
      */
@@ -105,12 +100,7 @@ public interface Sheet extends Iterable<Row> {
     /**
      * Gets the last row on the sheet
      *
-     * Note: rows which had content before and were set to empty later might
-     * still be counted as rows by Excel and Apache POI, so the result of this
-     * method will include such rows and thus the returned value might be higher
-     * than expected!
-     *
-     * @return last row contained on this sheet (0-based)
+     * @return last row contained n this sheet (0-based)
      */
     int getLastRowNum();
 
@@ -118,7 +108,7 @@ public interface Sheet extends Iterable<Row> {
      * Get the visibility state for a given column
      *
      * @param columnIndex - the column to get (0-based)
-     * @param hidden - the visibility state of the column
+     * @param hidden - the visiblity state of the column
      */
     void setColumnHidden(int columnIndex, boolean hidden);
 
@@ -205,7 +195,7 @@ public interface Sheet extends Iterable<Row> {
      * <p>
      * Please note, that this method works correctly only for workbooks
      * with the default font size (Arial 10pt for .xls and Calibri 11pt for .xlsx).
-     * If the default font is changed the column width can be stretched
+     * If the default font is changed the column width can be streched
      * </p>
      *
      * @param columnIndex - the column to set (0-based)
@@ -268,7 +258,7 @@ public interface Sheet extends Iterable<Row> {
      */
     public CellStyle getColumnStyle(int column);
 
-    /*
+    /**
      * Sets the CellStyle that applies to the given
      *  (0 based) column.
      */
@@ -384,7 +374,7 @@ public interface Sheet extends Iterable<Row> {
      *  evaluation in POI is not possible.
      *  </p>
      *
-     *  To force recalculation of formulas in the entire workbook
+     *  To force recalcuation of formulas in the entire workbook
      *  use {@link Workbook#setForceFormulaRecalculation(boolean)} instead.
      *
      * @param value true if the application will perform a full recalculation of
@@ -704,22 +694,11 @@ public interface Sheet extends Iterable<Row> {
     void shiftRows(int startRow, int endRow, int n, boolean copyRowHeight, boolean resetOriginalRowHeight);
 
     /**
-     * Shifts columns between startColumn and endColumn, n number of columns.
-     * If you use a negative number, it will shift columns left.
-     * Code ensures that columns don't wrap around
-     *
-     * @param startColumn the column to start shifting
-     * @param endColumn the column to end shifting
-     * @param n the number of columns to shift
-     */
-    void shiftColumns(int startColumn, int endColumn, int n);
-
-    /**
      * Creates a split (freezepane). Any existing freezepane or split pane is overwritten.
      * <p>
      *     If both colSplit and rowSplit are zero then the existing freeze pane is removed
      * </p>
-     * @param colSplit      Horizontal position of split.
+     * @param colSplit      Horizonatal position of split.
      * @param rowSplit      Vertical position of split.
      * @param leftmostColumn   Left column visible in right pane.
      * @param topRow        Top row visible in bottom pane
@@ -731,14 +710,14 @@ public interface Sheet extends Iterable<Row> {
      * <p>
      *     If both colSplit and rowSplit are zero then the existing freeze pane is removed
      * </p>
-     * @param colSplit      Horizontal position of split.
+     * @param colSplit      Horizonatal position of split.
      * @param rowSplit      Vertical position of split.
      */
     void createFreezePane(int colSplit, int rowSplit);
 
     /**
      * Creates a split pane. Any existing freezepane or split pane is overwritten.
-     * @param xSplitPos      Horizontal position of split (in 1/20th of a point).
+     * @param xSplitPos      Horizonatal position of split (in 1/20th of a point).
      * @param ySplitPos      Vertical position of split (in 1/20th of a point).
      * @param topRow        Top row visible in bottom pane
      * @param leftmostColumn   Left column visible in right pane.
@@ -804,7 +783,7 @@ public interface Sheet extends Iterable<Row> {
      * Breaks occur above the specified row and left of the specified column inclusive.
      *
      * For example, <code>sheet.setColumnBreak(2);</code> breaks the sheet into two parts
-     * with columns A,B,C in the first and D,E,... in the second. Similar, <code>sheet.setRowBreak(2);</code>
+     * with columns A,B,C in the first and D,E,... in the second. Simuilar, <code>sheet.setRowBreak(2);</code>
      * breaks the sheet into two parts with first three rows (rownum=1...3) in the first part
      * and rows starting with rownum=4 in the second.
      *
@@ -821,7 +800,7 @@ public interface Sheet extends Iterable<Row> {
 
     /**
      * Removes the page break at the indicated row
-     * @param row The 0-based index of the row.
+     * @param row
      */
     void removeRowBreak(int row);
 
@@ -842,7 +821,7 @@ public interface Sheet extends Iterable<Row> {
      * Breaks occur above the specified row and left of the specified column inclusive.
      *
      * For example, <code>sheet.setColumnBreak(2);</code> breaks the sheet into two parts
-     * with columns A,B,C in the first and D,E,... in the second. Similar, <code>sheet.setRowBreak(2);</code>
+     * with columns A,B,C in the first and D,E,... in the second. Simuilar, <code>sheet.setRowBreak(2);</code>
      * breaks the sheet into two parts with first three rows (rownum=1...3) in the first part
      * and rows starting with rownum=4 in the second.
      *
@@ -859,7 +838,7 @@ public interface Sheet extends Iterable<Row> {
 
     /**
      * Removes a page break at the indicated column
-     * @param column The 0-based index of the column.
+     * @param column
      */
     void removeColumnBreak(int column);
 
@@ -1150,8 +1129,8 @@ public interface Sheet extends Iterable<Row> {
     /**
      * Get a Hyperlink in this sheet anchored at row, column
      *
-     * @param row The 0-based index of the row to look at.
-     * @param column The 0-based index of the column to look at.
+     * @param row
+     * @param column
      * @return hyperlink if there is a hyperlink anchored at row, column; otherwise returns null
      */
     public Hyperlink getHyperlink(int row, int column);

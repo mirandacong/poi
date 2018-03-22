@@ -49,6 +49,7 @@ import org.apache.poi.poifs.storage.SmallBlockTableWriter;
 import org.apache.poi.util.CloseIgnoringInputStream;
 import org.apache.poi.util.POILogFactory;
 import org.apache.poi.util.POILogger;
+import org.apache.poi.util.Removal;
 
 /**
  * <p>This is the main class of the POIFS system; it manages the entire
@@ -87,7 +88,7 @@ public class OPOIFSFileSystem
     {
         HeaderBlock header_block = new HeaderBlock(bigBlockSize);
         _property_table = new PropertyTable(header_block);
-        _documents      = new ArrayList<>();
+        _documents      = new ArrayList<OPOIFSDocument>();
         _root           = null;
     }
 
@@ -196,6 +197,38 @@ public class OPOIFSFileSystem
     }
 
     /**
+     * Checks that the supplied InputStream (which MUST
+     *  support mark and reset) has a POIFS (OLE2) header at the start of it.
+     * If unsure if your InputStream does support mark / reset,
+     *  use {@link FileMagic#prepareToCheckMagic(InputStream)} to wrap it and make
+     *  sure to always use that, and not the original!
+     *  
+     *  After the method call, the InputStream is at the
+     *  same position as of the time of entering the method.
+     *  
+     * @param inp An InputStream which supports either mark/reset
+     * 
+     * @deprecated in 3.17-beta2, use {@link FileMagic#valueOf(InputStream)} == {@link FileMagic#OLE2} instead
+     */
+    @Deprecated
+    @Removal(version="4.0")
+    public static boolean hasPOIFSHeader(InputStream inp) throws IOException {
+        return NPOIFSFileSystem.hasPOIFSHeader(inp);
+    }
+
+    /**
+     * Checks if the supplied first 8 bytes of a stream / file
+     *  has a POIFS (OLE2) header.
+     * 
+     * @deprecated in 3.17-beta2, use {@link FileMagic#valueOf(InputStream)} == {@link FileMagic#OLE2} instead
+     */
+    @Deprecated
+    @Removal(version="4.0")
+    public static boolean hasPOIFSHeader(byte[] header8Bytes) {
+        return NPOIFSFileSystem.hasPOIFSHeader(header8Bytes);
+    }
+
+    /**
      * Create a new document to be added to the root directory
      *
      * @param stream the InputStream from which the document's data
@@ -226,6 +259,7 @@ public class OPOIFSFileSystem
      *
      * @exception IOException
      */
+
     public DocumentEntry createDocument(final String name, final int size,
                                         final POIFSWriterListener writer)
         throws IOException
@@ -275,7 +309,7 @@ public class OPOIFSFileSystem
 
         // create a list of BATManaged objects: the documents plus the
         // property table and the small block table
-        List<Object> bm_objects = new ArrayList<>();
+        List<Object> bm_objects = new ArrayList<Object>();
 
         bm_objects.addAll(_documents);
         bm_objects.add(_property_table);
@@ -291,13 +325,17 @@ public class OPOIFSFileSystem
             BATManaged bmo         = ( BATManaged ) iter.next();
             int        block_count = bmo.countBlocks();
 
-            if (block_count != 0) {
+            if (block_count != 0)
+            {
                 bmo.setStartBlock(bat.allocateSpace(block_count));
-            } /*else {
+            }
+            else
+            {
+
                 // Either the BATManaged object is empty or its data
                 // is composed of SmallBlocks; in either case,
                 // allocating space in the BAT is inappropriate
-            }*/
+            }
         }
 
         // allocate space for the block allocation table and take its
@@ -324,7 +362,7 @@ public class OPOIFSFileSystem
         // property table, the small block store, the small block
         // allocation table, the block allocation table, and the
         // extended block allocation table blocks)
-        List<Object> writers = new ArrayList<>();
+        List<Object> writers = new ArrayList<Object>();
 
         writers.add(header_block_writer);
         writers.addAll(_documents);
@@ -332,7 +370,10 @@ public class OPOIFSFileSystem
         writers.add(sbtw);
         writers.add(sbtw.getSBAT());
         writers.add(bat);
-        Collections.addAll(writers, xbat_blocks);
+        for (int j = 0; j < xbat_blocks.length; j++)
+        {
+            writers.add(xbat_blocks[ j ]);
+        }
 
         // now, write everything out
         iter = writers.iterator();
@@ -352,6 +393,7 @@ public class OPOIFSFileSystem
      *
      * @exception IOException
      */
+
     public static void main(String args[])
         throws IOException
     {
@@ -452,7 +494,7 @@ public class OPOIFSFileSystem
             Property      property = properties.next();
             String        name     = property.getName();
             DirectoryNode parent   = (dir == null)
-                                     ? getRoot()
+                                     ? (( DirectoryNode ) getRoot())
                                      : dir;
 
             if (property.isDirectory())
@@ -471,7 +513,7 @@ public class OPOIFSFileSystem
             {
                 int           startBlock = property.getStartBlock();
                 int           size       = property.getSize();
-                OPOIFSDocument document;
+                OPOIFSDocument document  = null;
 
                 if (property.shouldUseSmallBlocks())
                 {
@@ -505,7 +547,7 @@ public class OPOIFSFileSystem
     {
         if (preferArray())
         {
-            return getRoot().getViewableArray();
+            return (( POIFSViewable ) getRoot()).getViewableArray();
         }
         return new Object[ 0 ];
     }
@@ -522,7 +564,7 @@ public class OPOIFSFileSystem
     {
         if (!preferArray())
         {
-            return getRoot().getViewableIterator();
+            return (( POIFSViewable ) getRoot()).getViewableIterator();
         }
         return Collections.emptyList().iterator();
     }
@@ -537,7 +579,7 @@ public class OPOIFSFileSystem
 
     public boolean preferArray()
     {
-        return getRoot().preferArray();
+        return (( POIFSViewable ) getRoot()).preferArray();
     }
 
     /**

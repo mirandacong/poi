@@ -34,7 +34,7 @@ public class SharedFormula {
 
     /**
      * Creates a non shared formula from the shared formula counterpart, i.e.
-     * Converts the shared formula into the equivalent {@link Ptg} array that it would have,
+     * Converts the shared formula into the equivalent {@link org.apache.poi.ss.formula.ptg.Ptg} array that it would have,
      * were it not shared.
      *
      * @param ptgs parsed tokens of the shared formula

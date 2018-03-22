@@ -34,7 +34,7 @@ public class DrawFreeformShape extends DrawAutoShape {
     }
 
     protected Collection<Outline> computeOutlines(Graphics2D graphics) {
-        List<Outline> lst = new ArrayList<>();
+        List<Outline> lst = new ArrayList<Outline>();
         FreeformShape<?,?> fsh = (FreeformShape<?, ?>) getShape();
         Path2D sh = fsh.getPath();
 

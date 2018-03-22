@@ -125,7 +125,8 @@ public class BinaryRC4Decryptor extends Decryptor implements Cloneable {
 
         hash = new byte[5];
         System.arraycopy(hashAlg.digest(), 0, hash, 0, 5);
-        return new SecretKeySpec(hash, ver.getCipherAlgorithm().jceId);
+        SecretKey skey = new SecretKeySpec(hash, ver.getCipherAlgorithm().jceId);
+        return skey;
     }
 
     @Override

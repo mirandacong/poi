@@ -18,7 +18,7 @@
 package org.apache.poi.poifs.crypt;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.poifs.crypt.standard.EncryptionRecord;
@@ -26,7 +26,6 @@ import org.apache.poi.poifs.filesystem.DirectoryEntry;
 import org.apache.poi.poifs.filesystem.DocumentEntry;
 import org.apache.poi.poifs.filesystem.POIFSWriterEvent;
 import org.apache.poi.poifs.filesystem.POIFSWriterListener;
-import org.apache.poi.util.IOUtils;
 import org.apache.poi.util.LittleEndianByteArrayOutputStream;
 import org.apache.poi.util.LittleEndianConsts;
 import org.apache.poi.util.LittleEndianInput;
@@ -34,10 +33,6 @@ import org.apache.poi.util.LittleEndianOutput;
 import org.apache.poi.util.StringUtil;
 
 public class DataSpaceMapUtils {
-
-    //arbitrarily selected; may need to increase
-    private static final int MAX_RECORD_LENGTH = 100_000;
-
     public static void addDefaultDataSpace(DirectoryEntry dir) throws IOException {
         DataSpaceMapEntry dsme = new DataSpaceMapEntry(
                 new int[]{ 0 }
@@ -208,9 +203,9 @@ public class DataSpaceMapUtils {
         int transformType;
         String transformerId;
         String transformerName;
-        int readerVersionMajor = 1, readerVersionMinor;
-        int updaterVersionMajor = 1, updaterVersionMinor;
-        int writerVersionMajor = 1, writerVersionMinor;
+        int readerVersionMajor = 1, readerVersionMinor = 0;
+        int updaterVersionMajor = 1, updaterVersionMinor = 0;
+        int writerVersionMajor = 1, writerVersionMinor = 0;
 
         public TransformInfoHeader(
             int transformType,
@@ -262,9 +257,9 @@ public class DataSpaceMapUtils {
     
     public static class DataSpaceVersionInfo implements EncryptionRecord {
         String featureIdentifier;
-        int readerVersionMajor = 1, readerVersionMinor;
-        int updaterVersionMajor = 1, updaterVersionMinor;
-        int writerVersionMajor = 1, writerVersionMinor;
+        int readerVersionMajor = 1, readerVersionMinor = 0;
+        int updaterVersionMajor = 1, updaterVersionMinor = 0;
+        int writerVersionMajor = 1, writerVersionMinor = 0;
         
         public DataSpaceVersionInfo(LittleEndianInput is) {
             featureIdentifier = readUnicodeLPP4(is);
@@ -337,7 +332,7 @@ public class DataSpaceMapUtils {
             return length == 0 ? null : "";
         }
         
-        byte data[] = IOUtils.safelyAllocate(length, MAX_RECORD_LENGTH);
+        byte data[] = new byte[length];
         is.readFully(data);
 
         // Padding (variable): A set of bytes that MUST be of correct size such that the size of the UTF-8-LP-P4
@@ -352,15 +347,15 @@ public class DataSpaceMapUtils {
             }
         }
 
-        return new String(data, 0, data.length, StandardCharsets.UTF_8);
+        return new String(data, 0, data.length, Charset.forName("UTF-8"));
     }
     
     public static void writeUtf8LPP4(LittleEndianOutput os, String str) {
-        if (str == null || str.isEmpty()) {
+        if (str == null || "".equals(str)) {
             os.writeInt(str == null ? 0 : 4);
             os.writeInt(0);
         } else {
-            byte buf[] = str.getBytes(StandardCharsets.UTF_8);
+            byte buf[] = str.getBytes(Charset.forName("UTF-8"));
             os.writeInt(buf.length);
             os.write(buf);
             int scratchBytes = buf.length%4;

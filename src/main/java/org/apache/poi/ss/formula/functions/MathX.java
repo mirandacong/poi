@@ -245,9 +245,10 @@ final class MathX {
     public static double ceiling(double n, double s) {
         double c;
 
-        if (n>0 && s<0) {
+        if ((n<0 && s>0) || (n>0 && s<0)) {
             c = Double.NaN;
-        } else {
+        }
+        else {
             c = (n == 0 || s == 0) ? 0 : Math.ceil(n/s) * s;
         }
 

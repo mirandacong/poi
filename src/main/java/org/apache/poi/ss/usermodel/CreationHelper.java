@@ -65,7 +65,7 @@ public interface CreationHelper {
      * Creates a ClientAnchor. Use this object to position drawing object in a sheet
      *
      * @return a ClientAnchor instance
-     * @see Drawing
+     * @see org.apache.poi.ss.usermodel.Drawing
      */
     ClientAnchor createClientAnchor();
 

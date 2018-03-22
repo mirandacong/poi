@@ -206,7 +206,7 @@ public final class BlockAllocationTableReader {
      */
     ListManagedBlock[] fetchBlocks(int startBlock, int headerPropertiesStartBlock,
             BlockList blockList) throws IOException {
-        List<ListManagedBlock> blocks = new ArrayList<>();
+        List<ListManagedBlock> blocks = new ArrayList<ListManagedBlock>();
         int  currentBlock = startBlock;
         boolean firstPass = true;
         ListManagedBlock dataBlock = null;

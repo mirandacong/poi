@@ -17,8 +17,6 @@
 
 package org.apache.poi.ss.usermodel;
 
-import org.apache.poi.util.Removal;
-
 import java.util.Map;
 
 /**
@@ -76,7 +74,7 @@ public interface FormulaEvaluator {
      * the cell and also its cell type. This method should be preferred over
      * evaluateInCell() when the call should not modify the contents of the
      * original cell.
-     * @param cell The {@link Cell} to evaluate
+     * @param cell
      */
     CellValue evaluate(Cell cell);
 
@@ -101,8 +99,9 @@ public interface FormulaEvaluator {
      *      or one of {@link CellType#NUMERIC}, {@link CellType#STRING},
      *      {@link CellType#BOOLEAN}, {@link CellType#ERROR}
      *      Note: the cell's type remains as CellType.FORMULA however.
+     * @deprecated 3.15. Will return a {@link CellType} enum in the future
      */
-    CellType evaluateFormulaCell(Cell cell);
+    int evaluateFormulaCell(Cell cell);
     
     /**
      * If cell contains formula, it evaluates the formula,
@@ -114,7 +113,7 @@ public interface FormulaEvaluator {
      *  so you know what kind of value is also stored with
      *  the formula.
      * <pre>
-     * CellType evaluatedCellType = evaluator.evaluateFormulaCell(cell);
+     * CellType evaluatedCellType = evaluator.evaluateFormulaCellEnum(cell);
      * </pre>
      * Be aware that your cell will hold both the formula,
      *  and the result. If you want the cell replaced with
@@ -124,10 +123,7 @@ public interface FormulaEvaluator {
      *      or one of {@link CellType#NUMERIC}, {@link CellType#STRING},
      *      {@link CellType#BOOLEAN}, {@link CellType#ERROR}
      *      Note: the cell's type remains as CellType.FORMULA however.
-     * @deprecated use <code>evaluateFormulaCell(cell)</code>
      */
-    @Deprecated
-    @Removal(version = "4.2")
     CellType evaluateFormulaCellEnum(Cell cell);
 
     /**
@@ -143,8 +139,8 @@ public interface FormulaEvaluator {
      * </pre>
      * Be aware that your cell value will be changed to hold the
      *  result of the formula. If you simply want the formula
-     *  value computed for you, use {@link #evaluateFormulaCell(Cell)}
-     * @param cell The {@link Cell} to evaluate and modify.
+     *  value computed for you, use {@link #evaluateFormulaCellEnum(Cell)}
+     * @param cell
      */
     Cell evaluateInCell(Cell cell);
     
@@ -156,7 +152,7 @@ public interface FormulaEvaluator {
      *  and an open FormulaEvaluator onto that Workbook.
      * @param workbooks Map of workbook names (no square brackets) to an evaluator on that workbook
      */
-    void setupReferencedWorkbooks(Map<String, FormulaEvaluator> workbooks);
+    void setupReferencedWorkbooks(Map<String,FormulaEvaluator> workbooks);
 
     /**
      * Whether to ignore missing references to external workbooks and

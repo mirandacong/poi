@@ -20,7 +20,6 @@ package org.apache.poi.poifs.filesystem;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.poi.util.IOUtils;
 import org.apache.poi.util.LittleEndianInput;
 import org.apache.poi.util.SuppressForbidden;
 

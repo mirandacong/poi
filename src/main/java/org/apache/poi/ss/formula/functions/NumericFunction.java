@@ -30,7 +30,7 @@ public abstract class NumericFunction implements Function {
 	static final double TEN = 10.0;
 	static final double LOG_10_TO_BASE_e = Math.log(TEN);
 
-	protected static double singleOperandEvaluate(ValueEval arg, int srcRowIndex, int srcColumnIndex) throws EvaluationException {
+	protected static final double singleOperandEvaluate(ValueEval arg, int srcRowIndex, int srcColumnIndex) throws EvaluationException {
 		if (arg == null) {
 			throw new IllegalArgumentException("arg must not be null");
 		}
@@ -43,7 +43,7 @@ public abstract class NumericFunction implements Function {
 	/**
 	 * @throws EvaluationException (#NUM!) if <tt>result</tt> is <tt>NaN</> or <tt>Infinity</tt>
 	 */
-	public static void checkValue(double result) throws EvaluationException {
+	public static final void checkValue(double result) throws EvaluationException {
 		if (Double.isNaN(result) || Double.isInfinite(result)) {
 			throw new EvaluationException(ErrorEval.NUM_ERROR);
 		}
@@ -365,10 +365,11 @@ public abstract class NumericFunction implements Function {
 				double d0 = NumericFunction.singleOperandEvaluate(arg0, srcRowIndex, srcColumnIndex);
 				double d1 = NumericFunction.singleOperandEvaluate(arg1, srcRowIndex, srcColumnIndex);
 				double logE = Math.log(d0);
-                if (Double.compare(d1, Math.E) == 0) {
+				double base = d1;
+				if (Double.compare(base, Math.E) == 0) {
 					result = logE;
 				} else {
-					result = logE / Math.log(d1);
+					result = logE / Math.log(base);
 				}
 				NumericFunction.checkValue(result);
 			} catch (EvaluationException e) {

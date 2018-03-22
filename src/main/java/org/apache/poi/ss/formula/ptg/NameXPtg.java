@@ -79,8 +79,9 @@ public final class NameXPtg extends OperandPtg implements WorkbookDependentFormu
 	}
 	
 	public String toString(){
-        return "NameXPtg:[sheetRefIndex:" + _sheetRefIndex +
-           " , nameNumber:" + _nameNumber + "]";
+	   String retValue = "NameXPtg:[sheetRefIndex:" + _sheetRefIndex + 
+	      " , nameNumber:" + _nameNumber + "]" ;
+	   return retValue;
 	}
 	
 	public byte getDefaultOperandClass() {

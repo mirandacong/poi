@@ -24,7 +24,7 @@ import java.util.*;
  * Returns immutable Bitfield instances.
  */
 public class BitFieldFactory {
-    private static Map<Integer, BitField> instances = new HashMap<>();
+    private static Map<Integer, BitField> instances = new HashMap<Integer, BitField>();
 
     public static BitField getInstance(int mask) {
       BitField f = instances.get(Integer.valueOf(mask));

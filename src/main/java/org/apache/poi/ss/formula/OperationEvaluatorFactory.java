@@ -22,7 +22,6 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.poi.ss.formula.functions.FreeRefFunction;
 import org.apache.poi.ss.formula.ptg.AbstractFunctionPtg;
 import org.apache.poi.ss.formula.ptg.AddPtg;
 import org.apache.poi.ss.formula.ptg.ConcatPtg;
@@ -53,7 +52,6 @@ import org.apache.poi.ss.formula.eval.UnaryMinusEval;
 import org.apache.poi.ss.formula.eval.UnaryPlusEval;
 import org.apache.poi.ss.formula.eval.ValueEval;
 import org.apache.poi.ss.formula.function.FunctionMetadataRegistry;
-import org.apache.poi.ss.formula.functions.ArrayFunction;
 import org.apache.poi.ss.formula.functions.Function;
 import org.apache.poi.ss.formula.functions.Indirect;
 
@@ -72,7 +70,7 @@ final class OperationEvaluatorFactory {
 	}
 
 	private static Map<OperationPtg, Function> initialiseInstancesMap() {
-		Map<OperationPtg, Function> m = new HashMap<>(32);
+		Map<OperationPtg, Function> m = new HashMap<OperationPtg, Function>(32);
 
 		put(m, EqualPtg.instance, RelationalOperationEval.EqualEval);
 		put(m, GreaterEqualPtg.instance, RelationalOperationEval.GreaterEqualEval);
@@ -116,36 +114,23 @@ final class OperationEvaluatorFactory {
 			throw new IllegalArgumentException("ptg must not be null");
 		}
 		Function result = _instancesByPtgClass.get(ptg);
-		FreeRefFunction udfFunc = null;
-		if (result == null) {
-			if (ptg instanceof AbstractFunctionPtg) {
-				AbstractFunctionPtg fptg = (AbstractFunctionPtg)ptg;
-				int functionIndex = fptg.getFunctionIndex();
-				switch (functionIndex) {
-					case FunctionMetadataRegistry.FUNCTION_INDEX_INDIRECT:
-						udfFunc = Indirect.instance;
-						break;
-					case FunctionMetadataRegistry.FUNCTION_INDEX_EXTERNAL:
-						udfFunc = UserDefinedFunction.instance;
-						break;
-					default:
-						result = FunctionEval.getBasicFunction(functionIndex);
-						break;
-				}
-			}
-		}
+
 		if (result != null) {
-			EvaluationSheet evalSheet = ec.getWorkbook().getSheet(ec.getSheetIndex());
-			EvaluationCell evalCell = evalSheet.getCell(ec.getRowIndex(), ec.getColumnIndex());
-
-		    if (evalCell != null && (evalCell.isPartOfArrayFormulaGroup() || ec.isArraymode()) && result instanceof ArrayFunction)
-		        return ((ArrayFunction) result).evaluateArray(args, ec.getRowIndex(), ec.getColumnIndex());
-		                
-			return  result.evaluate(args, ec.getRowIndex(), ec.getColumnIndex());
-		} else if (udfFunc != null){
-			return  udfFunc.evaluate(args, ec);
+			return  result.evaluate(args, ec.getRowIndex(), (short) ec.getColumnIndex());
 		}
 
+		if (ptg instanceof AbstractFunctionPtg) {
+			AbstractFunctionPtg fptg = (AbstractFunctionPtg)ptg;
+			int functionIndex = fptg.getFunctionIndex();
+			switch (functionIndex) {
+				case FunctionMetadataRegistry.FUNCTION_INDEX_INDIRECT:
+					return Indirect.instance.evaluate(args, ec);
+				case FunctionMetadataRegistry.FUNCTION_INDEX_EXTERNAL:
+					return UserDefinedFunction.instance.evaluate(args, ec);
+			}
+
+			return FunctionEval.getBasicFunction(functionIndex).evaluate(args, ec.getRowIndex(), (short) ec.getColumnIndex());
+		}
 		throw new RuntimeException("Unexpected operation ptg class (" + ptg.getClass().getName() + ")");
 	}
 }

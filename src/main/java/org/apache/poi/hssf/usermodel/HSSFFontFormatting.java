@@ -105,7 +105,7 @@ public final class HSSFFontFormatting implements org.apache.poi.ss.usermodel.Fon
     }
 
     /**
-     * @see FontFormatting#getRawRecord()
+     * @see org.apache.poi.hssf.record.cf.FontFormatting#getRawRecord()
      */
     protected byte[] getRawRecord() {
         return fontFormatting.getRawRecord();
@@ -274,7 +274,7 @@ public final class HSSFFontFormatting implements org.apache.poi.ss.usermodel.Fon
 
     /**
      * @param modified
-     * @see FontFormatting#setEscapementTypeModified(boolean)
+     * @see org.apache.poi.hssf.record.cf.FontFormatting#setEscapementTypeModified(boolean)
      */
     public void setEscapementTypeModified(boolean modified) {
         fontFormatting.setEscapementTypeModified(modified);
@@ -282,7 +282,7 @@ public final class HSSFFontFormatting implements org.apache.poi.ss.usermodel.Fon
 
     /**
      * @param modified
-     * @see FontFormatting#setFontCancellationModified(boolean)
+     * @see org.apache.poi.hssf.record.cf.FontFormatting#setFontCancellationModified(boolean)
      */
     public void setFontCancellationModified(boolean modified)
     {
@@ -291,7 +291,7 @@ public final class HSSFFontFormatting implements org.apache.poi.ss.usermodel.Fon
 
     /**
      * @param fci
-     * @see FontFormatting#setFontColorIndex(short)
+     * @see org.apache.poi.hssf.record.cf.FontFormatting#setFontColorIndex(short)
      */
     public void setFontColorIndex(short fci)
     {
@@ -300,7 +300,7 @@ public final class HSSFFontFormatting implements org.apache.poi.ss.usermodel.Fon
 
     /**
      * @param height
-     * @see FontFormatting#setFontHeight(int)
+     * @see org.apache.poi.hssf.record.cf.FontFormatting#setFontHeight(int)
      */
     public void setFontHeight(int height)
     {
@@ -309,7 +309,7 @@ public final class HSSFFontFormatting implements org.apache.poi.ss.usermodel.Fon
 
     /**
      * @param modified
-     * @see FontFormatting#setFontOutlineModified(boolean)
+     * @see org.apache.poi.hssf.record.cf.FontFormatting#setFontOutlineModified(boolean)
      */
     public void setFontOutlineModified(boolean modified)
     {
@@ -318,7 +318,7 @@ public final class HSSFFontFormatting implements org.apache.poi.ss.usermodel.Fon
 
     /**
      * @param modified
-     * @see FontFormatting#setFontShadowModified(boolean)
+     * @see org.apache.poi.hssf.record.cf.FontFormatting#setFontShadowModified(boolean)
      */
     public void setFontShadowModified(boolean modified)
     {
@@ -327,7 +327,7 @@ public final class HSSFFontFormatting implements org.apache.poi.ss.usermodel.Fon
 
     /**
      * @param modified
-     * @see FontFormatting#setFontStyleModified(boolean)
+     * @see org.apache.poi.hssf.record.cf.FontFormatting#setFontStyleModified(boolean)
      */
     public void setFontStyleModified(boolean modified)
     {
@@ -336,7 +336,7 @@ public final class HSSFFontFormatting implements org.apache.poi.ss.usermodel.Fon
 
     /**
      * @param on
-     * @see FontFormatting#setOutline(boolean)
+     * @see org.apache.poi.hssf.record.cf.FontFormatting#setOutline(boolean)
      */
     public void setOutline(boolean on)
     {
@@ -346,7 +346,7 @@ public final class HSSFFontFormatting implements org.apache.poi.ss.usermodel.Fon
 
     /**
      * @param on
-     * @see FontFormatting#setShadow(boolean)
+     * @see org.apache.poi.hssf.record.cf.FontFormatting#setShadow(boolean)
      */
     public void setShadow(boolean on)
     {
@@ -356,7 +356,7 @@ public final class HSSFFontFormatting implements org.apache.poi.ss.usermodel.Fon
 
     /**
      * @param strike
-     * @see FontFormatting#setStrikeout(boolean)
+     * @see org.apache.poi.hssf.record.cf.FontFormatting#setStrikeout(boolean)
      */
     public void setStrikeout(boolean strike)
     {
@@ -395,7 +395,7 @@ public final class HSSFFontFormatting implements org.apache.poi.ss.usermodel.Fon
 
     /**
      * @param modified
-     * @see FontFormatting#setUnderlineTypeModified(boolean)
+     * @see org.apache.poi.hssf.record.cf.FontFormatting#setUnderlineTypeModified(boolean)
      */
     public void setUnderlineTypeModified(boolean modified)
     {

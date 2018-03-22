@@ -23,7 +23,7 @@ package org.apache.poi.sl.usermodel;
  */
 public interface Hyperlink<
     S extends Shape<S,P>,
-    P extends TextParagraph<S,P,? extends TextRun>
+    P extends TextParagraph<S,P,?>
 > extends org.apache.poi.common.usermodel.Hyperlink {
     /**
      * Link to an email
@@ -47,7 +47,7 @@ public interface Hyperlink<
      * @param slide the linked slide
      * @since POI 3.14-Beta2
      */
-    void linkToSlide(Slide<S, P> slide);
+    void linkToSlide(Slide<S,P> slide);
 
     /**
      * Link to the next slide (relative from the current)

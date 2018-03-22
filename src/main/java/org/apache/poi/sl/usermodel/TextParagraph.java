@@ -313,7 +313,7 @@ public interface TextParagraph<
      * Returns the alignment that is applied to the paragraph.
      *
      * If this attribute is omitted, then null is returned.
-     * User code can imply the value {@link TextAlign#LEFT} then.
+     * User code can imply the value {@link org.apache.poi.sl.usermodel.TextParagraph.TextAlign#LEFT} then.
      *
      * @return alignment that is applied to the paragraph
      */
@@ -322,7 +322,7 @@ public interface TextParagraph<
     /**
      * Specifies the alignment that is to be applied to the paragraph.
      * Possible values for this include left, right, centered, justified and distributed,
-     * see {@link TextAlign}.
+     * see {@link org.apache.poi.sl.usermodel.TextParagraph.TextAlign}.
      *
      * @param align text align
      */    
@@ -374,34 +374,4 @@ public interface TextParagraph<
      * @since POI 3.15-beta2
      */
     boolean isHeaderOrFooter();
-    
-    
-    /**
-     * Get the {@link TabStop TabStops} - the list can't be and it's entries shouldn't be modified.
-     * Opposed to other properties, this method is not cascading to the master sheet,
-     * if the property is not defined on the normal slide level, i.e. the tabstops on
-     * different levels aren't merged.
-     *
-     * @return the tabstop collection or {@code null} if no tabstops are defined
-     * 
-     * @since POI 4.0.0
-     */
-    List<? extends TabStop> getTabStops();
-
-    /**
-     * Set the {@link TabStop} collection
-     *
-     * @param tabStops the {@link TabStop} collection
-     * 
-     * @since POI 4.0.0
-     */
-    void addTabStops(double positionInPoints, TabStop.TabStopType tabStopType);
-
-    /**
-     * Removes the tabstops of this paragraphs.
-     * This doesn't affect inherited tabstops, e.g. inherited by the slide master
-     * 
-     * @since POI 4.0.0
-     */
-    void clearTabStops();
 }

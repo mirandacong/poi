@@ -35,7 +35,7 @@ public class Countifs extends Baseifs {
      * https://support.office.com/en-us/article/COUNTIFS-function-dda3dc6e-f74e-4aee-88bc-aa8c2a866842?ui=en-US&rs=en-US&ad=US
      * COUNTIFS(criteria_range1, criteria1, [criteria_range2, criteria2]...)
      * need at least 2 arguments and need to have an even number of arguments (criteria_range1, criteria1 plus x*(criteria_range, criteria))
-     * @see Baseifs#hasInitialRange()
+     * @see org.apache.poi.ss.formula.functions.Baseifs#hasInitialRange()
      */
     protected boolean hasInitialRange() {
         return false;

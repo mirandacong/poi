@@ -34,7 +34,7 @@ public abstract class StandardRecord extends Record {
      * Write the data content of this BIFF record including the sid and record length.
      * <p>
      * The subclass must write the exact number of bytes as reported by
-     *  {@link Record#getRecordSize()}}
+     *  {@link org.apache.poi.hssf.record.Record#getRecordSize()}}
      */
 	@Override
 	public final int serialize(int offset, byte[] data) {
@@ -57,7 +57,7 @@ public abstract class StandardRecord extends Record {
      * have already been written by the superclass.
      * <p>
      * The number of bytes written must equal the record size reported by
-     *  {@link Record#getRecordSize()}} minus four
+     *  {@link org.apache.poi.hssf.record.Record#getRecordSize()}} minus four
      *  ( record header consisting of a 'ushort sid' and 'ushort reclength' has already been written
      *  by their superclass).
      * 

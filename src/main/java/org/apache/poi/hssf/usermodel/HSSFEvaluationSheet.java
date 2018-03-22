@@ -28,26 +28,14 @@ import org.apache.poi.util.Internal;
 final class HSSFEvaluationSheet implements EvaluationSheet {
 
     private final HSSFSheet _hs;
-    private int _lastDefinedRow = -1;
 
     public HSSFEvaluationSheet(HSSFSheet hs) {
         _hs = hs;
-        _lastDefinedRow = _hs.getLastRowNum();
     }
 
     public HSSFSheet getHSSFSheet() {
         return _hs;
     }
-    
-    /* (non-Javadoc)
-     * @see org.apache.poi.ss.formula.EvaluationSheet#getlastRowNum()
-     * @since POI 4.0.0
-     */
-    @Override
-    public int getLastRowNum() {
-        return _lastDefinedRow;
-    }
-    
     @Override
     public EvaluationCell getCell(int rowIndex, int columnIndex) {
         HSSFRow row = _hs.getRow(rowIndex);
@@ -66,6 +54,6 @@ final class HSSFEvaluationSheet implements EvaluationSheet {
      */    
     @Override
     public void clearAllCachedResultValues() {
-        _lastDefinedRow = _hs.getLastRowNum();
+        // nothing to do
     }
 }

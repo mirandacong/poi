@@ -63,7 +63,7 @@ public final class PropertyTemplate {
      * Create a PropertyTemplate object
      */
     public PropertyTemplate() {
-        _propertyTemplate = new HashMap<>();
+        _propertyTemplate = new HashMap<CellAddress, Map<String, Object>>();
     }
     
     /**
@@ -83,7 +83,7 @@ public final class PropertyTemplate {
     }
     
     private static Map<String, Object> cloneCellProperties(Map<String, Object> properties) {
-        Map<String, Object> newProperties = new HashMap<>();
+        Map<String, Object> newProperties = new HashMap<String, Object>(); 
         for(Map.Entry<String, Object> entry : properties.entrySet()) {
             newProperties.put(entry.getKey(), entry.getValue());
         }
@@ -411,7 +411,7 @@ public final class PropertyTemplate {
      * @parm range - {@link CellRangeAddress} range of cells to remove borders.
      */
     private void removeBorders(CellRangeAddress range) {
-        Set<String> properties = new HashSet<>();
+        Set<String> properties = new HashSet<String>();
         properties.add(CellUtil.BORDER_TOP);
         properties.add(CellUtil.BORDER_BOTTOM);
         properties.add(CellUtil.BORDER_LEFT);
@@ -758,7 +758,7 @@ public final class PropertyTemplate {
      * @parm range - {@link CellRangeAddress} range of cells to remove borders.
      */
     private void removeBorderColors(CellRangeAddress range) {
-        Set<String> properties = new HashSet<>();
+        Set<String> properties = new HashSet<String>();
         properties.add(CellUtil.TOP_BORDER_COLOR);
         properties.add(CellUtil.BOTTOM_BORDER_COLOR);
         properties.add(CellUtil.LEFT_BORDER_COLOR);
@@ -795,7 +795,7 @@ public final class PropertyTemplate {
         CellAddress cell = new CellAddress(row, col);
         Map<String, Object> cellProperties = _propertyTemplate.get(cell);
         if (cellProperties == null) {
-            cellProperties = new HashMap<>();
+            cellProperties = new HashMap<String, Object>();
         }
         cellProperties.put(property, value);
         _propertyTemplate.put(cell, cellProperties);
@@ -958,8 +958,8 @@ public final class PropertyTemplate {
      * @return short value, or 0 if not a short
      */
     private static short getShort(Object value) {
-        if (value instanceof Number) {
-            return ((Number) value).shortValue();
+        if (value instanceof Short) {
+            return ((Short) value).shortValue();
         }
         return 0;
     }

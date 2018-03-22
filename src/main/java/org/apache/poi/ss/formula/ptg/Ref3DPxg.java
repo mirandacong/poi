@@ -100,7 +100,7 @@ public final class Ref3DPxg extends RefPtgBase implements Pxg3D {
     }
 
     public String toFormulaString() {
-        StringBuilder sb = new StringBuilder(64);
+        StringBuffer sb = new StringBuffer();
         if (externalWorkbookNumber >= 0) {
             sb.append('[');
             sb.append(externalWorkbookNumber);

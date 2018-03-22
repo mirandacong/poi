@@ -132,7 +132,7 @@ public class CellElapsedFormatter extends CellFormatter {
     public CellElapsedFormatter(String pattern) {
         super(pattern);
 
-        specs = new ArrayList<>();
+        specs = new ArrayList<TimeSpec>();
 
         StringBuffer desc = CellFormatPart.parseFormat(pattern,
                 CellFormatType.ELAPSED, new ElapsedPartHandler());

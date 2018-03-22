@@ -14,11 +14,33 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 ==================================================================== */
-package org.apache.poi.ss.formula.functions;
+
+package org.apache.poi.hpsf;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+
+import org.apache.poi.util.Removal;
 
 /**
- * Interface for those functions that evaluate arguments in array mode depending on context.
+ * dds writing support to the {@link PropertySet} class.<p>
+ *
+ * Please be aware that this class' functionality will be merged into the
+ * {@link PropertySet} class at a later time, so the API will change.
+ *
+ * @deprecated POI 3.16 - use PropertySet as base class instead
  */
-public interface ArrayMode {
+@Removal(version="3.18")
+public class MutablePropertySet extends PropertySet {
+    public MutablePropertySet() {}
+	
+	public MutablePropertySet(final PropertySet ps) {
+        super(ps);
+    }
 
+    /* package */ MutablePropertySet(final InputStream stream)
+    throws NoPropertySetStreamException, MarkUnsupportedException, IOException, UnsupportedEncodingException {
+        super(stream);
+    }
 }

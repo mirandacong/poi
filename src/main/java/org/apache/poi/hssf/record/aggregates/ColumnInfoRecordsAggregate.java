@@ -18,6 +18,7 @@
 package org.apache.poi.hssf.record.aggregates;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public final class ColumnInfoRecordsAggregate extends RecordAggregate implements
 	 * Creates an empty aggregate
 	 */
 	public ColumnInfoRecordsAggregate() {
-		records = new ArrayList<>();
+		records = new ArrayList<ColumnInfoRecord>();
 	}
 	public ColumnInfoRecordsAggregate(RecordStream rs) {
 		this();
@@ -70,7 +71,7 @@ public final class ColumnInfoRecordsAggregate extends RecordAggregate implements
 			throw new RuntimeException("No column info records found");
 		}
 		if (!isInOrder) {
-			records.sort(CIRComparator.instance);
+			Collections.sort(records, CIRComparator.instance);
 		}
 	}
 
@@ -88,7 +89,7 @@ public final class ColumnInfoRecordsAggregate extends RecordAggregate implements
 	 */
 	public void insertColumn(ColumnInfoRecord col) {
 		records.add(col);
-		records.sort(CIRComparator.instance);
+		Collections.sort(records, CIRComparator.instance);
 	}
 
 	/**
@@ -109,7 +110,8 @@ public final class ColumnInfoRecordsAggregate extends RecordAggregate implements
 			return;
 		}
 		ColumnInfoRecord cirPrev = null;
-		for (ColumnInfoRecord cir : records) {
+		for(int i=0; i<nItems; i++) {
+			ColumnInfoRecord cir = records.get(i);
 			rv.visitRecord(cir);
 			if (cirPrev != null && CIRComparator.compareColInfos(cirPrev, cir) > 0) {
 				// Excel probably wouldn't mind, but there is much logic in this class
@@ -297,7 +299,8 @@ public final class ColumnInfoRecordsAggregate extends RecordAggregate implements
 	public void setColumn(int targetColumnIx, Short xfIndex, Integer width,
 					Integer level, Boolean hidden, Boolean collapsed) {
 		ColumnInfoRecord ci = null;
-		int k;
+		int k  = 0;
+
 		for (k = 0; k < records.size(); k++) {
 			ColumnInfoRecord tci = records.get(k);
 			if (tci.containsColumn(targetColumnIx)) {
@@ -360,11 +363,12 @@ public final class ColumnInfoRecordsAggregate extends RecordAggregate implements
 			attemptMergeColInfoRecords(k);
 		} else {
 			//split to 3 records
-            ColumnInfoRecord ciMid = copyColInfo(ci);
+			ColumnInfoRecord ciStart = ci;
+			ColumnInfoRecord ciMid = copyColInfo(ci);
 			ColumnInfoRecord ciEnd = copyColInfo(ci);
 			int lastcolumn = ci.getLastColumn();
 
-			ci.setLastColumn(targetColumnIx - 1);
+			ciStart.setLastColumn(targetColumnIx - 1);
 
 			ciMid.setFirstColumn(targetColumnIx);
 			ciMid.setLastColumn(targetColumnIx);
@@ -489,7 +493,6 @@ public final class ColumnInfoRecordsAggregate extends RecordAggregate implements
 			setColumn(i, null, null, Integer.valueOf(level), null, null);
 		}
 	}
-
 	/**
 	 * Finds the <tt>ColumnInfoRecord</tt> which contains the specified columnIndex
 	 * @param columnIndex index of the column (not the index of the ColumnInfoRecord)
@@ -505,7 +508,6 @@ public final class ColumnInfoRecordsAggregate extends RecordAggregate implements
 		}
 		return null;
 	}
-
 	public int getMaxOutlineLevel() {
 		int result = 0;
 		int count=records.size();
@@ -515,7 +517,6 @@ public final class ColumnInfoRecordsAggregate extends RecordAggregate implements
 		}
 		return result;
 	}
-
 	public int getOutlineLevel(int columnIndex) {
 	    ColumnInfoRecord ci = findColumnInfo(columnIndex);
 	    if (ci != null) {
@@ -523,35 +524,5 @@ public final class ColumnInfoRecordsAggregate extends RecordAggregate implements
 	    } else {
 	        return 0;
 	    }
-	}
-
-	public int getMinColumnIndex() {
-		if(records.isEmpty()) {
-			return 0;
-		}
-
-		int minIndex = Integer.MAX_VALUE;
-		int nInfos = records.size();
-		for(int i=0; i< nInfos; i++) {
-			ColumnInfoRecord ci = getColInfo(i);
-			minIndex = Math.min(minIndex, ci.getFirstColumn());
-		}
-
-		return minIndex;
-	}
-
-	public int getMaxColumnIndex() {
-		if(records.isEmpty()) {
-			return 0;
-		}
-
-		int maxIndex = 0;
-		int nInfos = records.size();
-		for(int i=0; i< nInfos; i++) {
-			ColumnInfoRecord ci = getColInfo(i);
-			maxIndex = Math.max(maxIndex, ci.getLastColumn());
-		}
-
-		return maxIndex;
 	}
 }

@@ -18,7 +18,6 @@
 package org.apache.poi.hssf.record;
 
 import org.apache.poi.util.HexDump;
-import org.apache.poi.util.IOUtils;
 import org.apache.poi.util.LittleEndianInput;
 import org.apache.poi.util.LittleEndianOutput;
 
@@ -28,9 +27,6 @@ import org.apache.poi.util.LittleEndianOutput;
  */
 public final class GroupMarkerSubRecord extends SubRecord implements Cloneable {
     public final static short sid = 0x0006;
-    //arbitrarily selected; may need to increase
-    private static final int MAX_RECORD_LENGTH = 100_000;
-
 
     private static final byte[] EMPTY_BYTE_ARRAY = { };
 
@@ -42,7 +38,7 @@ public final class GroupMarkerSubRecord extends SubRecord implements Cloneable {
     }
 
     public GroupMarkerSubRecord(LittleEndianInput in, int size) {
-        byte[] buf = IOUtils.safelyAllocate(size, MAX_RECORD_LENGTH);
+        byte[] buf = new byte[size];
         in.readFully(buf);
         reserved = buf;
     }

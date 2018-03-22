@@ -15,6 +15,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 ==================================================================== */
+        
+
 package org.apache.poi.hssf.record;
 
 import org.apache.poi.util.LittleEndianOutput;
@@ -28,11 +30,15 @@ import org.apache.poi.util.LittleEndianOutput;
  * @author Jason Height (jheight at chariot dot net dot au)
  * @version 2.0-pre
  */
-public final class PrintHeadersRecord extends StandardRecord {
+
+public final class PrintHeadersRecord
+    extends StandardRecord
+{
     public final static short sid = 0x2a;
     private short             field_1_print_headers;
 
-    public PrintHeadersRecord() {
+    public PrintHeadersRecord()
+    {
     }
 
     public PrintHeadersRecord(RecordInputStream in)
@@ -44,10 +50,15 @@ public final class PrintHeadersRecord extends StandardRecord {
      * set to print the headers - y/n
      * @param p printheaders or not
      */
-    public void setPrintHeaders(boolean p) {
-        if (p) {
+
+    public void setPrintHeaders(boolean p)
+    {
+        if (p == true)
+        {
             field_1_print_headers = 1;
-        } else {
+        }
+        else
+        {
             field_1_print_headers = 0;
         }
     }
@@ -56,16 +67,21 @@ public final class PrintHeadersRecord extends StandardRecord {
      * get whether to print the headers - y/n
      * @return printheaders or not
      */
+
     public boolean getPrintHeaders()
     {
         return (field_1_print_headers == 1);
     }
 
-    public String toString() {
-        return "[PRINTHEADERS]\n" +
-                "    .printheaders   = " + getPrintHeaders() +
-                "\n" +
-                "[/PRINTHEADERS]\n";
+    public String toString()
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append("[PRINTHEADERS]\n");
+        buffer.append("    .printheaders   = ").append(getPrintHeaders())
+            .append("\n");
+        buffer.append("[/PRINTHEADERS]\n");
+        return buffer.toString();
     }
 
     public void serialize(LittleEndianOutput out) {

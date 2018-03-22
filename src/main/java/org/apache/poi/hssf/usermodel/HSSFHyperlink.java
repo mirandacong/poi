@@ -20,7 +20,6 @@ import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.hssf.record.HyperlinkRecord;
 import org.apache.poi.ss.usermodel.Hyperlink;
 import org.apache.poi.util.Internal;
-import org.apache.poi.util.Removal;
 
 /**
  * Represents an Excel hyperlink.
@@ -102,7 +101,7 @@ public class HSSFHyperlink implements Hyperlink {
             link_type = getType(record);
         }
         else {
-            link_type = other.getType();
+            link_type = other.getTypeEnum();
             record = new HyperlinkRecord();
             setFirstRow(other.getFirstRow());
             setFirstColumn(other.getFirstColumn());
@@ -259,23 +258,22 @@ public class HSSFHyperlink implements Hyperlink {
      *
      * @return the type of this hyperlink
      * @see HyperlinkType#forInt
+     * @deprecated POI 3.15. Use {@link #getTypeEnum()} instead.
+     * getType will return a HyperlinkType enum in the future.
      */
     @Override
-    public HyperlinkType getType() {
-        return link_type;
+    public int getType() {
+        return link_type.getCode();
     }
     
     /**
      * Return the type of this hyperlink
      *
      * @return the type of this hyperlink
-     * @deprecated use <code>getType()</code> instead
      */
-    @Deprecated
-    @Removal(version = "4.2")
     @Override
     public HyperlinkType getTypeEnum() {
-        return getType();
+        return link_type;
     }
     
     /**

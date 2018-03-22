@@ -191,7 +191,7 @@ public final class ArrayPtg extends Ptg {
 			throw new RuntimeException("Array item cannot be null");
 		}
 		if (o instanceof String) {
-			return "\"" + o + "\"";
+			return "\"" + (String)o + "\"";
 		}
 		if (o instanceof Double) {
 			return NumberToTextConverter.toText(((Double)o).doubleValue());

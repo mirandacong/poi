@@ -136,7 +136,6 @@ public final class InternalWorkbook {
         "Workbook", // as per BIFF8 spec
         "WORKBOOK", // Typically from third party programs
         "BOOK",     // Typically odd Crystal Reports exports
-        "WorkBook", // Another third party program special
     };
     /**
      * Name of older (pre-Excel 97) Workbook streams, which
@@ -198,15 +197,15 @@ public final class InternalWorkbook {
     private InternalWorkbook() {
     	records     = new WorkbookRecordList();
 
-		boundsheets = new ArrayList<>();
-		formats = new ArrayList<>();
-		hyperlinks = new ArrayList<>();
+		boundsheets = new ArrayList<BoundSheetRecord>();
+		formats = new ArrayList<FormatRecord>();
+		hyperlinks = new ArrayList<HyperlinkRecord>();
 		numxfs = 0;
 		numfonts = 0;
 		maxformatid = -1;
 		uses1904datewindowing = false;
-		escherBSERecords = new ArrayList<>();
-		commentRecords = new LinkedHashMap<>();
+		escherBSERecords = new ArrayList<EscherBSERecord>();
+		commentRecords = new LinkedHashMap<String, NameCommentRecord>();
     }
 
     /**
@@ -224,7 +223,7 @@ public final class InternalWorkbook {
     public static InternalWorkbook createWorkbook(List<Record> recs) {
         LOG.log(DEBUG, "Workbook (readfile) created with reclen=", recs.size());
         InternalWorkbook retval = new InternalWorkbook();
-        List<Record> records = new ArrayList<>(recs.size() / 3);
+        List<Record> records = new ArrayList<Record>(recs.size() / 3);
         retval.records.setRecords(records);
 
         boolean eofPassed = false;
@@ -370,7 +369,7 @@ public final class InternalWorkbook {
         LOG.log( DEBUG, "creating new workbook from scratch" );
 
         InternalWorkbook retval = new InternalWorkbook();
-        List<Record> records = new ArrayList<>(30);
+        List<Record> records = new ArrayList<Record>( 30 );
         retval.records.setRecords(records);
         List<FormatRecord> formats = retval.formats;
 
@@ -492,8 +491,10 @@ public final class InternalWorkbook {
             "There are only " + numfonts
             + " font records, you asked for " + idx);
         }
+        FontRecord retval =
+        ( FontRecord ) records.get((records.getFontpos() - (numfonts - 1)) + index);
 
-        return ( FontRecord ) records.get((records.getFontpos() - (numfonts - 1)) + index);
+        return retval;
     }
 
     /**
@@ -866,8 +867,10 @@ public final class InternalWorkbook {
         int xfptr = records.getXfpos() - (numxfs - 1);
 
         xfptr += index;
+        ExtendedFormatRecord retval =
+        ( ExtendedFormatRecord ) records.get(xfptr);
 
-        return ( ExtendedFormatRecord ) records.get(xfptr);
+        return retval;
     }
 
     /**
@@ -935,27 +938,6 @@ public final class InternalWorkbook {
             }
         }
         return null;
-    }
-
-    /**
-     * Update the StyleRecord to point to the new
-     * given index.
-     *
-     * @param oldXf the extended format index that was previously associated with this StyleRecord
-     * @param newXf the extended format index that is now associated with this StyleRecord
-     */
-    public void updateStyleRecord(int oldXf, int newXf) {
-        // Style records always follow after
-        //  the ExtendedFormat records
-        for(int i=records.getXfpos(); i<records.size(); i++) {
-            Record r = records.get(i);
-            if (r instanceof StyleRecord) {
-                StyleRecord sr = (StyleRecord)r;
-                if (sr.getXFIndex() == oldXf) {
-                    sr.setXFIndex(newXf);
-                }
-            }
-        }
     }
 
     /**
@@ -2187,7 +2169,7 @@ public final class InternalWorkbook {
                             sp.setShapeId(shapeId);
                         } else if (recordId == EscherOptRecord.RECORD_ID){
                             EscherOptRecord opt = (EscherOptRecord)shapeChildRecord;
-                            EscherSimpleProperty prop = opt.lookup(
+                            EscherSimpleProperty prop = (EscherSimpleProperty)opt.lookup(
                                     EscherProperties.BLIP__BLIPTODISPLAY );
                             if (prop != null){
                                 int pictureIndex = prop.getPropertyValue();

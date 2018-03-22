@@ -256,8 +256,9 @@ public class DrawPaint {
             LOG.log(POILogger.ERROR, "Can't load image data");
             return null;
         }
+        Paint paint = new java.awt.TexturePaint(image, textAnchor);
 
-        return new java.awt.TexturePaint(image, textAnchor);
+        return paint;
     }
 
     /**

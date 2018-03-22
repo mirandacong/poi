@@ -17,16 +17,12 @@
 
 package org.apache.poi.ss.usermodel.charts;
 
-import org.apache.poi.util.Removal;
-
 /**
  * Specifies whether to layout the plot area by its inside (not including axis
  * and axis labels) or outside (including axis and axis labels).
  *
- * @deprecated use XDDF LayoutTarget instead
+ * @author Roman Kashitsyn
  */
-@Deprecated
-@Removal(version="4.2")
 public enum LayoutTarget {
 	/**
 	 * Specifies that the plot area size shall determine the

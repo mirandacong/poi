@@ -27,6 +27,7 @@ import org.apache.poi.util.HexDump;
 import org.apache.poi.util.LittleEndian;
 import org.apache.poi.util.POILogFactory;
 import org.apache.poi.util.POILogger;
+import org.apache.poi.util.Removal;
 
 /**
  * Escher container records store other escher records as children.
@@ -68,7 +69,7 @@ public final class EscherContainerRecord extends EscherRecord implements Iterabl
      */
     private int _remainingLength;
 
-    private final List<EscherRecord> _childRecords = new ArrayList<>();
+    private final List<EscherRecord> _childRecords = new ArrayList<EscherRecord>();
 
     @Override
     public int fillFields(byte[] data, int pOffset, EscherRecordFactory recordFactory) {
@@ -148,7 +149,18 @@ public final class EscherContainerRecord extends EscherRecord implements Iterabl
      */
     @Override
     public List<EscherRecord> getChildRecords() {
-        return new ArrayList<>(_childRecords);
+        return new ArrayList<EscherRecord>(_childRecords);
+    }
+
+    /**
+     * @return an iterator over the child records
+     * @deprecated POI 3.16 beta 1. use iterator() or loop over the container record instead,
+     *     e.g. "for (EscherRecord r : container) ..."
+     */
+    @Removal(version="3.18")
+    @Deprecated
+    public Iterator<EscherRecord> getChildIterator() {
+        return iterator();
     }
 
     /**
@@ -190,7 +202,7 @@ public final class EscherContainerRecord extends EscherRecord implements Iterabl
      * @return EscherContainer children
      */
     public List<EscherContainerRecord> getChildContainers() {
-        List<EscherContainerRecord> containers = new ArrayList<>();
+        List<EscherContainerRecord> containers = new ArrayList<EscherContainerRecord>();
         for (EscherRecord r : this) {
             if(r instanceof EscherContainerRecord) {
                 containers.add((EscherContainerRecord) r);
@@ -284,7 +296,7 @@ public final class EscherContainerRecord extends EscherRecord implements Iterabl
 
     @Override
     protected Object[][] getAttributeMap() {
-        List<Object> chList = new ArrayList<>(_childRecords.size() * 2 + 2);
+        List<Object> chList = new ArrayList<Object>(_childRecords.size()*2+2);
         chList.add("children");
         chList.add(_childRecords.size());
         int count = 0;

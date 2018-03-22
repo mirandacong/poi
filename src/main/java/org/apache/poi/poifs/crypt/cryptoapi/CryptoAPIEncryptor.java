@@ -128,7 +128,7 @@ public class CryptoAPIEncryptor extends Encryptor implements Cloneable {
         byte buf[] = new byte[8];
         
         bos.write(buf, 0, 8); // skip header
-        List<StreamDescriptorEntry> descList = new ArrayList<>();
+        List<StreamDescriptorEntry> descList = new ArrayList<StreamDescriptorEntry>();
 
         int block = 0;
         for (Entry entry : entries.getRoot()) {

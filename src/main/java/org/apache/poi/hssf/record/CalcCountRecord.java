@@ -30,7 +30,7 @@ import org.apache.poi.util.LittleEndianOutput;
  *               loop in the event the formulas are not independant. <P>
  * REFERENCE:  PG 292 Microsoft Excel 97 Developer's Kit (ISBN: 1-57231-498-2)<P>
  * @version 2.0-pre
- * @see CalcModeRecord
+ * @see org.apache.poi.hssf.record.CalcModeRecord
  */
 
 public final class CalcCountRecord extends StandardRecord implements Cloneable {

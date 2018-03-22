@@ -61,7 +61,7 @@ public final class DGet implements IDStarAlgorithm {
             return ErrorEval.VALUE_INVALID;
         } else
             try {
-                if(OperandResolver.coerceValueToString(OperandResolver.getSingleValue(result, 0, 0)).isEmpty()) {
+                if(OperandResolver.coerceValueToString(OperandResolver.getSingleValue(result, 0, 0)).equals("")) {
                     return ErrorEval.VALUE_INVALID;
                 }
                 else {

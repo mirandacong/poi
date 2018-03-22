@@ -63,7 +63,7 @@ public class DataValidationEvaluator {
      * there's no guarantee instances won't be recreated on the fly by some implementation.
      * So we use sheet name.
      */
-    private final Map<String, List<? extends DataValidation>> validations = new HashMap<>();
+    private final Map<String, List<? extends DataValidation>> validations = new HashMap<String, List<? extends DataValidation>>();
 
     private final Workbook workbook;
     private final WorkbookEvaluator workbookEvaluator;
@@ -96,8 +96,7 @@ public class DataValidationEvaluator {
     
     /**
      * Lazy load validations by sheet, since reading the CT* types is expensive
-     *
-     * @param sheet The {@link Sheet} to load validations for.
+     * @param sheet
      * @return The {@link DataValidation}s for the sheet
      */
     private List<? extends DataValidation> getValidations(Sheet sheet) {
@@ -188,7 +187,7 @@ public class DataValidationEvaluator {
         
         String formula = val.getFormula1();
         
-        final List<ValueEval> values = new ArrayList<>();
+        final List<ValueEval> values = new ArrayList<ValueEval>();
         
         if (val.getExplicitListValues() != null && val.getExplicitListValues().length > 0) {
             // assumes parsing interprets the overloaded property right for XSSF
@@ -251,16 +250,15 @@ public class DataValidationEvaluator {
 
     /**
     * Note that this assumes the cell cached value is up to date and in sync with data edits
-     *
-    * @param cell The {@link Cell} to check.
-    * @param type The {@link CellType} to check for.
+    * @param cell
+    * @param type
     * @return true if the cell or cached cell formula result type match the given type
     */
     public static boolean isType(Cell cell, CellType type) {
-        final CellType cellType = cell.getCellType();
+        final CellType cellType = cell.getCellTypeEnum();
         return cellType == type 
               || (cellType == CellType.FORMULA 
-                  && cell.getCachedFormulaResultType() == type
+                  && cell.getCachedFormulaResultTypeEnum() == type
                  );
     }
    
@@ -280,7 +278,7 @@ public class DataValidationEvaluator {
                 if (super.isValidValue(cell, context)) {
                     // we know it is a number in the proper range, now check if it is an int
                     final double value = cell.getNumericCellValue(); // can't get here without a valid numeric value
-                    return Double.compare(value, (int) value) == 0;
+                    return Double.valueOf(value).compareTo(Double.valueOf((int) value)) == 0;
                 }
                 return false;
             }
@@ -344,7 +342,7 @@ public class DataValidationEvaluator {
             /**
              * Note the formula result must either be a boolean result, or anything not in error.
              * If boolean, value must be true to pass, anything else valid is also passing, errors fail.
-             * @see ValidationEnum#isValidValue(Cell, DataValidationContext)
+             * @see org.apache.poi.ss.formula.DataValidationEvaluator.ValidationEnum#isValidValue(org.apache.poi.ss.usermodel.Cell, org.apache.poi.ss.usermodel.DataValidationConstraint, org.apache.poi.ss.formula.WorkbookEvaluator)
              */
             public boolean isValidValue(Cell cell, DataValidationContext context) {
                 // unwrapped single value
@@ -411,9 +409,8 @@ public class DataValidationEvaluator {
          * Evaluate a numeric formula value as either a constant or numeric expression.
          * Note that Excel treats validations with constraint formulas that evaluate to null as valid,
          * but evaluations in error or non-numeric are marked invalid.
-         *
-         * @param formula The text of the formula or a numeric value
-         * @param context The {@link DataValidationContext} which is used for evaluation
+         * @param formula
+         * @param context
          * @return numeric value or null if not defined or the formula evaluates to an empty/missing cell.
          * @throws NumberFormatException if the formula is non-numeric when it should be
          */
@@ -525,7 +522,11 @@ public class DataValidationEvaluator {
         private final CellReference target;
         
         /**
-         * Populate the context with the necessary values.
+         *
+         * @param dv
+         * @param dve
+         * @param region
+         * @param target
          */
         public DataValidationContext(DataValidation dv, DataValidationEvaluator dve, CellRangeAddressBase region, CellReference target) {
             this.dv = dv;

@@ -19,10 +19,10 @@ package org.apache.poi.sl.usermodel;
 
 public interface Slide<
     S extends Shape<S,P>,
-    P extends TextParagraph<S,P,? extends TextRun>
+    P extends TextParagraph<S,P,?>
 > extends Sheet<S,P> {
     Notes<S,P> getNotes();
-    void setNotes(Notes<S, P> notes);
+    void setNotes(Notes<S,P> notes);
 
     boolean getFollowMasterBackground();
     void setFollowMasterBackground(boolean follow);
@@ -53,20 +53,4 @@ public interface Slide<
      * @since POI 3.16-beta2
      */
     boolean getDisplayPlaceholder(Placeholder placeholder);
-
-    /**
-     * Sets the slide visibility 
-     *
-     * @param hidden slide visibility, if {@code true} the slide is hidden, {@code false} shows the slide
-     * 
-     * @since POI 4.0.0
-     */
-    void setHidden(boolean hidden);
-
-    /**
-     * @return the slide visibility, the slide is hidden when {@code true} - or shown when {@code false}
-     * 
-     * @since POI 4.0.0
-     */
-    boolean isHidden();
 }

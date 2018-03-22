@@ -15,35 +15,29 @@
    limitations under the License.
 ==================================================================== */
 
-package org.apache.poi.ss.formula.functions;
+package org.apache.poi.hpsf;
 
-import org.apache.poi.ss.formula.eval.NumberEval;
-import org.apache.poi.ss.formula.eval.NumericValueEval;
-import org.apache.poi.ss.formula.eval.ValueEval;
+import java.io.UnsupportedEncodingException;
+
+import org.apache.poi.util.Removal;
 
 /**
- * Implementation of the DSum function:
- * Finds the total value of matching values in a column in an area with given conditions.
- * 
- * TODO:
- * - wildcards ? and * in string conditions
- * - functions as conditions
+ * <p>Adds writing capability to the {@link Section} class.</p>
+ *
+ * <p>Please be aware that this class' functionality will be merged into the
+ * {@link Section} class at a later time, so the API will change.</p>
+ *
+ * @deprecated POI 3.16 - use Section as base class instead
  */
-public final class DSum implements IDStarAlgorithm {
-    private double totalValue = 0;
+@Removal(version="3.18")
+public class MutableSection extends Section {
+    public MutableSection() {}
 
-    @Override
-    public boolean processMatch(ValueEval eval) {
-        if(eval instanceof NumericValueEval) {
-            double currentValue = ((NumericValueEval)eval).getNumberValue();
-            totalValue += currentValue;
-        }
-
-        return true;
+    public MutableSection(final Section s) {
+    	super(s);
     }
-
-    @Override
-    public ValueEval getResult() {
-        return new NumberEval(totalValue);
+    
+    public MutableSection(final byte[] src, final int offset) throws UnsupportedEncodingException {
+        super(src,offset);
     }
 }

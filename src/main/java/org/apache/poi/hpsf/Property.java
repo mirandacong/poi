@@ -291,7 +291,7 @@ public class Property {
      * section's dictionary. Another special case are strings: Two properties
      * may have the different types Variant.VT_LPSTR and Variant.VT_LPWSTR;
      *
-     * @see Object#equals(Object)
+     * @see Object#equals(java.lang.Object)
      */
     @Override
     public boolean equals(final Object o) {
@@ -455,7 +455,7 @@ public class Property {
         } else if (type == Variant.VT_EMPTY || type == Variant.VT_NULL || value == null) {
             b.append("null");
         } else {
-            b.append(value);
+            b.append(value.toString());
             
             String decoded = decodeValueFromID();
             if (decoded != null) {

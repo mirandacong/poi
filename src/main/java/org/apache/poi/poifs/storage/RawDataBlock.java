@@ -35,9 +35,6 @@ import java.io.*;
 public class RawDataBlock
     implements ListManagedBlock
 {
-    //arbitrarily selected; may need to increase
-    private static final int MAX_RECORD_LENGTH = 100_000;
-
     private byte[]  _data;
     private boolean _eof;
     private boolean _hasData;
@@ -61,7 +58,7 @@ public class RawDataBlock
      *
      * @param stream the InputStream from which the data will be read
      * @param blockSize the size of the POIFS blocks, normally 512 bytes
-     * {@link POIFSConstants#SMALLER_BIG_BLOCK_SIZE}
+     * {@link org.apache.poi.poifs.common.POIFSConstants#SMALLER_BIG_BLOCK_SIZE}
      *
      * @exception IOException on I/O errors, and if an insufficient
      *            amount of data is read (the InputStream must
@@ -69,7 +66,7 @@ public class RawDataBlock
      */
     public RawDataBlock(final InputStream stream, int blockSize)
     		throws IOException {
-        _data = IOUtils.safelyAllocate(blockSize, MAX_RECORD_LENGTH);
+        _data = new byte[ blockSize ];
         int count = IOUtils.readFully(stream, _data);
         _hasData = (count > 0);
 

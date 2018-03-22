@@ -43,36 +43,90 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
         return borderFormatting;
     }
 
+    /**
+     * @deprecated POI 3.15. Use {@link #getBorderBottomEnum()}.
+     * This method will return an BorderStyle enum in the future.
+     */
     @Override
-    public BorderStyle getBorderBottom() {
-        return BorderStyle.valueOf((short) borderFormatting.getBorderBottom());
+    public short getBorderBottom() {
+        return (short)borderFormatting.getBorderBottom();
+    }
+    /**
+     * @since POI 3.15
+     */
+    @Override
+    public BorderStyle getBorderBottomEnum() {
+        return BorderStyle.valueOf((short)borderFormatting.getBorderBottom());
     }
 
+    /**
+     * @deprecated POI 3.15. Use {@link #getBorderDiagonalEnum()}.
+     * This method will return an BorderStyle enum in the future.
+     */
     @Override
-    public BorderStyle getBorderDiagonal() {
-        return BorderStyle.valueOf((short) borderFormatting.getBorderDiagonal());
+    public short getBorderDiagonal() {
+        return (short)borderFormatting.getBorderDiagonal();
+    }
+    /**
+     * @since POI 3.15
+     */
+    @Override
+    public BorderStyle getBorderDiagonalEnum() {
+        return BorderStyle.valueOf((short)borderFormatting.getBorderDiagonal());
     }
 
+    /**
+     * @deprecated POI 3.15. Use {@link #getBorderLeftEnum()}.
+     * This method will return an BorderStyle enum in the future.
+     */
     @Override
-    public BorderStyle getBorderLeft() {
-        return BorderStyle.valueOf((short) borderFormatting.getBorderLeft());
+    public short getBorderLeft() {
+        return (short)borderFormatting.getBorderLeft();
+    }
+    /**
+     * @since POI 3.15
+     */
+    @Override
+    public BorderStyle getBorderLeftEnum() {
+        return BorderStyle.valueOf((short)borderFormatting.getBorderLeft());
     }
 
+    /**
+     * @deprecated POI 3.15. Use {@link #getBorderRightEnum()}.
+     * This method will return an BorderStyle enum in the future.
+     */
     @Override
-    public BorderStyle getBorderRight() {
-        return BorderStyle.valueOf((short) borderFormatting.getBorderRight());
+    public short getBorderRight() {
+        return (short)borderFormatting.getBorderRight();
+    }
+    /**
+     * @since POI 3.15
+     */
+    @Override
+    public BorderStyle getBorderRightEnum() {
+        return BorderStyle.valueOf((short)borderFormatting.getBorderRight());
     }
 
+    /**
+     * @deprecated POI 3.15. Use {@link #getBorderTopEnum()}.
+     * This method will return an BorderStyle enum in the future.
+     */
     @Override
-    public BorderStyle getBorderTop() {
-        return BorderStyle.valueOf((short) borderFormatting.getBorderTop());
+    public short getBorderTop() {
+        return (short)borderFormatting.getBorderTop();
+    }
+    /**
+     * @since POI 3.15
+     */
+    @Override
+    public BorderStyle getBorderTopEnum() {
+        return BorderStyle.valueOf((short)borderFormatting.getBorderTop());
     }
 
     @Override
     public short getBottomBorderColor() {
-        return (short) borderFormatting.getBottomBorderColor();
+        return (short)borderFormatting.getBottomBorderColor();
     }
-
     @Override
     public HSSFColor getBottomBorderColorColor() {
         return workbook.getCustomPalette().getColor(
@@ -82,9 +136,8 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
 
     @Override
     public short getDiagonalBorderColor() {
-        return (short) borderFormatting.getDiagonalBorderColor();
+        return (short)borderFormatting.getDiagonalBorderColor();
     }
-
     @Override
     public HSSFColor getDiagonalBorderColorColor() {
         return workbook.getCustomPalette().getColor(
@@ -94,9 +147,8 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
 
     @Override
     public short getLeftBorderColor() {
-        return (short) borderFormatting.getLeftBorderColor();
+        return (short)borderFormatting.getLeftBorderColor();
     }
-
     @Override
     public HSSFColor getLeftBorderColorColor() {
         return workbook.getCustomPalette().getColor(
@@ -106,9 +158,8 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
 
     @Override
     public short getRightBorderColor() {
-        return (short) borderFormatting.getRightBorderColor();
+        return (short)borderFormatting.getRightBorderColor();
     }
-
     @Override
     public HSSFColor getRightBorderColorColor() {
         return workbook.getCustomPalette().getColor(
@@ -118,9 +169,8 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
 
     @Override
     public short getTopBorderColor() {
-        return (short) borderFormatting.getTopBorderColor();
+        return (short)borderFormatting.getTopBorderColor();
     }
-
     @Override
     public HSSFColor getTopBorderColorColor() {
         return workbook.getCustomPalette().getColor(
@@ -131,7 +181,6 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
     public boolean isBackwardDiagonalOn() {
         return borderFormatting.isBackwardDiagonalOn();
     }
-
     public boolean isForwardDiagonalOn() {
         return borderFormatting.isForwardDiagonalOn();
     }
@@ -142,7 +191,6 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
             cfRuleRecord.setTopLeftBottomRightBorderModified(on);
         }
     }
-
     public void setForwardDiagonalOn(boolean on) {
         borderFormatting.setForwardDiagonalOn(on);
         if (on) {
@@ -151,21 +199,23 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
     }
 
     @Override
-    public void setBorderBottom(BorderStyle border) {
-        short code = border.getCode();
-        borderFormatting.setBorderBottom(code);
-        if (code != 0) {
+    public void setBorderBottom(short border) {
+        borderFormatting.setBorderBottom(border);
+        if (border != 0) {
             cfRuleRecord.setBottomBorderModified(true);
         } else {
             cfRuleRecord.setBottomBorderModified(false);
         }
     }
+    @Override
+    public void setBorderBottom(BorderStyle border) {
+        setBorderBottom(border.getCode());
+    }
 
     @Override
-    public void setBorderDiagonal(BorderStyle border) {
-        short code = border.getCode();
-        borderFormatting.setBorderDiagonal(code);
-        if (code != 0) {
+    public void setBorderDiagonal(short border) {
+        borderFormatting.setBorderDiagonal(border);
+        if (border != 0) {
             cfRuleRecord.setBottomLeftTopRightBorderModified(true);
             cfRuleRecord.setTopLeftBottomRightBorderModified(true);
         } else {
@@ -173,38 +223,51 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
             cfRuleRecord.setTopLeftBottomRightBorderModified(false);
         }
     }
+    @Override
+    public void setBorderDiagonal(BorderStyle border) {
+        setBorderDiagonal(border.getCode());
+    }
 
     @Override
-    public void setBorderLeft(BorderStyle border) {
-        short code = border.getCode();
-        borderFormatting.setBorderLeft(code);
-        if (code != 0) {
+    public void setBorderLeft(short border) {
+        borderFormatting.setBorderLeft(border);
+        if (border != 0) {
             cfRuleRecord.setLeftBorderModified(true);
         } else {
             cfRuleRecord.setLeftBorderModified(false);
         }
     }
+    @Override
+    public void setBorderLeft(BorderStyle border) {
+        setBorderLeft(border.getCode());
+    }
 
     @Override
-    public void setBorderRight(BorderStyle border) {
-        short code = border.getCode();
-        borderFormatting.setBorderRight(code);
-        if (code != 0) {
+    public void setBorderRight(short border) {
+        borderFormatting.setBorderRight(border);
+        if (border != 0) {
             cfRuleRecord.setRightBorderModified(true);
         } else {
             cfRuleRecord.setRightBorderModified(false);
         }
     }
+    @Override
+    public void setBorderRight(BorderStyle border) {
+        setBorderRight(border.getCode());
+    }
 
     @Override
-    public void setBorderTop(BorderStyle border) {
-        short code = border.getCode();
-        borderFormatting.setBorderTop(code);
-        if (code != 0) {
+    public void setBorderTop(short border) {
+        borderFormatting.setBorderTop(border);
+        if (border != 0) {
             cfRuleRecord.setTopBorderModified(true);
         } else {
             cfRuleRecord.setTopBorderModified(false);
         }
+    }
+    @Override
+    public void setBorderTop(BorderStyle border) {
+        setBorderTop(border.getCode());
     }
 
     @Override
@@ -216,11 +279,10 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
             cfRuleRecord.setBottomBorderModified(false);
         }
     }
-
     public void setBottomBorderColor(Color color) {
         HSSFColor hcolor = HSSFColor.toHSSFColor(color);
         if (hcolor == null) {
-            setBottomBorderColor((short) 0);
+            setBottomBorderColor((short)0);
         } else {
             setBottomBorderColor(hcolor.getIndex());
         }
@@ -237,12 +299,11 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
             cfRuleRecord.setTopLeftBottomRightBorderModified(false);
         }
     }
-
     @Override
     public void setDiagonalBorderColor(Color color) {
         HSSFColor hcolor = HSSFColor.toHSSFColor(color);
         if (hcolor == null) {
-            setDiagonalBorderColor((short) 0);
+            setDiagonalBorderColor((short)0);
         } else {
             setDiagonalBorderColor(hcolor.getIndex());
         }
@@ -257,12 +318,11 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
             cfRuleRecord.setLeftBorderModified(false);
         }
     }
-
     @Override
     public void setLeftBorderColor(Color color) {
         HSSFColor hcolor = HSSFColor.toHSSFColor(color);
         if (hcolor == null) {
-            setLeftBorderColor((short) 0);
+            setLeftBorderColor((short)0);
         } else {
             setLeftBorderColor(hcolor.getIndex());
         }
@@ -277,12 +337,11 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
             cfRuleRecord.setRightBorderModified(false);
         }
     }
-
     @Override
     public void setRightBorderColor(Color color) {
         HSSFColor hcolor = HSSFColor.toHSSFColor(color);
         if (hcolor == null) {
-            setRightBorderColor((short) 0);
+            setRightBorderColor((short)0);
         } else {
             setRightBorderColor(hcolor.getIndex());
         }
@@ -297,12 +356,11 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
             cfRuleRecord.setTopBorderModified(false);
         }
     }
-
     @Override
     public void setTopBorderColor(Color color) {
         HSSFColor hcolor = HSSFColor.toHSSFColor(color);
         if (hcolor == null) {
-            setTopBorderColor((short) 0);
+            setTopBorderColor((short)0);
         } else {
             setTopBorderColor(hcolor.getIndex());
         }
@@ -310,72 +368,22 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
 
     /**
      * HSSF doesn't support table borders, so always {@link BorderStyle#NONE}
-     *
-     * @see org.apache.poi.ss.usermodel.BorderFormatting#getBorderVertical()
+     * @see org.apache.poi.ss.usermodel.BorderFormatting#getBorderVerticalEnum()
      */
-    public BorderStyle getBorderVertical() {
-        return BorderStyle.NONE;
-    }
-
-    /**
-     * HSSF doesn't support table borders, so always {@link BorderStyle#NONE}
-     *
-     * @see org.apache.poi.ss.usermodel.BorderFormatting#getBorderHorizontal()
-     */
-    public BorderStyle getBorderHorizontal() {
-        return BorderStyle.NONE;
-    }
-
-    @Override
-    public BorderStyle getBorderBottomEnum() {
-        return getBorderBottom();
-    }
-
-    @Override
-    public BorderStyle getBorderDiagonalEnum() {
-        return getBorderDiagonal();
-    }
-
-    @Override
-    public BorderStyle getBorderLeftEnum() {
-        return getBorderLeft();
-    }
-
-    @Override
-    public BorderStyle getBorderRightEnum() {
-        return getBorderRight();
-    }
-
-    @Override
-    public BorderStyle getBorderTopEnum() {
-        return getBorderTop();
-    }
-
-    /**
-     * HSSF doesn't support table borders, so always {@link BorderStyle#NONE}
-     *
-     * @see org.apache.poi.ss.usermodel.BorderFormatting#getBorderVertical()
-     */
-    @Deprecated
-    @Override
     public BorderStyle getBorderVerticalEnum() {
-        return getBorderVertical();
+        return BorderStyle.NONE;
     }
 
     /**
      * HSSF doesn't support table borders, so always {@link BorderStyle#NONE}
-     *
-     * @see org.apache.poi.ss.usermodel.BorderFormatting#getBorderHorizontal()
+     * @see org.apache.poi.ss.usermodel.BorderFormatting#getBorderHorizontalEnum()
      */
-    @Deprecated
-    @Override
     public BorderStyle getBorderHorizontalEnum() {
-        return getBorderHorizontal();
+        return BorderStyle.NONE;
     }
 
     /**
      * HSSF Doesn't support table borders, so always {@link HSSFColorPredefined#AUTOMATIC}
-     *
      * @see org.apache.poi.ss.usermodel.BorderFormatting#getVerticalBorderColor()
      */
     public short getVerticalBorderColor() {
@@ -384,7 +392,6 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
 
     /**
      * HSSF Doesn't support table borders, so always {@link HSSFColorPredefined#AUTOMATIC}
-     *
      * @see org.apache.poi.ss.usermodel.BorderFormatting#getVerticalBorderColorColor()
      */
     public Color getVerticalBorderColorColor() {
@@ -393,7 +400,6 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
 
     /**
      * HSSF Doesn't support table borders, so always {@link HSSFColorPredefined#AUTOMATIC}
-     *
      * @see org.apache.poi.ss.usermodel.BorderFormatting#getHorizontalBorderColor()
      */
     public short getHorizontalBorderColor() {
@@ -402,7 +408,6 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
 
     /**
      * HSSF Doesn't support table borders, so always {@link HSSFColorPredefined#AUTOMATIC}
-     *
      * @see org.apache.poi.ss.usermodel.BorderFormatting#getHorizontalBorderColorColor()
      */
     public Color getHorizontalBorderColorColor() {
@@ -411,8 +416,7 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
 
     /**
      * Not available for HSSF.
-     *
-     * @see org.apache.poi.ss.usermodel.BorderFormatting#setBorderHorizontal(BorderStyle)
+     * @see org.apache.poi.ss.usermodel.BorderFormatting#setBorderHorizontal(org.apache.poi.ss.usermodel.BorderStyle)
      */
     public void setBorderHorizontal(BorderStyle border) {
         // nothing
@@ -420,8 +424,7 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
 
     /**
      * Not available for HSSF.
-     *
-     * @see org.apache.poi.ss.usermodel.BorderFormatting#setBorderVertical(BorderStyle)
+     * @see org.apache.poi.ss.usermodel.BorderFormatting#setBorderVertical(org.apache.poi.ss.usermodel.BorderStyle)
      */
     public void setBorderVertical(BorderStyle border) {
         // nothing
@@ -429,7 +432,6 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
 
     /**
      * Not available for HSSF.
-     *
      * @see org.apache.poi.ss.usermodel.BorderFormatting#setHorizontalBorderColor(short)
      */
     public void setHorizontalBorderColor(short color) {
@@ -438,8 +440,7 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
 
     /**
      * Not available for HSSF.
-     *
-     * @see org.apache.poi.ss.usermodel.BorderFormatting#setHorizontalBorderColor(Color)
+     * @see org.apache.poi.ss.usermodel.BorderFormatting#setHorizontalBorderColor(org.apache.poi.ss.usermodel.Color)
      */
     public void setHorizontalBorderColor(Color color) {
         // nothing
@@ -447,7 +448,6 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
 
     /**
      * Not available for HSSF.
-     *
      * @see org.apache.poi.ss.usermodel.BorderFormatting#setVerticalBorderColor(short)
      */
     public void setVerticalBorderColor(short color) {
@@ -456,8 +456,7 @@ public final class HSSFBorderFormatting implements org.apache.poi.ss.usermodel.B
 
     /**
      * Not available for HSSF.
-     *
-     * @see org.apache.poi.ss.usermodel.BorderFormatting#setVerticalBorderColor(Color)
+     * @see org.apache.poi.ss.usermodel.BorderFormatting#setVerticalBorderColor(org.apache.poi.ss.usermodel.Color)
      */
     public void setVerticalBorderColor(Color color) {
         // nothing

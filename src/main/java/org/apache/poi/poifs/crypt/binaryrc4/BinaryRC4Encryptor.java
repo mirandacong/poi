@@ -82,7 +82,8 @@ public class BinaryRC4Encryptor extends Encryptor implements Cloneable {
     @Override
     public OutputStream getDataStream(DirectoryNode dir)
     throws IOException, GeneralSecurityException {
-        return new BinaryRC4CipherOutputStream(dir);
+        OutputStream countStream = new BinaryRC4CipherOutputStream(dir);
+        return countStream;
     }
 
     @Override

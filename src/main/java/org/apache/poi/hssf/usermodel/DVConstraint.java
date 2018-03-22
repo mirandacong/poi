@@ -66,23 +66,23 @@ public class DVConstraint implements DataValidationConstraint {
 
 	
 	private DVConstraint(int validationType, int comparisonOperator, String formulaA,
-			String formulaB, Double value1, Double value2, String[] explicitListValues) {
+			String formulaB, Double value1, Double value2, String[] excplicitListValues) {
 		_validationType = validationType;
 		_operator = comparisonOperator;
 		_formula1 = formulaA;
 		_formula2 = formulaB;
 		_value1 = value1;
 		_value2 = value2;
-		_explicitListValues = (explicitListValues == null) ? null : explicitListValues.clone();
+		_explicitListValues = (excplicitListValues == null) ? null : excplicitListValues.clone();
 	}
 	
 	
 	/**
 	 * Creates a list constraint
 	 */
-	private DVConstraint(String listFormula, String[] explicitListValues) {
+	private DVConstraint(String listFormula, String[] excplicitListValues) {
 		this(ValidationType.LIST, OperatorType.IGNORED,
-			listFormula, null, null, null, explicitListValues);
+			listFormula, null, null, null, excplicitListValues);
 	}
 
 	/**
@@ -90,11 +90,11 @@ public class DVConstraint implements DataValidationConstraint {
 	 * can be either standard Excel formulas or formatted number values. If the expression starts 
 	 * with '=' it is parsed as a formula, otherwise it is parsed as a formatted number. 
 	 * 
-	 * @param validationType one of {@link ValidationType#ANY},
-     * {@link ValidationType#DECIMAL},
-     * {@link ValidationType#INTEGER},
-     * {@link ValidationType#TEXT_LENGTH}
-	 * @param comparisonOperator any constant from {@link OperatorType} enum
+	 * @param validationType one of {@link org.apache.poi.ss.usermodel.DataValidationConstraint.ValidationType#ANY},
+     * {@link org.apache.poi.ss.usermodel.DataValidationConstraint.ValidationType#DECIMAL},
+     * {@link org.apache.poi.ss.usermodel.DataValidationConstraint.ValidationType#INTEGER},
+     * {@link org.apache.poi.ss.usermodel.DataValidationConstraint.ValidationType#TEXT_LENGTH}
+	 * @param comparisonOperator any constant from {@link org.apache.poi.ss.usermodel.DataValidationConstraint.OperatorType} enum
 	 * @param expr1 date formula (when first char is '=') or formatted number value
 	 * @param expr2 date formula (when first char is '=') or formatted number value
 	 */
@@ -142,7 +142,7 @@ public class DVConstraint implements DataValidationConstraint {
 	 * formatted times, two formats are supported:  "HH:MM" or "HH:MM:SS".  This is contrary to 
 	 * Excel which uses the default time format from the OS.
 	 * 
-	 * @param comparisonOperator constant from {@link OperatorType} enum
+	 * @param comparisonOperator constant from {@link org.apache.poi.ss.usermodel.DataValidationConstraint.OperatorType} enum
 	 * @param expr1 date formula (when first char is '=') or formatted time value
 	 * @param expr2 date formula (when first char is '=') or formatted time value
 	 */
@@ -168,7 +168,7 @@ public class DVConstraint implements DataValidationConstraint {
 	 * the same convention).  To parse formatted dates, a date format needs to be specified.  This
 	 * is contrary to Excel which uses the default short date format from the OS.
 	 * 
-	 * @param comparisonOperator constant from {@link OperatorType} enum
+	 * @param comparisonOperator constant from {@link org.apache.poi.ss.usermodel.DataValidationConstraint.OperatorType} enum
 	 * @param expr1 date formula (when first char is '=') or formatted date value
 	 * @param expr2 date formula (when first char is '=') or formatted date value
 	 * @param dateFormat ignored if both expr1 and expr2 are formulas.  Default value is "YYYY/MM/DD"
@@ -228,7 +228,7 @@ public class DVConstraint implements DataValidationConstraint {
 			return null;
 		}
 		try {
-			return Double.valueOf(numberStr);
+			return new Double(numberStr);
 		} catch (NumberFormatException e) {
 			throw new RuntimeException("The supplied text '" + numberStr 
 					+ "' could not be parsed as a number");
@@ -242,7 +242,7 @@ public class DVConstraint implements DataValidationConstraint {
 		if (timeStr == null) {
 			return null;
 		}
-		return Double.valueOf(HSSFDateUtil.convertTime(timeStr));
+		return new Double(HSSFDateUtil.convertTime(timeStr));
 	}
 	/**
 	 * @param dateFormat pass <code>null</code> for default YYYYMMDD
@@ -263,7 +263,7 @@ public class DVConstraint implements DataValidationConstraint {
 						+ "' using specified format '" + dateFormat + "'", e);
 			}
 		}
-		return Double.valueOf(HSSFDateUtil.getExcelDate(dateVal));
+		return new Double(HSSFDateUtil.getExcelDate(dateVal));
 	}
 
 	public static DVConstraint createCustomFormulaConstraint(String formula) {
@@ -363,7 +363,7 @@ public class DVConstraint implements DataValidationConstraint {
 	 */
 	public void setValue1(double value1) {
 		_formula1 = null;
-		_value1 = Double.valueOf(value1);
+		_value1 = new Double(value1);
 	}
 
 	/**
@@ -377,7 +377,7 @@ public class DVConstraint implements DataValidationConstraint {
 	 */
 	public void setValue2(double value2) {
 		_formula2 = null;
-		_value2 = Double.valueOf(value2);
+		_value2 = new Double(value2);
 	}
 	
 	/**
@@ -407,7 +407,7 @@ public class DVConstraint implements DataValidationConstraint {
 			// Some things like union and intersection are not allowed.
 		}
 		// explicit list was provided
-		StringBuilder sb = new StringBuilder(_explicitListValues.length * 16);
+		StringBuffer sb = new StringBuffer(_explicitListValues.length * 16);
 		for (int i = 0; i < _explicitListValues.length; i++) {
 			if (i > 0) {
 				sb.append('\0'); // list delimiter is the nul char
@@ -484,7 +484,7 @@ public class DVConstraint implements DataValidationConstraint {
             if (_value == null) {
                 return null;
             }
-            return Double.valueOf(_value);
+            return new Double(_value);
         }
 
         public String string() {

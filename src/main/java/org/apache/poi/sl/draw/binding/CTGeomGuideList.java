@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -30,25 +31,26 @@ import javax.xml.bind.annotation.XmlType;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="CT_GeomGuideList"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="gd" type="{http://schemas.openxmlformats.org/drawingml/2006/main}CT_GeomGuide" maxOccurs="unbounded" minOccurs="0"/&gt;
- *       &lt;/sequence&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
+ * &lt;complexType name="CT_GeomGuideList">
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="gd" type="{http://schemas.openxmlformats.org/drawingml/2006/main}CT_GeomGuide" maxOccurs="unbounded" minOccurs="0"/>
+ *       &lt;/sequence>
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
  * </pre>
  * 
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CT_GeomGuideList", propOrder = {
+@XmlType(name = "CT_GeomGuideList", namespace = "http://schemas.openxmlformats.org/drawingml/2006/main", propOrder = {
     "gd"
 })
 public class CTGeomGuideList {
 
+    @XmlElement(namespace = "http://schemas.openxmlformats.org/drawingml/2006/main")
     protected List<CTGeomGuide> gd;
 
     /**

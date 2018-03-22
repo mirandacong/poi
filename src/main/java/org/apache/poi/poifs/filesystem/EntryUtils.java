@@ -34,19 +34,25 @@ public class EntryUtils
      */
     @Internal
     public static void copyNodeRecursively( Entry entry, DirectoryEntry target )
-            throws IOException {
+            throws IOException
+    {
         // logger.log( POILogger.ERROR, "copyNodeRecursively called with "+entry.getName()+
         // ","+target.getName());
-        if ( entry.isDirectoryEntry() ) {
+        DirectoryEntry newTarget = null;
+        if ( entry.isDirectoryEntry() )
+        {
         	DirectoryEntry dirEntry = (DirectoryEntry)entry;
-            DirectoryEntry newTarget = target.createDirectory( entry.getName() );
+            newTarget = target.createDirectory( entry.getName() );
             newTarget.setStorageClsid( dirEntry.getStorageClsid() );
             Iterator<Entry> entries = dirEntry.getEntries();
 
-            while ( entries.hasNext() ) {
+            while ( entries.hasNext() )
+            {
                 copyNodeRecursively( entries.next(), newTarget );
             }
-        } else {
+        }
+        else
+        {
             DocumentEntry dentry = (DocumentEntry) entry;
             DocumentInputStream dstream = new DocumentInputStream( dentry );
             target.createDocument( dentry.getName(), dstream );
@@ -63,10 +69,25 @@ public class EntryUtils
      *            is the target Directory to copy to
      */
     public static void copyNodes(DirectoryEntry sourceRoot,
-            DirectoryEntry targetRoot) throws IOException {
+            DirectoryEntry targetRoot) throws IOException
+    {
         for (Entry entry : sourceRoot) {
             copyNodeRecursively( entry, targetRoot );
         }
+    }
+
+    /**
+     * Copies nodes from one Directory to the other minus the excepts
+     * 
+     * @param filteredSource The filtering source Directory to copy from
+     * @param filteredTarget The filtering target Directory to copy to
+     */
+    public static void copyNodes( FilteringDirectoryNode filteredSource,
+            FilteringDirectoryNode filteredTarget ) throws IOException
+    {
+        // Nothing special here, just overloaded types to make the
+        //  recommended new way to handle this clearer
+        copyNodes( (DirectoryEntry)filteredSource, (DirectoryEntry)filteredTarget );
     }
 
     /**
@@ -153,7 +174,7 @@ public class EntryUtils
        }
        
        // Next, check entries and their types/sizes
-       Map<String,Integer> aSizes = new HashMap<>();
+       Map<String,Integer> aSizes = new HashMap<String, Integer>();
        final int isDirectory = -12345; 
        for (Entry a : dirA) {
           String aName = a.getName();

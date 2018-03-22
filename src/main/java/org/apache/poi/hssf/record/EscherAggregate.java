@@ -36,7 +36,6 @@ import org.apache.poi.ddf.EscherSerializationListener;
 import org.apache.poi.ddf.EscherSpRecord;
 import org.apache.poi.ddf.EscherSpgrRecord;
 import org.apache.poi.ddf.EscherTextboxRecord;
-import org.apache.poi.util.IOUtils;
 import org.apache.poi.util.POILogFactory;
 import org.apache.poi.util.POILogger;
 import org.apache.poi.util.RecordFormatException;
@@ -86,9 +85,6 @@ import org.apache.poi.util.RecordFormatException;
 public final class EscherAggregate extends AbstractEscherHolderRecord {
     public static final short sid = 9876; // not a real sid - dummy value
     private static POILogger log = POILogFactory.getLogger(EscherAggregate.class);
-    //arbitrarily selected; may need to increase
-    private static final int MAX_RECORD_LENGTH = 100_000_000;
-
 
     public static final short ST_MIN = (short) 0;
     public static final short ST_NOT_PRIMATIVE = ST_MIN;
@@ -299,12 +295,12 @@ public final class EscherAggregate extends AbstractEscherHolderRecord {
     /**
      * Maps shape container objects to their {@link TextObjectRecord} or {@link ObjRecord}
      */
-    private final Map<EscherRecord, Record> shapeToObj = new HashMap<>();
+    private final Map<EscherRecord, Record> shapeToObj = new HashMap<EscherRecord, Record>();
 
     /**
      * list of "tail" records that need to be serialized after all drawing group records
      */
-    private final Map<Integer, NoteRecord> tailRec = new LinkedHashMap<>();
+    private final Map<Integer, NoteRecord> tailRec = new LinkedHashMap<Integer, NoteRecord>();
 
     /**
      * create new EscherAggregate
@@ -380,7 +376,7 @@ public final class EscherAggregate extends AbstractEscherHolderRecord {
     public static EscherAggregate createAggregate(List<RecordBase> records, int locFirstDrawingRecord) {
         // Keep track of any shape records created so we can match them back to the object id's.
         // Textbox objects are also treated as shape objects.
-        final List<EscherRecord> shapeRecords = new ArrayList<>();
+        final List<EscherRecord> shapeRecords = new ArrayList<EscherRecord>();
         EscherRecordFactory recordFactory = new DefaultEscherRecordFactory() {
             public EscherRecord createRecord(byte[] data, int offset) {
                 EscherRecord r = super.createRecord(data, offset);
@@ -470,8 +466,8 @@ public final class EscherAggregate extends AbstractEscherHolderRecord {
         byte[] buffer = new byte[size];
 
         // Serialize escher records into one big data structure and keep note of ending offsets.
-        final List <Integer>spEndingOffsets = new ArrayList<>();
-        final List <EscherRecord> shapes = new ArrayList<>();
+        final List <Integer>spEndingOffsets = new ArrayList<Integer>();
+        final List <EscherRecord> shapes = new ArrayList<EscherRecord>();
         int pos = 0;
         for (Object record : records) {
             EscherRecord e = (EscherRecord) record;
@@ -526,7 +522,8 @@ public final class EscherAggregate extends AbstractEscherHolderRecord {
         }
 
         for (NoteRecord noteRecord : tailRec.values()) {
-            pos += noteRecord.serialize(pos, data);
+            Record rec = (Record) noteRecord;
+            pos += rec.serialize(pos, data);
         }
         int bytesWritten = pos - offset;
         if (bytesWritten != getRecordSize())
@@ -596,8 +593,8 @@ public final class EscherAggregate extends AbstractEscherHolderRecord {
         // Determine buffer size
         List<EscherRecord> records = getEscherRecords();
         int rawEscherSize = getEscherRecordSize(records);
-        byte[] buffer = IOUtils.safelyAllocate(rawEscherSize, MAX_RECORD_LENGTH);
-        final List<Integer> spEndingOffsets = new ArrayList<>();
+        byte[] buffer = new byte[rawEscherSize];
+        final List<Integer> spEndingOffsets = new ArrayList<Integer>();
         int pos = 0;
         for (EscherRecord e : records) {
             pos += e.serialize(pos, buffer, new EscherSerializationListener() {
@@ -750,9 +747,9 @@ public final class EscherAggregate extends AbstractEscherHolderRecord {
      */
     public void setMainSpRecordId(int shapeId) {
         EscherContainerRecord dgContainer = getEscherContainer();
-        EscherContainerRecord spgrConatiner = dgContainer.getChildById(EscherContainerRecord.SPGR_CONTAINER);
+        EscherContainerRecord spgrConatiner = (EscherContainerRecord) dgContainer.getChildById(EscherContainerRecord.SPGR_CONTAINER);
         EscherContainerRecord spContainer = (EscherContainerRecord) spgrConatiner.getChild(0);
-        EscherSpRecord sp = spContainer.getChildById(EscherSpRecord.RECORD_ID);
+        EscherSpRecord sp = (EscherSpRecord) spContainer.getChildById(EscherSpRecord.RECORD_ID);
         sp.setShapeId(shapeId);
     }
 

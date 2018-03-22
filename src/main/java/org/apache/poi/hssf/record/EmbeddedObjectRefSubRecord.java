@@ -25,7 +25,6 @@ import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.formula.ptg.Ref3DPtg;
 import org.apache.poi.ss.formula.ptg.RefPtg;
 import org.apache.poi.util.HexDump;
-import org.apache.poi.util.IOUtils;
 import org.apache.poi.util.LittleEndian;
 import org.apache.poi.util.LittleEndianInput;
 import org.apache.poi.util.LittleEndianInputStream;
@@ -42,9 +41,6 @@ import org.apache.poi.util.StringUtil;
  */
 public final class EmbeddedObjectRefSubRecord extends SubRecord implements Cloneable {
 	private static POILogger logger = POILogFactory.getLogger(EmbeddedObjectRefSubRecord.class);
-	//arbitrarily selected; may need to increase
-	private static final int MAX_RECORD_LENGTH = 100_000;
-
 	public static final short sid = 0x0009;
 
 	private static final byte[] EMPTY_BYTE_ARRAY = { };
@@ -177,7 +173,7 @@ public final class EmbeddedObjectRefSubRecord extends SubRecord implements Clone
 		if (size == 0) {
 			return EMPTY_BYTE_ARRAY;
 		}
-		byte[] result = IOUtils.safelyAllocate(size, MAX_RECORD_LENGTH);
+		byte[] result = new byte[size];
 		in.readFully(result);
 		return result;
 	}

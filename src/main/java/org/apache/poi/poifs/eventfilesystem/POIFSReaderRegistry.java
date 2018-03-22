@@ -57,9 +57,9 @@ class POIFSReaderRegistry
 
     POIFSReaderRegistry()
     {
-        omnivorousListeners       = new HashSet<>();
-        selectiveListeners        = new HashMap<>();
-        chosenDocumentDescriptors = new HashMap<>();
+        omnivorousListeners       = new HashSet<POIFSReaderListener>();
+        selectiveListeners        = new HashMap<POIFSReaderListener, Set<DocumentDescriptor>>();
+        chosenDocumentDescriptors = new HashMap<DocumentDescriptor,Set<POIFSReaderListener>>();
     }
 
     /**
@@ -85,7 +85,7 @@ class POIFSReaderRegistry
             {
 
                 // this listener has not registered before
-                descriptors = new HashSet<>();
+                descriptors = new HashSet<DocumentDescriptor>();
                 selectiveListeners.put(listener, descriptors);
             }
             DocumentDescriptor descriptor = new DocumentDescriptor(path,
@@ -104,7 +104,7 @@ class POIFSReaderRegistry
                 {
 
                     // nobody was listening for this document before
-                    listeners = new HashSet<>();
+                    listeners = new HashSet<POIFSReaderListener>();
                     chosenDocumentDescriptors.put(descriptor, listeners);
                 }
                 listeners.add(listener);
@@ -143,7 +143,7 @@ class POIFSReaderRegistry
 
     Iterator<POIFSReaderListener> getListeners(final POIFSDocumentPath path, final String name)
     {
-        Set<POIFSReaderListener> rval = new HashSet<>(omnivorousListeners);
+        Set<POIFSReaderListener> rval = new HashSet<POIFSReaderListener>(omnivorousListeners);
         Set<POIFSReaderListener> selectiveListenersInner =
             chosenDocumentDescriptors.get(new DocumentDescriptor(path, name));
 

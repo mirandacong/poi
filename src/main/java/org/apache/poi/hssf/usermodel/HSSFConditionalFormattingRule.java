@@ -64,7 +64,7 @@ public final class HSSFConditionalFormattingRule implements ConditionalFormattin
      * Only newer style formatting rules have priorities. For older ones,
      *  we don't know priority for these, other than definition/model order, 
      *  which appears to be what Excel uses.
-     * @see ConditionalFormattingRule#getPriority()
+     * @see org.apache.poi.ss.usermodel.ConditionalFormattingRule#getPriority()
      */
     public int getPriority() {
         CFRule12Record rule12 = getCFRule12Record(false);
@@ -74,7 +74,7 @@ public final class HSSFConditionalFormattingRule implements ConditionalFormattin
     
     /**
      * Always true for HSSF files, per Microsoft Excel documentation
-     * @see ConditionalFormattingRule#getStopIfTrue()
+     * @see org.apache.poi.ss.usermodel.ConditionalFormattingRule#getStopIfTrue()
      */
     public boolean getStopIfTrue() {
         return true;
@@ -95,7 +95,7 @@ public final class HSSFConditionalFormattingRule implements ConditionalFormattin
     
     /**
      * Always null for HSSF records, until someone figures out where to find it
-     * @see ConditionalFormattingRule#getNumberFormat()
+     * @see org.apache.poi.ss.usermodel.ConditionalFormattingRule#getNumberFormat()
      */
     public ExcelNumberFormat getNumberFormat() {
         return null;
@@ -269,7 +269,7 @@ public final class HSSFConditionalFormattingRule implements ConditionalFormattin
 
     /**
      * always null (not a filter condition) or {@link ConditionFilterType#FILTER} if it is.
-     * @see ConditionalFormattingRule#getConditionFilterType()
+     * @see org.apache.poi.ss.usermodel.ConditionalFormattingRule#getConditionFilterType()
      */
     public ConditionFilterType getConditionFilterType() {
         return getConditionType() == ConditionType.FILTER ? ConditionFilterType.FILTER : null;
@@ -305,10 +305,6 @@ public final class HSSFConditionalFormattingRule implements ConditionalFormattin
         return null;
     }
 
-    public String getText() {
-        return null; // not available here, unless it exists and is unimplemented in cfRuleRecord
-    }
-    
     protected String toFormulaString(Ptg[] parsedExpression) {
         return toFormulaString(parsedExpression, workbook);
     }

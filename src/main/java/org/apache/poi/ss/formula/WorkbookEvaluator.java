@@ -30,7 +30,10 @@ import org.apache.poi.ss.formula.CollaboratingWorkbooksEnvironment.WorkbookNotFo
 import org.apache.poi.ss.formula.atp.AnalysisToolPak;
 import org.apache.poi.ss.formula.eval.*;
 import org.apache.poi.ss.formula.function.FunctionMetadataRegistry;
-import org.apache.poi.ss.formula.functions.*;
+import org.apache.poi.ss.formula.functions.Choose;
+import org.apache.poi.ss.formula.functions.FreeRefFunction;
+import org.apache.poi.ss.formula.functions.Function;
+import org.apache.poi.ss.formula.functions.IfFunc;
 import org.apache.poi.ss.formula.ptg.*;
 import org.apache.poi.ss.formula.udf.AggregatingUDFFinder;
 import org.apache.poi.ss.formula.udf.UDFFinder;
@@ -92,8 +95,8 @@ public final class WorkbookEvaluator {
         _workbook = workbook;
         _evaluationListener = evaluationListener;
         _cache = new EvaluationCache(evaluationListener);
-        _sheetIndexesBySheet = new IdentityHashMap<>();
-        _sheetIndexesByName = new IdentityHashMap<>();
+        _sheetIndexesBySheet = new IdentityHashMap<EvaluationSheet, Integer>();
+        _sheetIndexesByName = new IdentityHashMap<String, Integer>();
         _collaboratingWorkbookEnvironment = CollaboratingWorkbooksEnvironment.EMPTY;
         _workbookIx = 0;
         _stabilityClassifier = stabilityClassifier;
@@ -122,7 +125,8 @@ public final class WorkbookEvaluator {
     }
 
     /* package */ EvaluationName getName(String name, int sheetIndex) {
-        return _workbook.getName(name, sheetIndex);
+        EvaluationName evalName = _workbook.getName(name, sheetIndex);
+        return evalName;
     }
 
     private static boolean isDebugLogEnabled() {
@@ -247,10 +251,10 @@ public final class WorkbookEvaluator {
         // avoid tracking dependencies to cells that have constant definition
         boolean shouldCellDependencyBeRecorded = _stabilityClassifier == null ? true
                     : !_stabilityClassifier.isCellFinal(sheetIndex, rowIndex, columnIndex);
-        if (srcCell == null || srcCell.getCellType() != CellType.FORMULA) {
+        if (srcCell == null || srcCell.getCellTypeEnum() != CellType.FORMULA) {
             ValueEval result = getValueFromNonFormulaCell(srcCell);
             if (shouldCellDependencyBeRecorded) {
-                tracker.acceptPlainValueDependency(_workbook, _workbookIx, sheetIndex, rowIndex, columnIndex, result);
+                tracker.acceptPlainValueDependency(_workbookIx, sheetIndex, rowIndex, columnIndex, result);
             }
             return result;
         }
@@ -265,12 +269,11 @@ public final class WorkbookEvaluator {
             if (!tracker.startEvaluate(cce)) {
                 return ErrorEval.CIRCULAR_REF_ERROR;
             }
+            OperationEvaluationContext ec = new OperationEvaluationContext(this, _workbook, sheetIndex, rowIndex, columnIndex, tracker);
 
             try {
 
                 Ptg[] ptgs = _workbook.getFormulaTokens(srcCell);
-                OperationEvaluationContext ec = new OperationEvaluationContext
-                        (this, _workbook, sheetIndex, rowIndex, columnIndex, tracker);
                 if (evalListener == null) {
                     result = evaluateFormula(ec, ptgs);
                 } else {
@@ -286,7 +289,7 @@ public final class WorkbookEvaluator {
              } catch (RuntimeException re) {
                  if (re.getCause() instanceof WorkbookNotFoundException && _ignoreMissingWorkbooks) {
                      logInfo(re.getCause().getMessage() + " - Continuing with cached value!");
-                     switch(srcCell.getCachedFormulaResultType()) {
+                     switch(srcCell.getCachedFormulaResultTypeEnum()) {
                          case NUMERIC:
                              result = new NumberEval(srcCell.getNumericCellValue());
                              break;
@@ -304,7 +307,7 @@ public final class WorkbookEvaluator {
                             break;
                          case FORMULA:
                         default:
-                            throw new RuntimeException("Unexpected cell type '" + srcCell.getCellType()+"' found!");
+                            throw new RuntimeException("Unexpected cell type '" + srcCell.getCellTypeEnum()+"' found!");
                      }
                  } else {
                      throw re;
@@ -357,7 +360,7 @@ public final class WorkbookEvaluator {
         if (cell == null) {
             return BlankEval.instance;
         }
-        CellType cellType = cell.getCellType();
+        CellType cellType = cell.getCellTypeEnum();
         switch (cellType) {
             case NUMERIC:
                 return new NumberEval(cell.getNumericCellValue());
@@ -398,7 +401,7 @@ public final class WorkbookEvaluator {
             dbgEvaluationOutputIndent++;
         }
 
-        Stack<ValueEval> stack = new Stack<>();
+        Stack<ValueEval> stack = new Stack<ValueEval>();
         for (int i = 0, iSize = ptgs.length; i < iSize; i++) {
             // since we don't know how to handle these yet :(
             Ptg ptg = ptgs[i];
@@ -503,38 +506,12 @@ public final class WorkbookEvaluator {
                 ValueEval[] ops = new ValueEval[numops];
 
                 // storing the ops in reverse order since they are popping
-                boolean areaArg = false; // whether one of the operands is an area
                 for (int j = numops - 1; j >= 0; j--) {
                     ValueEval p = stack.pop();
                     ops[j] = p;
-                    if(p instanceof AreaEval){
-                        areaArg = true;
-                    }
                 }
-
-                boolean arrayMode = false;
-                if(areaArg) for (int ii = i; ii < iSize; ii++) {
-                    if(ptgs[ii] instanceof FuncVarPtg){
-                        FuncVarPtg f = (FuncVarPtg)ptgs[ii];
-                        try {
-                            Function func = FunctionEval.getBasicFunction(f.getFunctionIndex());
-                            if (func != null && func instanceof ArrayMode) {
-                                arrayMode = true;
-                            }
-                        } catch (NotImplementedException ne){
-                            //FunctionEval.getBasicFunction can throw NotImplementedException
-                            // if the fucntion is not yet supported.
-                        }
-                        break;
-                    }
-                }
-                ec.setArrayMode(arrayMode);
-
 //                logDebug("invoke " + operation + " (nAgs=" + numops + ")");
                 opResult = OperationEvaluatorFactory.evaluate(optg, ops, ec);
-
-                ec.setArrayMode(false);
-
             } else {
                 opResult = getEvalForPtg(ptg, ec);
             }
@@ -553,15 +530,14 @@ public final class WorkbookEvaluator {
             throw new IllegalStateException("evaluation stack not empty");
         }
         
+        // "unwrap" result to just the value relevant for the source cell if needed
         ValueEval result;
-        
         if (ec.isSingleValue()) {
-            result = dereferenceResult(value, ec);
-        }
-        else {
+            result = dereferenceResult(value, ec.getRowIndex(), ec.getColumnIndex());
+        } else {
             result = value;
         }
-
+        
         if (dbgEvaluationOutputIndent > 0) {
             EVAL_LOG.log(POILogger.INFO, dbgIndentStr + "finshed eval of "
                             + new CellReference(ec.getRowIndex(), ec.getColumnIndex()).formatAsString()
@@ -596,38 +572,6 @@ public final class WorkbookEvaluator {
             }
         }
         return index-startIndex;
-    }
-    
-    /**
-     * Dereferences a single value from any AreaEval or RefEval evaluation
-     * result. If the supplied evaluationResult is just a plain value, it is
-     * returned as-is.
-     *
-     * @return a {@link NumberEval}, {@link StringEval}, {@link BoolEval}, or
-     *         {@link ErrorEval}. Never <code>null</code>. {@link BlankEval} is
-     *         converted to {@link NumberEval#ZERO}
-     */
-    private static ValueEval dereferenceResult(ValueEval evaluationResult, OperationEvaluationContext ec) {
-        ValueEval value;
-
-        if (ec == null) {
-            throw new IllegalArgumentException("OperationEvaluationContext ec is null");
-        }
-        if (ec.getWorkbook() == null) {
-            throw new IllegalArgumentException("OperationEvaluationContext ec.getWorkbook() is null");
-        }
-
-        EvaluationSheet evalSheet = ec.getWorkbook().getSheet(ec.getSheetIndex());
-        EvaluationCell evalCell = evalSheet.getCell(ec.getRowIndex(), ec.getColumnIndex());
- 
-        if (evalCell != null && evalCell.isPartOfArrayFormulaGroup() && evaluationResult instanceof AreaEval) {
-            value = OperandResolver.getElementFromArray((AreaEval) evaluationResult, evalCell);
-        }
-        else {
-            value = dereferenceResult(evaluationResult, ec.getRowIndex(), ec.getColumnIndex());
-        }
-        
-        return value;
     }
 
     /**
@@ -721,11 +665,6 @@ public final class WorkbookEvaluator {
         if (ptg instanceof AreaPtg) {
            AreaPtg aptg = (AreaPtg) ptg;
            return ec.getAreaEval(aptg.getFirstRow(), aptg.getFirstColumn(), aptg.getLastRow(), aptg.getLastColumn());
-        }
-        
-        if (ptg instanceof ArrayPtg) {
-           ArrayPtg aptg = (ArrayPtg) ptg;
-           return ec.getAreaValueEval(0, 0, aptg.getRowCount() - 1, aptg.getColumnCount() - 1, aptg.getTokenArrayValues());
         }
 
         if (ptg instanceof UnknownPtg) {
@@ -866,11 +805,6 @@ public final class WorkbookEvaluator {
     
     /**
      * Adjust formula relative references by the offset between the start of the given region and the given target cell.
-     * That is, treat the region top-left cell as "A1" for the purposes of evaluating relative reference components (row and/or column),
-     * and further move references by the position of the target within the region.
-     * <p><pre>formula ref + range top-left + current cell range offset </pre></p>
-     * which simplifies to
-     * <p><pre>formula ref + current cell ref</pre></p>
      * @param ptgs
      * @param target cell within the region to use.
      * @param region containing the cell
@@ -883,11 +817,22 @@ public final class WorkbookEvaluator {
             throw new IllegalArgumentException(target + " is not within " + region);
         }
         
-        //return adjustRegionRelativeReference(ptgs, target.getRow() - region.getFirstRow(), target.getCol() - region.getFirstColumn());
-        
-        int deltaRow = target.getRow();
-        int deltaColumn = target.getCol();
-        
+        return adjustRegionRelativeReference(ptgs, target.getRow() - region.getFirstRow(), target.getCol() - region.getFirstColumn());
+    }
+    
+    /**
+     * Adjust the formula relative cell references by a given delta
+     * @param ptgs
+     * @param deltaRow target row offset from the top left cell of a region
+     * @param deltaColumn target column offset from the top left cell of a region
+     * @return true if any Ptg references were shifted
+     * @throws IndexOutOfBoundsException if the resulting shifted row/column indexes are over the document format limits
+     * @throws IllegalArgumentException if either of the deltas are negative, as the assumption is we are shifting formulas
+     * relative to the top left cell of a region.
+     */
+    protected boolean adjustRegionRelativeReference(Ptg[] ptgs, int deltaRow, int deltaColumn) {
+        if (deltaRow < 0) throw new IllegalArgumentException("offset row must be positive");
+        if (deltaColumn < 0) throw new IllegalArgumentException("offset column must be positive");
         boolean shifted = false;
         for (Ptg ptg : ptgs) {
             // base class for cell reference "things"
@@ -945,7 +890,7 @@ public final class WorkbookEvaluator {
      * @return names of functions supported by POI
      */
     public static Collection<String> getSupportedFunctionNames(){
-        Collection<String> lst = new TreeSet<>();
+        Collection<String> lst = new TreeSet<String>();
         lst.addAll(FunctionEval.getSupportedFunctionNames());
         lst.addAll(AnalysisToolPak.getSupportedFunctionNames());
         return Collections.unmodifiableCollection(lst);
@@ -957,7 +902,7 @@ public final class WorkbookEvaluator {
      * @return names of functions NOT supported by POI
      */
     public static Collection<String> getNotSupportedFunctionNames(){
-        Collection<String> lst = new TreeSet<>();
+        Collection<String> lst = new TreeSet<String>();
         lst.addAll(FunctionEval.getNotSupportedFunctionNames());
         lst.addAll(AnalysisToolPak.getNotSupportedFunctionNames());
         return Collections.unmodifiableCollection(lst);

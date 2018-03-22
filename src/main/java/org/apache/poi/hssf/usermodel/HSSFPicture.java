@@ -247,7 +247,7 @@ public class HSSFPicture extends HSSFSimpleShape implements Picture {
      * The filename of the embedded image
      */
     public String getFileName() {
-        EscherComplexProperty propFile = getOptRecord().lookup(
+        EscherComplexProperty propFile = (EscherComplexProperty) getOptRecord().lookup(
                       EscherProperties.BLIP__BLIPFILENAME);
         return (null == propFile)
             ? ""

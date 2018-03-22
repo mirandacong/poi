@@ -40,7 +40,8 @@ public class Finance {
      */
 	// http://arachnoid.com/lutusp/finance.html
 	static public double pmt(double r, int nper, double pv, double fv, int type) {
-        return -r * (pv * Math.pow(1 + r, nper) + fv) / ((1 + r*type) * (Math.pow(1 + r, nper) - 1));
+	    double pmt = -r * (pv * Math.pow(1 + r, nper) + fv) / ((1 + r*type) * (Math.pow(1 + r, nper) - 1));
+	    return pmt;
 	}
 
 
@@ -152,7 +153,8 @@ public class Finance {
      */
 	//http://en.wikipedia.org/wiki/Future_value
 	static public double fv(double r, int nper, double pmt, double pv, int type) {
-        return -(pv * Math.pow(1 + r, nper) + pmt * (1+r*type) * (Math.pow(1 + r, nper) - 1) / r);
+	    double fv = -(pv * Math.pow(1 + r, nper) + pmt * (1+r*type) * (Math.pow(1 + r, nper) - 1) / r);
+	    return fv;
 	}
 	
 	/**

@@ -29,7 +29,6 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.util.Configurator;
-import org.apache.poi.util.LocaleUtil;
 
 /**
  * High level representation of a row of a spreadsheet.
@@ -114,7 +113,27 @@ public final class HSSFRow implements Row, Comparable<HSSFRow> {
     {
         return this.createCell(column,CellType.BLANK);
     }
-
+    
+    /**
+     * Use this to create new cells within the row and return it.
+     * <p>
+     * The cell that is returned will be of the requested type.
+     * The type can be changed either through calling setCellValue 
+     *  or setCellType, but there is a small overhead to doing this,
+     *  so it is best to create the required type up front.
+     *
+     * @param columnIndex - the column number this cell represents
+     *
+     * @return HSSFCell a high level representation of the created cell.
+     * @throws IllegalArgumentException if columnIndex < 0 or greater than 255,
+     *   the maximum number of columns supported by the Excel binary format (.xls)
+     * @deprecated POI 3.15 beta 3
+     */
+    @Override
+    public HSSFCell createCell(int columnIndex, int type)
+    {
+        return createCell(columnIndex, CellType.forInt(type));
+    }
     /**
      * Use this to create new cells within the row and return it.
      * <p>
@@ -343,7 +362,7 @@ public final class HSSFRow implements Row, Comparable<HSSFRow> {
      * Get the hssfcell representing a given column (logical cell)
      *  0-based.  If you ask for a cell that is not defined then
      *  you get a null, unless you have set a different
-     *  {@link MissingCellPolicy} on the base workbook.
+     *  {@link org.apache.poi.ss.usermodel.Row.MissingCellPolicy} on the base workbook.
      *
      * @param cellnum  0 based column number
      * @return HSSFCell representing that column or null if undefined.
@@ -369,7 +388,7 @@ public final class HSSFRow implements Row, Comparable<HSSFRow> {
             case RETURN_NULL_AND_BLANK:
                 return cell;
             case RETURN_BLANK_AS_NULL:
-                boolean isBlank = (cell != null && cell.getCellType() == CellType.BLANK);
+                boolean isBlank = (cell != null && cell.getCellTypeEnum() == CellType.BLANK);
                 return (isBlank) ? null : cell;
             case CREATE_NULL_AS_BLANK:
                 return (cell == null) ? createCell(cellnum, CellType.BLANK) : cell;
@@ -604,7 +623,7 @@ public final class HSSFRow implements Row, Comparable<HSSFRow> {
      *  will not return un-defined (null) cells.
      * Call getCellNum() on the returned cells to know which cell they are.
      * As this only ever works on physically defined cells,
-     *  the {@link MissingCellPolicy} has no effect.
+     *  the {@link org.apache.poi.ss.usermodel.Row.MissingCellPolicy} has no effect.
      */
     @Override
     public Iterator<Cell> cellIterator()
@@ -715,61 +734,5 @@ public final class HSSFRow implements Row, Comparable<HSSFRow> {
     @Override
     public int hashCode() {
         return row.hashCode();
-    }
-    
-    /**
-     * Shifts column range [firstShiftColumnIndex-lastShiftColumnIndex] step places to the right.
-     * @param firstShiftColumnIndex the column to start shifting
-     * @param lastShiftColumnIndex the column to end shifting
-     * @param step length of the shifting step
-     */
-    @Override
-    public void shiftCellsRight(int firstShiftColumnIndex, int lastShiftColumnIndex, int step) {
-        if(step < 0)
-            throw new IllegalArgumentException("Shifting step may not be negative ");
-        if(firstShiftColumnIndex > lastShiftColumnIndex)
-            throw new IllegalArgumentException(String.format(LocaleUtil.getUserLocale(),
-                    "Incorrect shifting range : %d-%d", firstShiftColumnIndex, lastShiftColumnIndex));
-        if(lastShiftColumnIndex + step + 1> cells.length)
-            extend(lastShiftColumnIndex + step + 1);
-        for (int columnIndex = lastShiftColumnIndex; columnIndex >= firstShiftColumnIndex; columnIndex--){ // process cells backwards, because of shifting 
-            HSSFCell cell = getCell(columnIndex);
-            cells[columnIndex+step] = null;
-            if(cell != null)
-                moveCell(cell, (short)(columnIndex+step));
-        }
-        for (int columnIndex = firstShiftColumnIndex; columnIndex <= firstShiftColumnIndex+step-1; columnIndex++)
-            cells[columnIndex] = null;
-    }
-    private void extend(int newLenght){
-        HSSFCell[] temp = cells.clone();
-        cells = new HSSFCell[newLenght];
-        System.arraycopy(temp, 0, cells, 0, temp.length);
-    }
-    /**
-     * Shifts column range [firstShiftColumnIndex-lastShiftColumnIndex] step places to the left.
-     * @param firstShiftColumnIndex the column to start shifting
-     * @param lastShiftColumnIndex the column to end shifting
-     * @param step length of the shifting step
-     */
-    @Override
-    public void shiftCellsLeft(int firstShiftColumnIndex, int lastShiftColumnIndex, int step) {
-        if(step < 0)
-            throw new IllegalArgumentException("Shifting step may not be negative ");
-        if(firstShiftColumnIndex > lastShiftColumnIndex)
-            throw new IllegalArgumentException(String.format(LocaleUtil.getUserLocale(),
-                    "Incorrect shifting range : %d-%d", firstShiftColumnIndex, lastShiftColumnIndex));
-        if(firstShiftColumnIndex - step < 0) 
-            throw new IllegalStateException("Column index less than zero : " + (Integer.valueOf(firstShiftColumnIndex + step)).toString());
-        for (int columnIndex = firstShiftColumnIndex; columnIndex <= lastShiftColumnIndex; columnIndex++){ 
-            HSSFCell cell = getCell(columnIndex);
-            if(cell != null){
-                cells[columnIndex-step] = null;
-                moveCell(cell, (short)(columnIndex-step));
-            }
-            else cells[columnIndex-step] = null;
-        }
-        for (int columnIndex = lastShiftColumnIndex-step+1; columnIndex <= lastShiftColumnIndex; columnIndex++)
-            cells[columnIndex] = null;
     }
 }

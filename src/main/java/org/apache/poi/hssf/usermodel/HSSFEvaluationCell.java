@@ -20,9 +20,6 @@ package org.apache.poi.hssf.usermodel;
 import org.apache.poi.ss.formula.EvaluationCell;
 import org.apache.poi.ss.formula.EvaluationSheet;
 import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.util.Removal;
-
 /**
  * HSSF wrapper for a cell under evaluation
  */
@@ -52,22 +49,25 @@ final class HSSFEvaluationCell implements EvaluationCell {
 	public boolean getBooleanCellValue() {
 		return _cell.getBooleanCellValue();
 	}
-	/**
+	   /**
+	 * Will return {@link CellType} in a future version of POI.
+	 * For forwards compatibility, do not hard-code cell type literals in your code.
+	 *
 	 * @return cell type
+	 * @deprecated 3.15. Will return a {@link CellType} enum in the future.
 	 */
 	@Override
-	public CellType getCellType() {
+	public int getCellType() {
 		return _cell.getCellType();
 	}
 	/**
 	 * @since POI 3.15 beta 3
 	 * @deprecated POI 3.15 beta 3.
+	 * Will be deleted when we make the CellType enum transition. See bug 59791.
 	 */
-	@Deprecated
-	@Removal(version = "4.2")
 	@Override
 	public CellType getCellTypeEnum() {
-		return getCellType();
+		return _cell.getCellTypeEnum();
 	}
 	@Override
 	public int getColumnIndex() {
@@ -93,33 +93,24 @@ final class HSSFEvaluationCell implements EvaluationCell {
 	public String getStringCellValue() {
 		return _cell.getRichStringCellValue().getString();
 	}
-	
-	@Override
-	public CellRangeAddress getArrayFormulaRange() {
-		return _cell.getArrayFormulaRange();
-	}
-	
-	@Override
-	public boolean isPartOfArrayFormulaGroup() {
-		return _cell.isPartOfArrayFormulaGroup();
-	}
-	
 	/**
-	 * @since POI 4.0
+	 * Will return {@link CellType} in a future version of POI.
+	 * For forwards compatibility, do not hard-code cell type literals in your code.
+	 *
 	 * @return cell type of cached formula result
+	 * @deprecated 3.15. Will return a {@link CellType} enum in the future.
 	 */
 	@Override
-	public CellType getCachedFormulaResultType() { return _cell.getCachedFormulaResultType(); }
-
+	public int getCachedFormulaResultType() {
+		return _cell.getCachedFormulaResultType();
+	}
 	/**
 	 * @since POI 3.15 beta 3
 	 * @deprecated POI 3.15 beta 3.
 	 * Will be deleted when we make the CellType enum transition. See bug 59791.
 	 */
-	@Deprecated
-	@Removal(version = "4.2")
 	@Override
 	public CellType getCachedFormulaResultTypeEnum() {
-		return getCachedFormulaResultType();
+		return _cell.getCachedFormulaResultTypeEnum();
 	}
 }

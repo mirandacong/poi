@@ -14,6 +14,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 ==================================================================== */
+
 package org.apache.poi.hssf.record;
 
 import org.apache.poi.util.LittleEndianOutput;
@@ -30,7 +31,8 @@ public final class HCenterRecord extends StandardRecord implements Cloneable {
     public final static short sid = 0x0083;
     private short             field_1_hcenter;
 
-    public HCenterRecord() {
+    public HCenterRecord()
+    {
     }
 
     public HCenterRecord(RecordInputStream in)
@@ -42,10 +44,15 @@ public final class HCenterRecord extends StandardRecord implements Cloneable {
      * set whether or not to horizonatally center this sheet.
      * @param hc  center - t/f
      */
-    public void setHCenter(boolean hc) {
-        if (hc) {
+
+    public void setHCenter(boolean hc)
+    {
+        if (hc == true)
+        {
             field_1_hcenter = 1;
-        } else {
+        }
+        else
+        {
             field_1_hcenter = 0;
         }
     }
@@ -54,16 +61,21 @@ public final class HCenterRecord extends StandardRecord implements Cloneable {
      * get whether or not to horizonatally center this sheet.
      * @return center - t/f
      */
+
     public boolean getHCenter()
     {
         return (field_1_hcenter == 1);
     }
 
-    public String toString() {
-        return "[HCENTER]\n" +
-                "    .hcenter        = " + getHCenter() +
-                "\n" +
-                "[/HCENTER]\n";
+    public String toString()
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append("[HCENTER]\n");
+        buffer.append("    .hcenter        = ").append(getHCenter())
+            .append("\n");
+        buffer.append("[/HCENTER]\n");
+        return buffer.toString();
     }
 
     public void serialize(LittleEndianOutput out) {

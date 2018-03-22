@@ -22,10 +22,12 @@ import com.attackt.logivisual.model.newfunctions.SourceNodeType;
 import com.attackt.logivisual.model.newfunctions.SourceValueType;
 import com.attackt.logivisual.mysql.OperationUtils;
 import com.attackt.logivisual.utils.ThreadUtil;
+import org.apache.poi.ss.formula.LazyAreaEval;
 import org.apache.poi.ss.formula.SheetNameFormatter;
 import org.apache.poi.ss.formula.eval.*;
 import org.apache.poi.ss.util.CellReference;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -95,7 +97,7 @@ public class Address implements Function {
             }
 
             CellReference ref = new CellReference(row - 1, col - 1, pAbsRow, pAbsCol);
-            StringBuilder sb = new StringBuilder(32);
+            StringBuffer sb = new StringBuffer(32);
             if(sheetName != null) {
                 SheetNameFormatter.appendFormat(sb, sheetName);
                 sb.append('!');

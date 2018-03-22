@@ -212,7 +212,7 @@ public final class ExtendedFormatRecord
      *
      *
      * @param index to the font
-     * @see FontRecord
+     * @see org.apache.poi.hssf.record.FontRecord
      */
 
     public void setFontIndex(short index)
@@ -225,7 +225,7 @@ public final class ExtendedFormatRecord
      *
      *
      * @param index to the format record
-     * @see FormatRecord
+     * @see org.apache.poi.hssf.record.FormatRecord
      */
 
     public void setFormatIndex(short index)
@@ -952,7 +952,7 @@ public final class ExtendedFormatRecord
      *
      *
      * @return index to the font
-     * @see FontRecord
+     * @see org.apache.poi.hssf.record.FontRecord
      */
 
     public short getFontIndex()
@@ -965,7 +965,7 @@ public final class ExtendedFormatRecord
      *
      *
      * @return index to the format record
-     * @see FormatRecord
+     * @see org.apache.poi.hssf.record.FormatRecord
      */
 
     public short getFormatIndex()
@@ -1660,7 +1660,7 @@ public final class ExtendedFormatRecord
     @Override
     public String toString()
     {
-        StringBuilder buffer = new StringBuilder();
+        StringBuffer buffer = new StringBuffer();
 
         buffer.append("[EXTENDEDFORMAT]\n");
         if (getXFType() == XF_STYLE)

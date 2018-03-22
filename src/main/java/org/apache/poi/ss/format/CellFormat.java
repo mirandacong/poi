@@ -82,7 +82,8 @@ import org.apache.poi.util.Removal;
  *  to look these up into Java Locales if desired.
  * <p>
  * In addition to these, there is a general format that is used when no format
- * is specified.
+ * is specified.  This formatting is presented by the {@link #GENERAL_FORMAT}
+ * object.
  * 
  * TODO Merge this with {@link DataFormatter} so we only have one set of
  *  code for formatting numbers.
@@ -117,6 +118,15 @@ public class CellFormat {
             "###################################################";
 
     private static String QUOTE = "\"";
+
+    /**
+     * Format a value as it would be were no format specified.  This is also
+     * used when the format specified is <tt>General</tt>.
+     * @deprecated use {@link #getInstance(Locale, String)} instead
+     */
+    @Deprecated
+    @Removal(version="3.18")
+    public static final CellFormat GENERAL_FORMAT = createGeneralFormat(LocaleUtil.getUserLocale());
             
     private static CellFormat createGeneralFormat(final Locale locale) {
         return new CellFormat(locale, "General") {
@@ -130,7 +140,7 @@ public class CellFormat {
 
     /** Maps a format string to its parsed version for efficiencies sake. */
     private static final Map<Locale, Map<String, CellFormat>> formatCache =
-            new WeakHashMap<>();
+            new WeakHashMap<Locale, Map<String, CellFormat>>();
 
     /**
      * Returns a {@link CellFormat} that applies the given format.  Two calls
@@ -156,7 +166,7 @@ public class CellFormat {
     public static synchronized CellFormat getInstance(Locale locale, String format) {
         Map<String, CellFormat> formatMap = formatCache.get(locale);
         if (formatMap == null) {
-            formatMap = new WeakHashMap<>();
+            formatMap = new WeakHashMap<String, CellFormat>();
             formatCache.put(locale, formatMap);
         }
         CellFormat fmt = formatMap.get(format);
@@ -180,7 +190,7 @@ public class CellFormat {
         this.format = format;
         CellFormatPart defaultTextFormat = new CellFormatPart(locale, "@");
         Matcher m = ONE_PART.matcher(format);
-        List<CellFormatPart> parts = new ArrayList<>();
+        List<CellFormatPart> parts = new ArrayList<CellFormatPart>();
 
         while (m.find()) {
             try {
@@ -254,7 +264,7 @@ public class CellFormat {
             } else {
                 return getApplicableFormatPart(val).apply(val);
             }
-        } else if (value instanceof Date) {
+        } else if (value instanceof java.util.Date) {
             // Don't know (and can't get) the workbook date windowing (1900 or 1904)
             // so assume 1900 date windowing
             Double numericValue = DateUtil.getExcelDate((Date) value);
@@ -290,7 +300,7 @@ public class CellFormat {
      * @return The result, in a {@link CellFormatResult}.
      */
     public CellFormatResult apply(Cell c) {
-        switch (ultimateType(c)) {
+        switch (ultimateTypeEnum(c)) {
         case BLANK:
             return apply("");
         case BOOLEAN:
@@ -360,7 +370,7 @@ public class CellFormat {
      * @return The result, in a {@link CellFormatResult}.
      */
     public CellFormatResult apply(JLabel label, Cell c) {
-        switch (ultimateType(c)) {
+        switch (ultimateTypeEnum(c)) {
             case BLANK:
                 return apply(label, "");
             case BOOLEAN:
@@ -436,37 +446,40 @@ public class CellFormat {
     /**
      * Returns the ultimate cell type, following the results of formulas.  If
      * the cell is a {@link CellType#FORMULA}, this returns the result of
-     * {@link Cell#getCachedFormulaResultType()}.  Otherwise this returns the
-     * result of {@link Cell#getCellType()}.
+     * {@link Cell#getCachedFormulaResultTypeEnum()}.  Otherwise this returns the
+     * result of {@link Cell#getCellTypeEnum()}.
      * 
+     * Will return {@link CellType} in a future version of POI.
+     * For forwards compatibility, do not hard-code cell type literals in your code.
+     *
      * @param cell The cell.
      *
      * @return The ultimate type of this cell.
+     * @deprecated POI 3.15. This will return a CellType enum in the future
      */
-    public static CellType ultimateType(Cell cell) {
-        CellType type = cell.getCellType();
-        if (type == CellType.FORMULA)
-            return cell.getCachedFormulaResultType();
-        else
-            return type;
+    public static int ultimateType(Cell cell) {
+        return ultimateTypeEnum(cell).getCode();
     }
 
     /**
      * Returns the ultimate cell type, following the results of formulas.  If
      * the cell is a {@link CellType#FORMULA}, this returns the result of
-     * {@link Cell#getCachedFormulaResultType()}.  Otherwise this returns the
-     * result of {@link Cell#getCellType()}.
+     * {@link Cell#getCachedFormulaResultTypeEnum()}.  Otherwise this returns the
+     * result of {@link Cell#getCellTypeEnum()}.
      *
      * @param cell The cell.
      *
      * @return The ultimate type of this cell.
      * @since POI 3.15 beta 3
-     * @deprecated use <code>ultimateType</code> instead
+     * @deprecated POI 3.15 beta 3
+     * Will be deleted when we make the CellType enum transition. See bug 59791.
      */
-    @Deprecated
-    @Removal(version = "4.2")
     public static CellType ultimateTypeEnum(Cell cell) {
-        return ultimateType(cell);
+        CellType type = cell.getCellTypeEnum();
+        if (type == CellType.FORMULA)
+            return cell.getCachedFormulaResultTypeEnum();
+        else
+            return type;
     }
 
     /**

@@ -25,13 +25,13 @@ import java.util.TimeZone;
 
 /**
  * This utility class is used to set locale and time zone settings beside
- * of the JDK internal {@link Locale#setDefault(Locale)} and
- * {@link TimeZone#setDefault(TimeZone)} methods, because
+ * of the JDK internal {@link java.util.Locale#setDefault(Locale)} and
+ * {@link java.util.TimeZone#setDefault(TimeZone)} methods, because
  * the locale/time zone specific handling of certain office documents -
  * maybe for different time zones / locales ... - shouldn't affect
  * other java components.
  * 
- * The settings are saved in a {@link ThreadLocal},
+ * The settings are saved in a {@link java.lang.ThreadLocal},
  * so they only apply to the current thread and can't be set globally.
  */
 public final class LocaleUtil {
@@ -52,8 +52,8 @@ public final class LocaleUtil {
      */
     public static final Charset CHARSET_1252 = Charset.forName("CP1252");
 
-    private static final ThreadLocal<TimeZone> userTimeZone = new ThreadLocal<>();
-    private static final ThreadLocal<Locale> userLocale = new ThreadLocal<>();
+    private static final ThreadLocal<TimeZone> userTimeZone = new ThreadLocal<TimeZone>();
+    private static final ThreadLocal<Locale> userLocale = new ThreadLocal<Locale>();
     
     /**
      * As time zone information is not stored in any format, it can be

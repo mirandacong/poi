@@ -19,7 +19,6 @@ package org.apache.poi.poifs.filesystem;
 
 import static org.apache.poi.poifs.common.POIFSConstants.OOXML_FILE_HEADER;
 import static org.apache.poi.poifs.common.POIFSConstants.RAW_XML_FILE_HEADER;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -75,8 +74,6 @@ public enum FileMagic {
     RTF("{\\rtf"),
     /** PDF document */
     PDF("%PDF"),
-    /** Some different HTML documents */
-    HTML("<!DOCTYP".getBytes(UTF_8), "<html".getBytes(UTF_8)),
     // keep UNKNOWN always as last enum!
     /** UNKNOWN magic */
     UNKNOWN(new byte[0]);
@@ -142,7 +139,7 @@ public enum FileMagic {
 
 
     /**
-     * Checks if an {@link InputStream} can be reset (i.e. used for checking the header magic) and wraps it if not
+     * Checks if an {@link InputStream} can be reseted (i.e. used for checking the header magic) and wraps it if not
      *
      * @param stream stream to be checked for wrapping
      * @return a mark enabled stream

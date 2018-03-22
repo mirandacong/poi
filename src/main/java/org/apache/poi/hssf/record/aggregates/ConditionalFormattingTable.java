@@ -37,12 +37,12 @@ public final class ConditionalFormattingTable extends RecordAggregate {
 	 * Creates an empty ConditionalFormattingTable
 	 */
 	public ConditionalFormattingTable() {
-		_cfHeaders = new ArrayList<>();
+		_cfHeaders = new ArrayList<CFRecordsAggregate>();
 	}
 
 	public ConditionalFormattingTable(RecordStream rs) {
 
-		List<CFRecordsAggregate> temp = new ArrayList<>();
+		List<CFRecordsAggregate> temp = new ArrayList<CFRecordsAggregate>();
 		while (rs.peekNextClass() == CFHeaderRecord.class ||
 		       rs.peekNextClass() == CFHeader12Record.class) {
 			temp.add(CFRecordsAggregate.createCFAggregate(rs));

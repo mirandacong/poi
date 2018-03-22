@@ -57,7 +57,7 @@ class PropertyFactory {
     static List<Property> convertToProperties(ListManagedBlock [] blocks)
         throws IOException
     {
-        List<Property> properties = new ArrayList<>();
+        List<Property> properties = new ArrayList<Property>();
 
         for (ListManagedBlock block : blocks) {
             byte[] data = block.getData();

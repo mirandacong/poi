@@ -153,7 +153,7 @@ public class CellCopyPolicy {
     }
     
     public Builder createBuilder() {
-        return new Builder()
+        final Builder builder = new Builder()
                 .cellValue(copyCellValue)
                 .cellStyle(copyCellStyle)
                 .cellFormula(copyCellFormula)
@@ -162,6 +162,7 @@ public class CellCopyPolicy {
                 .rowHeight(copyRowHeight)
                 .condenseRows(condenseRows)
                 .mergedRegions(copyMergedRegions);
+        return builder;
     }
 
 /*

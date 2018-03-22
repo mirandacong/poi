@@ -33,7 +33,7 @@ final class CellEvaluationFrame {
 
 	public CellEvaluationFrame(FormulaCellCacheEntry cce) {
 		_cce = cce;
-		_sensitiveInputCells = new HashSet<>();
+		_sensitiveInputCells = new HashSet<CellCacheEntry>();
 	}
 	public CellCacheEntry getCCE() {
 		return _cce;
@@ -64,11 +64,11 @@ final class CellEvaluationFrame {
 		_sensitiveInputCells.toArray(result);
 		return result;
 	}
-	public void addUsedBlankCell(EvaluationWorkbook evalWorkbook, int bookIndex, int sheetIndex, int rowIndex, int columnIndex) {
+	public void addUsedBlankCell(int bookIndex, int sheetIndex, int rowIndex, int columnIndex) {
 		if (_usedBlankCellGroup == null) {
 			_usedBlankCellGroup = new FormulaUsedBlankCellSet();
 		}
-		_usedBlankCellGroup.addCell(evalWorkbook, bookIndex, sheetIndex, rowIndex, columnIndex);
+		_usedBlankCellGroup.addCell(bookIndex, sheetIndex, rowIndex, columnIndex);
 	}
 
 	public void updateFormulaResult(ValueEval result) {

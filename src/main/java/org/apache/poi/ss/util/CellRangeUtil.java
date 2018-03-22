@@ -118,7 +118,6 @@ public final class CellRangeUtil {
                     }
                     somethingGotMerged = true;
                     // overwrite range1 with first result
-                    range1 = mergeResult[0];
                     cellRangeList.set(i, mergeResult[0]);
                     // remove range2
                     cellRangeList.remove(j--);
@@ -172,7 +171,7 @@ public final class CellRangeUtil {
         return result;
     }
     private static List<CellRangeAddress> toList(CellRangeAddress[] temp) {
-        List<CellRangeAddress> result = new ArrayList<>(temp.length);
+        List<CellRangeAddress> result = new ArrayList<CellRangeAddress>(temp.length);
         for (CellRangeAddress range : temp) {
             result.add(range);
         }

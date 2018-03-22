@@ -317,11 +317,6 @@ public class PropertyIDMap implements Map<Long,String> {
     public static final int PID_BEHAVIOUR = 0x80000003;
     
     /**
-     * A property without a known name is described by this string.
-     */
-    public static final String UNDEFINED = "[undefined]";
-    
-    /**
      * Contains the summary information property ID values and
      * associated strings. See the overall HPSF documentation for
      * details!
@@ -422,10 +417,10 @@ public class PropertyIDMap implements Map<Long,String> {
     /**
      * Creates a {@link PropertyIDMap} backed by another map.
      *
-     * @param idValues an array of key/value pairs via nested Object[2] arrays
+     * @param map The instance to be created is backed by this map.
      */
     private PropertyIDMap(Object[][] idValues) {
-        Map<Long,String> m = new HashMap<>(idValues.length);
+        Map<Long,String> m = new HashMap<Long,String>(idValues.length);
         for (Object[] idValue : idValues) {
             m.put((Long)idValue[0], (String)idValue[1]);
         }

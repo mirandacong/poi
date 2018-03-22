@@ -18,7 +18,6 @@
 package org.apache.poi.hssf.record;
 
 import org.apache.poi.util.HexDump;
-import org.apache.poi.util.IOUtils;
 import org.apache.poi.util.LittleEndianInput;
 import org.apache.poi.util.LittleEndianOutput;
 import org.apache.poi.util.RecordFormatException;
@@ -49,7 +48,7 @@ public final class FtCblsSubRecord extends SubRecord implements Cloneable {
             throw new RecordFormatException("Unexpected size (" + size + ")");
         }
         //just grab the raw data
-        byte[] buf = IOUtils.safelyAllocate(size, ENCODED_SIZE);
+        byte[] buf = new byte[size];
         in.readFully(buf);
         reserved = buf;
     }

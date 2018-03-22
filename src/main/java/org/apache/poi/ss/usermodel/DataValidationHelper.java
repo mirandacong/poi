@@ -28,7 +28,7 @@ public interface DataValidationHelper {
 
 	DataValidationConstraint createExplicitListConstraint(String[] listOfValues);
 
-	DataValidationConstraint createNumericConstraint(int validationType, int operatorType, String formula1, String formula2);
+	DataValidationConstraint createNumericConstraint(int validationType,int operatorType, String formula1, String formula2);
 	
 	DataValidationConstraint createTextLengthConstraint(int operatorType, String formula1, String formula2);
 	
@@ -36,11 +36,11 @@ public interface DataValidationHelper {
 	
 	DataValidationConstraint createIntegerConstraint(int operatorType, String formula1, String formula2);
 	
-	DataValidationConstraint createDateConstraint(int operatorType, String formula1, String formula2, String dateFormat);
+	DataValidationConstraint createDateConstraint(int operatorType, String formula1, String formula2,String dateFormat);
 	
 	DataValidationConstraint createTimeConstraint(int operatorType, String formula1, String formula2);
 	
 	DataValidationConstraint createCustomConstraint(String formula);
 	
-	DataValidation createValidation(DataValidationConstraint constraint, CellRangeAddressList cellRangeAddressList);
+	DataValidation createValidation(DataValidationConstraint constraint,CellRangeAddressList cellRangeAddressList);
 }

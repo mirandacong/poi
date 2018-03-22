@@ -38,7 +38,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.util.Internal;
-import org.apache.poi.util.Removal;
 
 
 /**
@@ -69,7 +68,7 @@ public class SheetUtil {
      *
      *  See Bugzilla #50021
      */
-    private static final FormulaEvaluator dummyEvaluator = new FormulaEvaluator() {
+    private static final FormulaEvaluator dummyEvaluator = new FormulaEvaluator(){
         @Override
         public void clearAllCachedResultValues(){}
         @Override
@@ -91,16 +90,19 @@ public class SheetUtil {
         @Override
         public void evaluateAll() {}
         @Override
-        public CellType evaluateFormulaCell(Cell cell) { return cell.getCachedFormulaResultType(); }
-        /**
+        public int evaluateFormulaCell(Cell cell) {
+            //noinspection deprecation
+            return cell.getCachedFormulaResultType();
+        }
+        /** 
          * @since POI 3.15 beta 3
          * @deprecated POI 3.15 beta 3. Will be deleted when we make the CellType enum transition. See bug 59791.
          */
-        @Deprecated
-        @Removal(version = "4.2")
         @Internal(since="POI 3.15 beta 3")
         @Override
-        public CellType evaluateFormulaCellEnum(Cell cell) { return evaluateFormulaCell(cell); }
+        public CellType evaluateFormulaCellEnum(Cell cell) {
+            return cell.getCachedFormulaResultTypeEnum();
+        }
     };
 
     /**
@@ -138,13 +140,13 @@ public class SheetUtil {
         }
 
         CellStyle style = cell.getCellStyle();
-        CellType cellType = cell.getCellType();
+        CellType cellType = cell.getCellTypeEnum();
 
         // for formula cells we compute the cell width for the cached formula result
         if (cellType == CellType.FORMULA)
-            cellType = cell.getCachedFormulaResultType();
+            cellType = cell.getCachedFormulaResultTypeEnum();
 
-        Font font = wb.getFontAt(style.getFontIndexAsInt());
+        Font font = wb.getFontAt(style.getFontIndex());
 
         double width = -1;
         if (cellType == CellType.STRING) {
@@ -266,7 +268,7 @@ public class SheetUtil {
      */
     @Internal
     public static int getDefaultCharWidth(final Workbook wb) {
-        Font defaultFont = wb.getFontAt( 0);
+        Font defaultFont = wb.getFontAt((short) 0);
 
         AttributedString str = new AttributedString(String.valueOf(defaultChar));
         copyAttributes(defaultFont, str, 0, 1);
@@ -318,7 +320,11 @@ public class SheetUtil {
         copyAttributes(font, str, 0, "1w".length());
 
         TextLayout layout = new TextLayout(str.getIterator(), fontRenderContext);
-        return (layout.getBounds().getWidth() > 0);
+        if(layout.getBounds().getWidth() > 0) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -330,6 +336,20 @@ public class SheetUtil {
         if (font.getBold()) str.addAttribute(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD, startIdx, endIdx);
         if (font.getItalic() ) str.addAttribute(TextAttribute.POSTURE, TextAttribute.POSTURE_OBLIQUE, startIdx, endIdx);
         if (font.getUnderline() == Font.U_SINGLE ) str.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON, startIdx, endIdx);
+    }
+
+    /**
+     * Check if the cell is in the specified cell range
+     *
+     * @param cr    the cell range to check in
+     * @param rowIx the row to check
+     * @param colIx the column to check
+     * @return true if the range contains the cell [rowIx, colIx]
+     * @deprecated 3.15 beta 2. Use {@link CellRangeAddressBase#isInRange(int, int)}.
+     */
+    @Deprecated
+    public static boolean containsCell(CellRangeAddress cr, int rowIx, int colIx) {
+        return cr.isInRange(rowIx,  colIx);
     }
 
     /**

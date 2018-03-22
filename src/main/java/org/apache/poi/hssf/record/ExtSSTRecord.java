@@ -93,7 +93,7 @@ public final class ExtSSTRecord extends ContinuableRecord {
         _stringsPerBucket = in.readShort();
 
         int nInfos = in.remaining() / InfoSubRecord.ENCODED_SIZE;
-        ArrayList<InfoSubRecord> lst = new ArrayList<>(nInfos);
+        ArrayList<InfoSubRecord> lst = new ArrayList<InfoSubRecord>(nInfos);
 
         while (in.available() > 0) {
             InfoSubRecord info = new InfoSubRecord(in);
@@ -148,7 +148,7 @@ public final class ExtSSTRecord extends ContinuableRecord {
         return _sstInfos;
     }
 
-    public static int getNumberOfInfoRecsForStrings(int numStrings) {
+    public static final int getNumberOfInfoRecsForStrings(int numStrings) {
       int infoRecs = (numStrings / DEFAULT_BUCKET_SIZE);
       if ((numStrings % DEFAULT_BUCKET_SIZE) != 0)
         infoRecs ++;
@@ -166,7 +166,7 @@ public final class ExtSSTRecord extends ContinuableRecord {
      * 
      * @return the size of the extsst record
      */
-    public static int getRecordSizeForStrings(int numStrings) {
+    public static final int getRecordSizeForStrings(int numStrings) {
         return 4 + 2 + getNumberOfInfoRecsForStrings(numStrings) * 8;
     }
 

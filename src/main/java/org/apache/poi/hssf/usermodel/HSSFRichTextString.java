@@ -108,7 +108,8 @@ public final class HSSFRichTextString implements Comparable<HSSFRichTextString>,
     private UnicodeString cloneStringIfRequired() {
       if (_book == null)
         return _string;
-        return (UnicodeString)_string.clone();
+      UnicodeString s = (UnicodeString)_string.clone();
+      return s;
     }
 
     private void addToSSTIfRequired() {
@@ -150,16 +151,16 @@ public final class HSSFRichTextString implements Comparable<HSSFRichTextString>,
         Iterator<FormatRun> formatting = _string.formatIterator();
         if (formatting != null) {
           while (formatting.hasNext()) {
-            FormatRun r = formatting.next();
+            UnicodeString.FormatRun r = formatting.next();
             if ((r.getCharacterPos() >= startIndex) && (r.getCharacterPos() < endIndex))
               formatting.remove();
           }
         }
 
 
-        _string.addFormatRun(new FormatRun((short)startIndex, fontIndex));
+        _string.addFormatRun(new UnicodeString.FormatRun((short)startIndex, fontIndex));
         if (endIndex != length())
-          _string.addFormatRun(new FormatRun((short)endIndex, currentFont));
+          _string.addFormatRun(new UnicodeString.FormatRun((short)endIndex, currentFont));
 
         addToSSTIfRequired();
     }
@@ -173,7 +174,7 @@ public final class HSSFRichTextString implements Comparable<HSSFRichTextString>,
      */
     public void applyFont(int startIndex, int endIndex, Font font)
     {
-        applyFont(startIndex, endIndex, font.getIndex());
+        applyFont(startIndex, endIndex, ((HSSFFont) font).getIndex());
     }
 
     /**
@@ -246,9 +247,9 @@ public final class HSSFRichTextString implements Comparable<HSSFRichTextString>,
     public short getFontAtIndex( int index )
     {
       int size = _string.getFormatRunCount();
-      FormatRun currentRun = null;
+      UnicodeString.FormatRun currentRun = null;
       for (int i=0;i<size;i++) {
-        FormatRun r = _string.getFormatRun(i);
+        UnicodeString.FormatRun r = _string.getFormatRun(i);
         if (r.getCharacterPos() > index) {
             break;
         }
@@ -278,7 +279,7 @@ public final class HSSFRichTextString implements Comparable<HSSFRichTextString>,
      */
     public int getIndexOfFormattingRun(int index)
     {
-        FormatRun r = _string.getFormatRun(index);
+        UnicodeString.FormatRun r = _string.getFormatRun(index);
         return r.getCharacterPos();
     }
 
@@ -290,7 +291,7 @@ public final class HSSFRichTextString implements Comparable<HSSFRichTextString>,
      */
     public short getFontOfFormattingRun(int index)
     {
-      FormatRun r = _string.getFormatRun(index);
+      UnicodeString.FormatRun r = _string.getFormatRun(index);
       return r.getFontIndex();
     }
 

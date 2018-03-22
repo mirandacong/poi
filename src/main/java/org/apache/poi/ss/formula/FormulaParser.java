@@ -1003,7 +1003,7 @@ public final class FormulaParser {
     /**
      * Matches a zero or one letter-runs followed by zero or one digit-runs.
      * Either or both runs man optionally be prefixed with a single '$'.
-     * (copied+modified from {@link CellReference#CELL_REF_PATTERN})
+     * (copied+modified from {@link org.apache.poi.ss.util.CellReference#CELL_REF_PATTERN})
      */
     private static final Pattern CELL_REF_PATTERN = Pattern.compile("(\\$?[A-Za-z]+)?(\\$?[0-9]+)?");
 
@@ -1448,7 +1448,7 @@ public final class FormulaParser {
     /** get arguments to a function */
     private ParseNode[] Arguments() {
         //average 2 args per function
-        List<ParseNode> temp = new ArrayList<>(2);
+        List<ParseNode> temp = new ArrayList<ParseNode>(2);
         SkipWhite();
         if(look == ')') {
             return ParseNode.EMPTY_ARRAY;
@@ -1576,7 +1576,7 @@ public final class FormulaParser {
     }
 
     private ParseNode parseArray() {
-        List<Object[]> rowsData = new ArrayList<>();
+        List<Object[]> rowsData = new ArrayList<Object[]>();
         while(true) {
             Object[] singleRowData = parseArrayRow();
             rowsData.add(singleRowData);
@@ -1607,7 +1607,7 @@ public final class FormulaParser {
     }
 
     private Object[] parseArrayRow() {
-        List<Object> temp = new ArrayList<>();
+        List<Object> temp = new ArrayList<Object>();
         while (true) {
             temp.add(parseArrayItem());
             SkipWhite();
@@ -1670,7 +1670,7 @@ public final class FormulaParser {
         if (!isPositive) {
             value = -value;
         }
-        return Double.valueOf(value);
+        return new Double(value);
     }
 
     private Ptg parseNumber() {

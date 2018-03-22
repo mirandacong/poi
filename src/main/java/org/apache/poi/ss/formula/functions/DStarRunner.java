@@ -17,8 +17,6 @@
 
 package org.apache.poi.ss.formula.functions;
 
-import java.util.function.Supplier;
-
 import org.apache.poi.ss.formula.eval.AreaEval;
 import org.apache.poi.ss.formula.eval.BlankEval;
 import org.apache.poi.ss.formula.eval.ErrorEval;
@@ -41,38 +39,13 @@ import org.apache.poi.ss.util.NumberComparer;
  * - functions as conditions
  */
 public final class DStarRunner implements Function3Arg {
-    /**
-     * Enum for convenience to identify and source implementations of the D* functions
-     */
     public enum DStarAlgorithmEnum {
-        /** @see DGet */
-        DGET(DGet::new),
-        /** @see DMin */
-        DMIN(DMin::new),
-        /** @see DMax */
-        DMAX(DMax::new),
-        /** @see DSum */
-        DSUM(DSum::new),
-        ;
-        
-        private final Supplier<IDStarAlgorithm> implSupplier;
-
-        private DStarAlgorithmEnum(Supplier<IDStarAlgorithm> implSupplier) {
-            this.implSupplier = implSupplier;
-        }
-        
-        /**
-         * @return a new function implementation instance
-         */
-        public IDStarAlgorithm newInstance() {
-            return implSupplier.get();
-        }
+        DGET,
+        DMIN,
+        // DMAX, // DMAX is not yet implemented
     }
     private final DStarAlgorithmEnum algoType;
 
-    /**
-     * @param algorithm to implement
-     */
     public DStarRunner(DStarAlgorithmEnum algorithm) {
         this.algoType = algorithm;
     }
@@ -113,12 +86,18 @@ public final class DStarRunner implements Function3Arg {
         }
 
         // Create an algorithm runner.
-        IDStarAlgorithm algorithm = algoType.newInstance();
+        IDStarAlgorithm algorithm = null;
+        switch(algoType) {
+            case DGET: algorithm = new DGet(); break;
+            case DMIN: algorithm = new DMin(); break;
+            default:
+                throw new IllegalStateException("Unexpected algorithm type " + algoType + " encountered.");
+        }
 
         // Iterate over all DB entries.
         final int height = db.getHeight();
         for(int row = 1; row < height; ++row) {
-            boolean matches;
+            boolean matches = true;
             try {
                 matches = fullfillsConditions(db, row, cdb);
             }
@@ -154,7 +133,7 @@ public final class DStarRunner implements Function3Arg {
      * @param nameValueEval Must not be a RefEval or AreaEval. Thus make sure resolveReference() is called on the value first!
      * @param db Database
      * @return Corresponding column number.
-     * @throws EvaluationException If it's not possible to turn all headings into strings.
+     * @throws EvaluationException
      */
     private static int getColumnForName(ValueEval nameValueEval, AreaEval db)
             throws EvaluationException {
@@ -214,7 +193,7 @@ public final class DStarRunner implements Function3Arg {
                 // Whether the condition column matches a database column, if not it's a
                 // special column that accepts formulas.
                 boolean columnCondition = true;
-                ValueEval condition;
+                ValueEval condition = null;
                 
                 // The condition to apply.
                 condition = resolveReference(cdb, conditionRow, column);
@@ -233,7 +212,7 @@ public final class DStarRunner implements Function3Arg {
                     // No column found, it's again a special column that accepts formulas.
                     columnCondition = false;
 
-                if(columnCondition) { // normal column condition
+                if(columnCondition == true) { // normal column condition
                     // Should not throw, checked above.
                     ValueEval value = resolveReference(db, row, getColumnForName(targetHeader, db));
                     if(!testNormalCondition(value, condition)) {
@@ -249,7 +228,7 @@ public final class DStarRunner implements Function3Arg {
                             "D* function with formula conditions");
                 }
             }
-            if (matches) {
+            if (matches == true) {
                 return true;
             }
         }
@@ -277,7 +256,8 @@ public final class DStarRunner implements Function3Arg {
                 } else {
                     return testNumericCondition(value, operator.smallerThan, number);
                 }
-            } else if(conditionString.startsWith(">")) { // It's a >/>= condition.
+            }
+            else if(conditionString.startsWith(">")) { // It's a >/>= condition.
                 String number = conditionString.substring(1);
                 if(number.startsWith("=")) {
                     number = number.substring(1);
@@ -285,14 +265,15 @@ public final class DStarRunner implements Function3Arg {
                 } else {
                     return testNumericCondition(value, operator.largerThan, number);
                 }
-            } else if(conditionString.startsWith("=")) { // It's a = condition.
+            }
+            else if(conditionString.startsWith("=")) { // It's a = condition.
                 String stringOrNumber = conditionString.substring(1);
 
                 if(stringOrNumber.isEmpty()) {
                     return value instanceof BlankEval;
                 }
                 // Distinguish between string and number.
-                boolean itsANumber;
+                boolean itsANumber = false;
                 try {
                     Integer.parseInt(stringOrNumber);
                     itsANumber = true;
@@ -319,17 +300,25 @@ public final class DStarRunner implements Function3Arg {
                     return valueString.startsWith(conditionString);
                 }
             }
-        } else if(condition instanceof NumericValueEval) {
-            double conditionNumber = ((NumericValueEval) condition).getNumberValue();
+        }
+        else if(condition instanceof NumericValueEval) {
+            double conditionNumber = ((NumericValueEval)condition).getNumberValue();
             Double valueNumber = getNumberFromValueEval(value);
-            return valueNumber != null && conditionNumber == valueNumber;
-        } else if(condition instanceof ErrorEval) {
-            if(value instanceof ErrorEval) {
-                return ((ErrorEval)condition).getErrorCode() == ((ErrorEval)value).getErrorCode();
-            } else {
+            if(valueNumber == null) {
                 return false;
             }
-        } else {
+            
+            return conditionNumber == valueNumber;
+        }
+        else if(condition instanceof ErrorEval) {
+            if(value instanceof ErrorEval) {
+                return ((ErrorEval)condition).getErrorCode() == ((ErrorEval)value).getErrorCode();
+            }
+            else {
+                return false;
+            }
+        }
+        else {
             return false;
         }
     }
@@ -351,9 +340,10 @@ public final class DStarRunner implements Function3Arg {
         double value = ((NumericValueEval)valueEval).getNumberValue();
 
         // Construct double from condition.
-        double conditionValue;
+        double conditionValue = 0.0;
         try {
-            conditionValue = Integer.parseInt(condition);
+            int intValue = Integer.parseInt(condition);
+            conditionValue = intValue;
         } catch (NumberFormatException e) { // It's not an int.
             try {
                 conditionValue = Double.parseDouble(condition);

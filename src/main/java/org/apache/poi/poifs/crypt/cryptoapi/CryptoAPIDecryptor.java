@@ -134,7 +134,8 @@ public class CryptoAPIDecryptor extends Decryptor implements Cloneable {
         MessageDigest hashAlg = CryptoFunctions.getMessageDigest(hashAlgo);
         hashAlg.update(ver.getSalt());
         byte hash[] = hashAlg.digest(StringUtil.getToUnicodeLE(password));
-        return new SecretKeySpec(hash, ver.getCipherAlgorithm().jceId);
+        SecretKey skey = new SecretKeySpec(hash, ver.getCipherAlgorithm().jceId);
+        return skey;
     }
 
     @Override

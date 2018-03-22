@@ -38,7 +38,7 @@ public final class MergedCellsTable extends RecordAggregate {
 	 * Creates an empty aggregate
 	 */
 	public MergedCellsTable() {
-		_mergedRegions = new ArrayList<>();
+		_mergedRegions = new ArrayList<CellRangeAddress>();
 	}
 
 	/**
@@ -46,12 +46,13 @@ public final class MergedCellsTable extends RecordAggregate {
 	 * @param rs
 	 */
 	public void read(RecordStream rs) {
-        while (rs.peekNextClass() == MergeCellsRecord.class) {
+		List<CellRangeAddress> temp = _mergedRegions;
+		while (rs.peekNextClass() == MergeCellsRecord.class) {
 			MergeCellsRecord mcr = (MergeCellsRecord) rs.getNext();
 			int nRegions = mcr.getNumAreas();
 			for (int i = 0; i < nRegions; i++) {
 				CellRangeAddress cra = mcr.getAreaAt(i);
-				_mergedRegions.add(cra);
+				temp.add(cra);
 			}
 		}
 	}
@@ -66,9 +67,10 @@ public final class MergedCellsTable extends RecordAggregate {
 		int nMergedCellsRecords = nRegions / MAX_MERGED_REGIONS;
 		int nLeftoverMergedRegions = nRegions % MAX_MERGED_REGIONS;
 
-        return nMergedCellsRecords
-                * (4 + CellRangeAddressList.getEncodedSize(MAX_MERGED_REGIONS)) + 4
-                + CellRangeAddressList.getEncodedSize(nLeftoverMergedRegions);
+		int result = nMergedCellsRecords
+				* (4 + CellRangeAddressList.getEncodedSize(MAX_MERGED_REGIONS)) + 4
+				+ CellRangeAddressList.getEncodedSize(nLeftoverMergedRegions);
+		return result;
 	}
 
 	public void visitContainedRecords(RecordVisitor rv) {

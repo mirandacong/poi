@@ -55,7 +55,7 @@ public class SmallBlockTableWriter
                                  final RootProperty root)
     {
         _sbat         = new BlockAllocationTableWriter(bigBlockSize);
-        _small_blocks = new ArrayList<>();
+        _small_blocks = new ArrayList<SmallDocumentBlock>();
         _root         = root;
 
         for (OPOIFSDocument doc : documents)

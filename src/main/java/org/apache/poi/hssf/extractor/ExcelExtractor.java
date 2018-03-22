@@ -58,8 +58,8 @@ public class ExcelExtractor extends POIOLE2TextExtractor implements org.apache.p
 	private final HSSFDataFormatter _formatter;
 	private boolean _includeSheetNames = true;
 	private boolean _shouldEvaluateFormulas = true;
-	private boolean _includeCellComments;
-	private boolean _includeBlankCells;
+	private boolean _includeCellComments = false;
+	private boolean _includeBlankCells = false;
 	private boolean _includeHeadersFooters = true;
 
 	public ExcelExtractor(HSSFWorkbook wb) {
@@ -321,7 +321,7 @@ public class ExcelExtractor extends POIOLE2TextExtractor implements org.apache.p
 						// Only output if requested
 						outputContents = _includeBlankCells;
 					} else {
-						switch(cell.getCellType()) {
+						switch(cell.getCellTypeEnum()) {
 							case STRING:
 								text.append(cell.getRichStringCellValue().getString());
 								break;
@@ -338,7 +338,7 @@ public class ExcelExtractor extends POIOLE2TextExtractor implements org.apache.p
 								if(!_shouldEvaluateFormulas) {
 									text.append(cell.getCellFormula());
 								} else {
-									switch(cell.getCachedFormulaResultType()) {
+									switch(cell.getCachedFormulaResultTypeEnum()) {
 										case STRING:
 											HSSFRichTextString str = cell.getRichStringCellValue();
 											if(str != null && str.length() > 0) {
@@ -359,13 +359,13 @@ public class ExcelExtractor extends POIOLE2TextExtractor implements org.apache.p
 											text.append(ErrorEval.getText(cell.getErrorCellValue()));
 											break;
 										default:
-											throw new IllegalStateException("Unexpected cell cached formula result type: " + cell.getCachedFormulaResultType());
+											throw new IllegalStateException("Unexpected cell cached formula result type: " + cell.getCachedFormulaResultTypeEnum());
 
 									}
 								}
 								break;
 							default:
-								throw new RuntimeException("Unexpected cell type (" + cell.getCellType() + ")");
+								throw new RuntimeException("Unexpected cell type (" + cell.getCellTypeEnum() + ")");
 						}
 
 						// Output the comment, if requested and exists

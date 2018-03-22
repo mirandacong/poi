@@ -67,7 +67,7 @@ public final class TimeFunc extends Fixed3ArgFunction {
 	 * @return An Excel representation of a time of day.
 	 * If the time value represents more than a day, the days are removed from
 	 * the result, leaving only the time of day component.
-	 * @throws EvaluationException
+	 * @throws org.apache.poi.ss.formula.eval.EvaluationException
 	 * If any of the arguments are greater than 32767 or the hours
 	 * minutes and seconds when combined form a time value less than 0, the function
 	 * evaluates to an error.

@@ -17,14 +17,9 @@
 
 package org.apache.poi.ddf;
 
-import org.apache.poi.util.IOUtils;
 import org.apache.poi.util.LittleEndian;
 
 public class EscherBlipRecord extends EscherRecord {
-
-    //arbitrarily selected; may need to increase
-    private static final int MAX_RECORD_LENGTH = 104_857_600;
-
     public static final short  RECORD_ID_START    = (short) 0xF018;
     public static final short  RECORD_ID_END      = (short) 0xF117;
     public static final String RECORD_DESCRIPTION = "msofbtBlip";
@@ -41,7 +36,7 @@ public class EscherBlipRecord extends EscherRecord {
         int bytesAfterHeader = readHeader( data, offset );
         int pos              = offset + HEADER_SIZE;
 
-        field_pictureData = IOUtils.safelyAllocate(bytesAfterHeader, MAX_RECORD_LENGTH);
+        field_pictureData = new byte[bytesAfterHeader];
         System.arraycopy(data, pos, field_pictureData, 0, bytesAfterHeader);
 
         return bytesAfterHeader + 8;
@@ -99,7 +94,7 @@ public class EscherBlipRecord extends EscherRecord {
         if (pictureData == null || offset < 0 || length < 0 || pictureData.length < offset+length) {
             throw new IllegalArgumentException("picture data can't be null");
         }
-        field_pictureData = IOUtils.safelyAllocate(length, MAX_RECORD_LENGTH);
+        field_pictureData = new byte[length];
         System.arraycopy(pictureData, offset, field_pictureData, 0, length);
     }
 

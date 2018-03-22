@@ -17,31 +17,31 @@
 
 package org.apache.poi.ss.usermodel.charts;
 
-import org.apache.poi.util.Removal;
+import org.apache.poi.util.Beta;
 
 /**
  * A factory for different chart axis.
  *
- * @deprecated
+ * @author Roman Kashitsyn
+ * @author Martin Andersson
  */
-@Deprecated
-@Removal(version="4.2")
+@Beta
 public interface ChartAxisFactory {
 
 	/**
-	 * @param pos
+	 * @param pos 
 	 * @return new value axis at the end of the list at the specified chart position
 	 */
 	ValueAxis createValueAxis(AxisPosition pos);
 
 	/**
-	 * @param pos
+	 * @param pos 
 	 * @return new category axis at the end of the list at the specified chart position
 	 */
 	ChartAxis createCategoryAxis(AxisPosition pos);
-
+	
 	/**
-	 * @param pos
+	 * @param pos 
 	 * @return new date category axis at the end of the list at the specified chart position
 	 */
 	ChartAxis createDateAxis(AxisPosition pos);

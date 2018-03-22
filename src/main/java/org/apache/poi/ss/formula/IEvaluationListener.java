@@ -50,5 +50,5 @@ interface IEvaluationListener {
 	void sortDependentCachedValues(ICacheEntry[] formulaCells);
 	void onClearDependentCachedValue(ICacheEntry formulaCell, int depth);
 	void onChangeFromBlankValue(int sheetIndex, int rowIndex, int columnIndex,
-                                EvaluationCell cell, ICacheEntry entry);
+			EvaluationCell cell, ICacheEntry entry);
 }

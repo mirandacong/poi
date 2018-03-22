@@ -106,10 +106,10 @@ public final class FunctionEval {
         retval[38] = BooleanFunction.NOT;
         retval[39] = NumericFunction.MOD;
         // 40: DCOUNT
-        retval[41] = new DStarRunner(DStarRunner.DStarAlgorithmEnum.DSUM);
+        // 41: DSUM
         // 42: DAVERAGE
         retval[43] = new DStarRunner(DStarRunner.DStarAlgorithmEnum.DMIN);
-        retval[44] = new DStarRunner(DStarRunner.DStarAlgorithmEnum.DMAX);
+        // 44: DMAX
         // 45: DSTDEV
         retval[46] = AggregateFunction.VAR;
         // 47: DVAR
@@ -145,7 +145,7 @@ public final class FunctionEval {
         retval[FunctionID.OFFSET] = new Offset(); //nominally 78
 
         retval[82] = TextFunction.SEARCH;
-        retval[83] = MatrixFunction.TRANSPOSE;
+        // 83: TRANSPOSE
 
         // 86: TYPE
 
@@ -183,10 +183,6 @@ public final class FunctionEval {
         retval[FunctionID.INDIRECT] = null; // Indirect.evaluate has different signature
 
         retval[162] = TextFunction.CLEAN;
-        
-        retval[163] = MatrixFunction.MDETERM;
-        retval[164] = MatrixFunction.MINVERSE;
-        retval[165] = MatrixFunction.MMULT;
 
         retval[167] = new IPMT();
         retval[168] = new PPMT();
@@ -395,7 +391,7 @@ public final class FunctionEval {
      * @since 3.8 beta6
      */
     public static Collection<String> getSupportedFunctionNames() {
-        Collection<String> lst = new TreeSet<>();
+        Collection<String> lst = new TreeSet<String>();
         for (int i = 0; i < functions.length; i++) {
             Function func = functions[i];
             FunctionMetadata metaData = FunctionMetadataRegistry.getFunctionByIndex(i);
@@ -414,7 +410,7 @@ public final class FunctionEval {
      * @since 3.8 beta6
      */
     public static Collection<String> getNotSupportedFunctionNames() {
-        Collection<String> lst = new TreeSet<>();
+        Collection<String> lst = new TreeSet<String>();
         for (int i = 0; i < functions.length; i++) {
             Function func = functions[i];
             if (func != null && (func instanceof NotImplementedFunction)) {

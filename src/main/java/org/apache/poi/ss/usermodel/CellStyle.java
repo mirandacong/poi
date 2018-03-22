@@ -17,8 +17,6 @@
 
 package org.apache.poi.ss.usermodel;
 
-import org.apache.poi.util.Removal;
-
 public interface CellStyle {
 
     /**
@@ -26,12 +24,14 @@ public interface CellStyle {
      * @return unique index number of the underlying record this style represents (probably you don't care
      *  unless you're comparing which one is which)
      */
+
     short getIndex();
 
     /**
      * set the data format (must be a valid format). Built in formats are defined at {@link BuiltinFormats}.
      * @see DataFormat
      */
+
     void setDataFormat(short fmt);
 
     /**
@@ -49,47 +49,43 @@ public interface CellStyle {
      * set the font for this style
      * @param font  a font object created or retrieved from the Workbook object
      * @see Workbook#createFont()
-     * @see Workbook#getFontAt(int)
+     * @see Workbook#getFontAt(short)
      */
+
     void setFont(Font font);
 
     /**
      * gets the index of the font for this style
      * @see Workbook#getFontAt(short)
-     * @deprecated use <code>getFontIndexAsInt()</code> instead
      */
-    @Removal(version = "4.2")
     short getFontIndex();
-
-    /**
-     * gets the index of the font for this style
-     * @see Workbook#getFontAt(int)
-     * @since 4.0.0
-     */
-    int getFontIndexAsInt();
 
     /**
      * set the cell's using this style to be hidden
      * @param hidden - whether the cell using this style should be hidden
      */
+
     void setHidden(boolean hidden);
 
     /**
      * get whether the cell's using this style are to be hidden
      * @return hidden - whether the cell using this style should be hidden
      */
+
     boolean getHidden();
 
     /**
      * set the cell's using this style to be locked
      * @param locked - whether the cell using this style should be locked
      */
+
     void setLocked(boolean locked);
 
     /**
      * get whether the cell's using this style are to be locked
      * @return hidden - whether the cell using this style should be locked
      */
+
     boolean getLocked();
     
     /**
@@ -117,16 +113,13 @@ public interface CellStyle {
     /**
      * get the type of horizontal alignment for the cell
      * @return align - the type of alignment
+     * @deprecated POI 3.15 beta 3. Use {@link #getAlignmentEnum()} instead.
      */
-    HorizontalAlignment getAlignment();
-
+    short getAlignment();
     /**
      * get the type of horizontal alignment for the cell
      * @return align - the type of alignment
-     * @deprecated use <code>getAlignment()</code> instead
      */
-    @Removal(version = "4.2")
-    @Deprecated
     HorizontalAlignment getAlignmentEnum();
 
     /**
@@ -136,12 +129,14 @@ public interface CellStyle {
      *
      * @param wrapped  wrap text or not
      */
+
     void setWrapText(boolean wrapped);
 
     /**
      * get whether the text should be wrapped
      * @return wrap text or not
      */
+
     boolean getWrapText();
 
     /**
@@ -153,16 +148,13 @@ public interface CellStyle {
     /**
      * get the type of vertical alignment for the cell
      * @return align the type of alignment
+     * @deprecated POI 3.15 beta 3. Use {@link #getVerticalAlignmentEnum()} instead.
      */
-    VerticalAlignment getVerticalAlignment();
-
+    short getVerticalAlignment();
     /**
      * get the type of vertical alignment for the cell
      * @return align the type of alignment
-     * @deprecated use <code>getVerticalAlignment()</code> instead
      */
-    @Removal(version = "4.2")
-    @Deprecated
     VerticalAlignment getVerticalAlignmentEnum();
 
     /**
@@ -192,12 +184,14 @@ public interface CellStyle {
      * set the number of spaces to indent the text in the cell
      * @param indent - number of spaces
      */
+
     void setIndention(short indent);
 
     /**
      * get the number of spaces to indent the text in the cell
      * @return indent - number of spaces
      */
+
     short getIndention();
 
     /**
@@ -210,18 +204,15 @@ public interface CellStyle {
     /**
      * get the type of border to use for the left border of the cell
      * @return border type
-     * @since POI 4.0.0
+     * @deprecated POI 3.15. Use {@link #getBorderLeftEnum()} instead.
+     * This will return a BorderStyle enum in the future.
      */
-    BorderStyle getBorderLeft();
-
+    short getBorderLeft();
     /**
      * get the type of border to use for the left border of the cell
      * @return border type
      * @since POI 3.15
-     * @deprecated use <code>getBorderLeft()</code> instead
      */
-    @Removal(version = "4.2")
-    @Deprecated
     BorderStyle getBorderLeftEnum();
 
     /**
@@ -234,18 +225,15 @@ public interface CellStyle {
     /**
      * get the type of border to use for the right border of the cell
      * @return border type
-     * @since POI 4.0.0
+     * @deprecated POI 3.15. Use {@link #getBorderRightEnum()} instead.
+     * This will return a BorderStyle enum in the future.
      */
-    BorderStyle getBorderRight();
-
+    short getBorderRight();
     /**
      * get the type of border to use for the right border of the cell
      * @return border type
      * @since POI 3.15
-     * @deprecated use <code>getBorderRight()</code> instead
      */
-    @Removal(version = "4.2")
-    @Deprecated
     BorderStyle getBorderRightEnum();
 
     /**
@@ -258,20 +246,17 @@ public interface CellStyle {
     /**
      * get the type of border to use for the top border of the cell
      * @return border type
-     * @since POI 4.0.0
+     * @deprecated POI 3.15. Use {@link #getBorderTopEnum()} instead.
+     * This will return a BorderStyle enum in the future.
      */
-    BorderStyle getBorderTop();
-
+    short getBorderTop();
     /**
      * get the type of border to use for the top border of the cell
      * @return border type
      * @since POI 3.15
-     * @deprecated use <code>getBorderTop()</code> instead
      */
-    @Removal(version = "4.2")
-    @Deprecated
     BorderStyle getBorderTopEnum();
-
+    
     /**
      * set the type of border to use for the bottom border of the cell
      * @param border type
@@ -282,18 +267,15 @@ public interface CellStyle {
     /**
      * get the type of border to use for the bottom border of the cell
      * @return border type
-     * @since POI 4.0.0
+     * @deprecated POI 3.15. Use {@link #getBorderBottomEnum()} instead.
+     * This will return a BorderStyle enum in the future.
      */
-    BorderStyle getBorderBottom();
-
+    short getBorderBottom();
     /**
      * get the type of border to use for the bottom border of the cell
      * @return border type
      * @since POI 3.15
-     * @deprecated use <code>getBorderBottom()</code> instead
      */
-    @Removal(version = "4.2")
-    @Deprecated
     BorderStyle getBorderBottomEnum();
 
     /**
@@ -353,22 +335,16 @@ public interface CellStyle {
     void setFillPattern(FillPatternType fp);
 
     /**
-     * Get the fill pattern
-     *
-     * @return the fill pattern, default value is {@link FillPatternType#NO_FILL}
-     * @since POI 4.0.0
+     * get the fill pattern (??) - set to 1 to fill with foreground color
+     * @return fill pattern
+     * @deprecated POI 3.15 beta 3. This method will return {@link FillPatternType} in the future. Use {@link #setFillPattern(FillPatternType)} instead.
      */
-    FillPatternType getFillPattern();
-
+    short getFillPattern();
     /**
-     * Get the fill pattern
-     *
-     * @return the fill pattern, default value is {@link FillPatternType#NO_FILL}
+     * get the fill pattern (??) - set to 1 to fill with foreground color
+     * @return fill pattern
      * @since POI 3.15 beta 3
-     * @deprecated use <code>getFillPattern()</code> instead
      */
-    @Removal(version = "4.2")
-    @Deprecated
     FillPatternType getFillPatternEnum();
 
     /**
@@ -376,6 +352,7 @@ public interface CellStyle {
      *
      * @param bg  color
      */
+
     void setFillBackgroundColor(short bg);
 
     /**

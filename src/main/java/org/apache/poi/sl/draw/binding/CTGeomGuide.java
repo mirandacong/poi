@@ -31,26 +31,26 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="CT_GeomGuide"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;attribute name="name" use="required" type="{http://schemas.openxmlformats.org/drawingml/2006/main}ST_GeomGuideName" /&gt;
- *       &lt;attribute name="fmla" use="required" type="{http://schemas.openxmlformats.org/drawingml/2006/main}ST_GeomGuideFormula" /&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
+ * &lt;complexType name="CT_GeomGuide">
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;attribute name="name" use="required" type="{http://schemas.openxmlformats.org/drawingml/2006/main}ST_GeomGuideName" />
+ *       &lt;attribute name="fmla" use="required" type="{http://schemas.openxmlformats.org/drawingml/2006/main}ST_GeomGuideFormula" />
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
  * </pre>
  * 
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CT_GeomGuide")
+@XmlType(name = "CT_GeomGuide", namespace = "http://schemas.openxmlformats.org/drawingml/2006/main")
 public class CTGeomGuide {
 
-    @XmlAttribute(name = "name", required = true)
+    @XmlAttribute(required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     protected String name;
-    @XmlAttribute(name = "fmla", required = true)
+    @XmlAttribute(required = true)
     protected String fmla;
 
     /**

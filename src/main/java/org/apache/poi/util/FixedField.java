@@ -41,7 +41,7 @@ public interface FixedField
      *            of the array's valid index range
      */
 
-    void readFromBytes(byte[] data)
+    void readFromBytes(byte [] data)
         throws ArrayIndexOutOfBoundsException;
 
     /**
@@ -70,7 +70,7 @@ public interface FixedField
      *            of the array's valid index range
      */
 
-    void writeToBytes(byte[] data)
+    void writeToBytes(byte [] data)
         throws ArrayIndexOutOfBoundsException;
 
     /**

@@ -216,7 +216,7 @@ public abstract class TextFunction implements Function {
 				return ErrorEval.VALUE_INVALID;
 			}
 			int len = text.length();
-			if (startIx > len) {
+			if (numChars < 0 || startIx > len) {
 				return new StringEval("");
 			}
 			int endIx = Math.min(startIx + numChars, len);

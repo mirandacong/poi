@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.poi.ss.SpreadsheetVersion;
+import org.apache.poi.util.Removal;
 
 public class AreaReference {
 
@@ -103,6 +104,16 @@ public class AreaReference {
             }
         }
         return true;
+    }
+
+    /**
+     * Creates an area ref from a pair of Cell References.
+     * @deprecated use {@link #AreaReference(CellReference, CellReference, SpreadsheetVersion)} instead
+     */
+    @Deprecated
+    @Removal(version="3.19")
+    public AreaReference(CellReference topLeft, CellReference botRight) {
+        this(topLeft, botRight, DEFAULT_SPREADSHEET_VERSION);
     }
     
     /**
@@ -196,13 +207,25 @@ public class AreaReference {
         // These are represented as something like
         //   C$1:C$65535 or D$1:F$0
         // i.e. absolute from 1st row to 0th one
-        return (topLeft.getRow() == 0
-                && topLeft.isRowAbsolute()
-                && botRight.getRow() == version.getLastRowIndex()
-                && botRight.isRowAbsolute());
+        if(topLeft.getRow() == 0 && topLeft.isRowAbsolute() &&
+            botRight.getRow() == version.getLastRowIndex() && botRight.isRowAbsolute()) {
+            return true;
+        }
+        return false;
     }
     public boolean isWholeColumnReference() {
         return isWholeColumnReference(_version, _firstCell, _lastCell);
+    }
+
+    /**
+     * Takes a non-contiguous area reference, and returns an array of contiguous area references
+     * @return an array of contiguous area references.
+     * @deprecated use {@link #generateContiguous(SpreadsheetVersion, String)} instead
+     */
+    @Deprecated
+    @Removal(version="3.19")
+    public static AreaReference[] generateContiguous(String reference) {
+        return generateContiguous(DEFAULT_SPREADSHEET_VERSION, reference);
     }
 
     /**
@@ -213,7 +236,7 @@ public class AreaReference {
         if (null == version) {
             version = DEFAULT_SPREADSHEET_VERSION; // how the code used to behave. 
         }
-        List<AreaReference> refs = new ArrayList<>();
+        List<AreaReference> refs = new ArrayList<AreaReference>();
         StringTokenizer st = new StringTokenizer(reference, ",");
         while(st.hasMoreTokens()) {
             refs.add(
@@ -264,7 +287,7 @@ public class AreaReference {
         int maxCol = Math.max(_firstCell.getCol(), _lastCell.getCol());
         String sheetName = _firstCell.getSheetName();
         
-        List<CellReference> refs = new ArrayList<>();
+        List<CellReference> refs = new ArrayList<CellReference>();
         for(int row=minRow; row<=maxRow; row++) {
             for(int col=minCol; col<=maxCol; col++) {
                 CellReference ref = new CellReference(sheetName, row, col, _firstCell.isRowAbsolute(), _firstCell.isColAbsolute());
@@ -295,8 +318,8 @@ public class AreaReference {
                 + ":" +
                 CellReference.convertNumToColString(_lastCell.getCol());
         }
-
-        StringBuilder sb = new StringBuilder(32);
+        
+        StringBuffer sb = new StringBuffer(32);
         sb.append(_firstCell.formatAsString());
         if(!_isSingleCell) {
             sb.append(CELL_DELIMITER);
@@ -311,14 +334,10 @@ public class AreaReference {
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder(64);
+        StringBuffer sb = new StringBuffer(64);
         sb.append(getClass().getName()).append(" [");
-        try {
-            sb.append(formatAsString());
-        } catch(Exception e) {
-            sb.append(e.toString());
-        }
-        sb.append(']');
+        sb.append(formatAsString());
+        sb.append("]");
         return sb.toString();
     }
 

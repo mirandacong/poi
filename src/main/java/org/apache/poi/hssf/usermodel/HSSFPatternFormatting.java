@@ -50,7 +50,7 @@ public class HSSFPatternFormatting implements org.apache.poi.ss.usermodel.Patter
     }
 
     /**
-     * @see PatternFormatting#getFillBackgroundColor()
+     * @see org.apache.poi.hssf.record.cf.PatternFormatting#getFillBackgroundColor()
      */
     public short getFillBackgroundColor()
     {
@@ -58,7 +58,7 @@ public class HSSFPatternFormatting implements org.apache.poi.ss.usermodel.Patter
     }
 
     /**
-     * @see PatternFormatting#getFillForegroundColor()
+     * @see org.apache.poi.hssf.record.cf.PatternFormatting#getFillForegroundColor()
      */
     public short getFillForegroundColor()
     {
@@ -66,7 +66,7 @@ public class HSSFPatternFormatting implements org.apache.poi.ss.usermodel.Patter
     }
 
     /**
-     * @see PatternFormatting#getFillPattern()
+     * @see org.apache.poi.hssf.record.cf.PatternFormatting#getFillPattern()
      */
     public short getFillPattern()
     {
@@ -93,7 +93,7 @@ public class HSSFPatternFormatting implements org.apache.poi.ss.usermodel.Patter
 
     /**
      * @param bg
-     * @see PatternFormatting#setFillBackgroundColor(int)
+     * @see org.apache.poi.hssf.record.cf.PatternFormatting#setFillBackgroundColor(int)
      */
     public void setFillBackgroundColor(short bg)
     {
@@ -106,7 +106,7 @@ public class HSSFPatternFormatting implements org.apache.poi.ss.usermodel.Patter
 
     /**
      * @param fg
-     * @see PatternFormatting#setFillForegroundColor(int)
+     * @see org.apache.poi.hssf.record.cf.PatternFormatting#setFillForegroundColor(int)
      */
     public void setFillForegroundColor(short fg)
     {
@@ -119,7 +119,7 @@ public class HSSFPatternFormatting implements org.apache.poi.ss.usermodel.Patter
 
     /**
      * @param fp
-     * @see PatternFormatting#setFillPattern(int)
+     * @see org.apache.poi.hssf.record.cf.PatternFormatting#setFillPattern(int)
      */
     public void setFillPattern(short fp)
     {

@@ -28,7 +28,6 @@ import org.apache.poi.hssf.record.cont.ContinuableRecordInput;
 import org.apache.poi.hssf.record.cont.ContinuableRecordOutput;
 import org.apache.poi.util.BitField;
 import org.apache.poi.util.BitFieldFactory;
-import org.apache.poi.util.IOUtils;
 import org.apache.poi.util.LittleEndianInput;
 import org.apache.poi.util.LittleEndianOutput;
 import org.apache.poi.util.POILogFactory;
@@ -46,10 +45,6 @@ import org.apache.poi.util.StringUtil;
 public class UnicodeString implements Comparable<UnicodeString> {
     // TODO - make this final when the compatibility version is removed
     private static POILogger _logger = POILogFactory.getLogger(UnicodeString.class);
-
-    //arbitrarily selected; may need to increase
-    private static final int MAX_RECORD_LENGTH = 100_000;
-
 
     private short             field_1_charCount;
     private byte              field_2_optionflags;
@@ -201,7 +196,7 @@ public class UnicodeString implements Comparable<UnicodeString> {
         	 _logger.log( POILogger.WARN, "Warning - ExtRst overran by " + (0-extraDataLength) + " bytes");
              extraDataLength = 0;
           }
-          extraData = IOUtils.safelyAllocate(extraDataLength, MAX_RECORD_LENGTH);
+          extraData = new byte[extraDataLength];
           for(int i=0; i<extraData.length; i++) {
              extraData[i] = in.readByte();
           }
@@ -469,7 +464,7 @@ public class UnicodeString implements Comparable<UnicodeString> {
         field_3_string = (isCompressed) ? in.readCompressedUnicode(cc) : in.readUnicodeLEString(cc);
 
         if (isRichText() && (runCount > 0)) {
-          field_4_format_runs = new ArrayList<>(runCount);
+          field_4_format_runs = new ArrayList<FormatRun>(runCount);
           for (int i=0;i<runCount;i++) {
             field_4_format_runs.add(new FormatRun(in));
           }
@@ -615,7 +610,7 @@ public class UnicodeString implements Comparable<UnicodeString> {
      */
     public void addFormatRun(FormatRun r) {
       if (field_4_format_runs == null) {
-		field_4_format_runs = new ArrayList<>();
+		field_4_format_runs = new ArrayList<FormatRun>();
 	  }
 
       int index = findFormatRunAt(r._character);
@@ -817,7 +812,7 @@ public class UnicodeString implements Comparable<UnicodeString> {
         str.field_2_optionflags = field_2_optionflags;
         str.field_3_string = field_3_string;
         if (field_4_format_runs != null) {
-          str.field_4_format_runs = new ArrayList<>();
+          str.field_4_format_runs = new ArrayList<FormatRun>();
           for (FormatRun r : field_4_format_runs) {
             str.field_4_format_runs.add(new FormatRun(r._character, r._fontIndex));
           }

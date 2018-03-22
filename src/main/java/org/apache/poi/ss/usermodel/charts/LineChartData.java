@@ -19,15 +19,12 @@ package org.apache.poi.ss.usermodel.charts;
 
 import java.util.List;
 
-import org.apache.poi.util.Removal;
+import org.apache.poi.util.Beta;
 
 /**
  * Data for a Line Chart
- *
- * @deprecated use XDDFLineChartData instead
  */
-@Deprecated
-@Removal(version="4.2")
+@Beta
 public interface LineChartData extends ChartData {
 
     /**

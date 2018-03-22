@@ -15,36 +15,29 @@
    limitations under the License.
 ==================================================================== */
 
-package org.apache.poi.ss.usermodel;
+package org.apache.poi.hssf.util;
+
+import org.apache.poi.ss.SpreadsheetVersion;
 
 /**
- * The enumeration value indicating reading order of a cell,
- * i.e., whether the reading order is Context(Default), Left To Right or Right To Left
+ * @deprecated POI 3.15 beta 3. Use {@link org.apache.poi.ss.util.AreaReference} instead.
  */
-public enum ReadingOrder {
+@Deprecated
+public final class AreaReference extends org.apache.poi.ss.util.AreaReference {
     /**
-     * The reading order is Context(Default).
+     * Create an area ref from a string representation.  Sheet names containing special characters should be
+     * delimited and escaped as per normal syntax rules for formulas.<br> 
+     * The area reference must be contiguous (i.e. represent a single rectangle, not a union of rectangles)
      */
-    CONTEXT,
-
-    /**
-     * The reading order is Left To Right.
-     */
-    LEFT_TO_RIGHT,
-
-    /**
-     * The reading order is Right To Left.
-     */
-    RIGHT_TO_LEFT;
-    
-    public short getCode() {
-        return (short) ordinal();
+    public AreaReference(String reference) {
+		super(reference, SpreadsheetVersion.EXCEL97);
     }
-
-    public static ReadingOrder forLong(long code) {
-        if (code < 0 || code >= values().length) {
-            throw new IllegalArgumentException("Invalid ReadingOrder code: " + code);
-        }
-        return values()[(int)code];
+    
+    /**
+     * Creates an area ref from a pair of Cell References.
+     * Also normalises such that the top-left
+     */
+    public AreaReference(CellReference topLeft, CellReference botRight) {
+		super(topLeft, botRight);
     }
 }

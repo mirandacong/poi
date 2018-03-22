@@ -43,7 +43,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
  *  </LI>
  *  </UL>
  *
- * Use {@link Sheet#getSheetConditionalFormatting()}
+ * Use {@link org.apache.poi.ss.usermodel.Sheet#getSheetConditionalFormatting()}
  * to get access to an instance of this class.
  * <P>
  * To create a new Conditional Formatting set use the following approach:

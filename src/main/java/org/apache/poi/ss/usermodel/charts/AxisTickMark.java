@@ -17,15 +17,11 @@
 
 package org.apache.poi.ss.usermodel.charts;
 
-import org.apache.poi.util.Removal;
-
 /**
  * Enumeration of possible axis tick marks.
  *
- * @deprecated use XDDF AxisTickMark instead
+ * @author Martin Andersson
  */
-@Deprecated
-@Removal(version="4.2")
 public enum AxisTickMark {
     NONE,
     CROSS,

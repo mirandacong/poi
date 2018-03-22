@@ -31,8 +31,8 @@ import java.util.TreeMap;
 
 import org.apache.commons.collections4.bidimap.TreeBidiMap;
 import org.apache.poi.hpsf.wellknown.PropertyIDMap;
+import org.apache.poi.hpsf.wellknown.SectionIDMap;
 import org.apache.poi.util.CodePageUtil;
-import org.apache.poi.util.IOUtils;
 import org.apache.poi.util.LittleEndian;
 import org.apache.poi.util.LittleEndianByteArrayInputStream;
 import org.apache.poi.util.LittleEndianConsts;
@@ -43,9 +43,6 @@ import org.apache.poi.util.POILogger;
  * Represents a section in a {@link PropertySet}.
  */
 public class Section {
-    //arbitrarily selected; may need to increase
-    private static final int MAX_RECORD_LENGTH = 100_000;
-
     private static final POILogger LOG = POILogFactory.getLogger(Section.class);
 
     /**
@@ -74,7 +71,7 @@ public class Section {
     /**
      * This section's properties.
      */
-    private final Map<Long,Property> properties = new LinkedHashMap<>();
+    private final Map<Long,Property> properties = new LinkedHashMap<Long,Property>();
 
     /**
      * This member is {@code true} if the last call to {@link
@@ -102,7 +99,7 @@ public class Section {
         this._offset = -1;
         setFormatID(s.getFormatID());
         for (Property p : s.properties.values()) {
-            properties.put(p.getID(), new Property(p));
+            properties.put(p.getID(), new MutableProperty(p));
         }
         setDictionary(s.getDictionary());
     }
@@ -178,7 +175,7 @@ public class Section {
          *    seconds pass reads the other properties.
          */
         /* Pass 1: Read the property list. */
-        final TreeBidiMap<Long,Long> offset2Id = new TreeBidiMap<>();
+        final TreeBidiMap<Long,Long> offset2Id = new TreeBidiMap<Long,Long>();
         for (int i = 0; i < propertyCount; i++) {
             /* Read the property ID. */
             long id = (int)leis.readUInt();
@@ -231,13 +228,13 @@ public class Section {
                     try {
                         // fix id
                         id = Math.max(PropertyIDMap.PID_MAX, offset2Id.inverseBidiMap().lastKey())+1;
-                        setProperty(new Property(id, leis, pLen, codepage));
+                        setProperty(new MutableProperty(id, leis, pLen, codepage));
                     } catch (RuntimeException e) {
                         LOG.log(POILogger.INFO, "Dictionary fallback failed - ignoring property");
                     }
-                }
+                };
             } else {
-                setProperty(new Property(id, leis, pLen, codepage));
+                setProperty(new MutableProperty(id, leis, pLen, codepage));
             }
         }
         
@@ -427,7 +424,7 @@ public class Section {
      */
     @SuppressWarnings("deprecation")
     public void setProperty(final int id, final long variantType, final Object value) {
-        setProperty(new Property(id, variantType, value));
+        setProperty(new MutableProperty(id, variantType, value));
     }
 
 
@@ -515,7 +512,10 @@ public class Section {
      */
     protected boolean getPropertyBooleanValue(final int id) {
         final Boolean b = (Boolean) getProperty(id);
-        return b != null && b.booleanValue();
+        if (b == null) {
+            return false;
+        }
+        return b.booleanValue();
     }
 
     /**
@@ -556,8 +556,8 @@ public class Section {
      * properties) and the properties themselves.
      *
      * @return the section's length in bytes.
-     * @throws WritingNotSupportedException If the document is opened read-only.
-     * @throws IOException If an error happens while writing.
+     * @throws WritingNotSupportedException
+     * @throws IOException
      */
     private int calcSize() throws WritingNotSupportedException, IOException {
         sectionBytes.reset();
@@ -596,33 +596,29 @@ public class Section {
 
     /**
      * Returns the PID string associated with a property ID. The ID
-     * is first looked up in the {@link Section Sections} private dictionary.
-     * If it is not found there, the property PID string is taken
-     * from sections format IDs namespace.
-     * If the PID is also undefined there, i.e. it is not well-known,
-     * {@code "[undefined]"} is returned.
+     * is first looked up in the {@link Section}'s private
+     * dictionary. If it is not found there, the method calls {@link
+     * SectionIDMap#getPIDString}.
      *
      * @param pid The property ID
      *
-     * @return The well-known property ID string associated with the
-     * property ID {@code pid}
+     * @return The property ID's string value
      */
     public String getPIDString(final long pid) {
+        String s = null;
         Map<Long,String> dic = getDictionary();
-        if (dic == null || !dic.containsKey(pid)) {
-            ClassID fmt = getFormatID();
-            if (SummaryInformation.FORMAT_ID.equals(fmt)) {
-                dic = PropertyIDMap.getSummaryInformationProperties();
-            } else if (DocumentSummaryInformation.FORMAT_ID[0].equals(fmt)) {
-                dic = PropertyIDMap.getDocumentSummaryInformationProperties();
-            }
+        if (dic != null) {
+            s = dic.get(pid);
         }
-        
-        return (dic != null && dic.containsKey(pid)) ? dic.get(pid) : PropertyIDMap.UNDEFINED;
+        if (s == null) {
+            s = SectionIDMap.getPIDString(getFormatID(), pid);
+        }
+        return s;
     }
 
     /**
-     * Removes all properties from the section including 0 (dictionary) and 1 (codepage).
+     * Removes all properties from the section including 0 (dictionary) and
+     * 1 (codepage).
      */
     public void clear() {
         for (Property p : getProperties()) {
@@ -666,7 +662,7 @@ public class Section {
 
         /* Compare all properties except the dictionary (id 0) and
          * the codepage (id 1 / ignored) as they must be handled specially. */
-        Set<Long> propIds = new HashSet<>(properties.keySet());
+        Set<Long> propIds = new HashSet<Long>(properties.keySet());
         propIds.addAll(s.properties.keySet());
         propIds.remove(0L);
         propIds.remove(1L);
@@ -765,6 +761,9 @@ public class Section {
                  * property. */
                 position += p.write(propertyStream, codepage);
             } else {
+                if (codepage == -1) {
+                    throw new IllegalPropertySetDataException("Codepage (property 1) is undefined.");
+                }
                 position += writeDictionary(propertyStream, codepage);
             }
         }
@@ -801,7 +800,7 @@ public class Section {
      */
     private boolean readDictionary(LittleEndianByteArrayInputStream leis, final int length, final int codepage)
     throws UnsupportedEncodingException {
-        Map<Long,String> dic = new HashMap<>();
+        Map<Long,String> dic = new HashMap<Long,String>();
 
         /*
          * Read the number of dictionary entries.
@@ -836,7 +835,7 @@ public class Section {
             }
 
             try {
-                byte buf[] = IOUtils.safelyAllocate(nrBytes, MAX_RECORD_LENGTH);
+                byte buf[] = new byte[nrBytes];
                 leis.readFully(buf, 0, nrBytes);
                 final String str = CodePageUtil.getStringFromCodePage(buf, 0, nrBytes, cp);
 
@@ -862,6 +861,7 @@ public class Section {
      * Writes the section's dictionary.
      *
      * @param out The output stream to write to.
+     * @param dictionary The dictionary.
      * @param codepage The codepage to be used to write the dictionary items.
      * @return The number of bytes written
      * @exception IOException if an I/O exception occurs.
@@ -902,8 +902,8 @@ public class Section {
 
     /**
      * Sets the section's dictionary. All keys in the dictionary must be
-     * {@link Long} instances, all values must be
-     * {@link String}s. This method overwrites the properties with IDs
+     * {@link java.lang.Long} instances, all values must be
+     * {@link java.lang.String}s. This method overwrites the properties with IDs
      * 0 and 1 since they are reserved for the dictionary and the dictionary's
      * codepage. Setting these properties explicitly might have surprising
      * effects. An application should never do this but always use this
@@ -919,7 +919,7 @@ public class Section {
     public void setDictionary(final Map<Long,String> dictionary) throws IllegalPropertySetDataException {
         if (dictionary != null) {
             if (this.dictionary == null) {
-                this.dictionary = new TreeMap<>();
+                this.dictionary = new TreeMap<Long,String>();
             }
             this.dictionary.putAll(dictionary);
 
@@ -952,10 +952,11 @@ public class Section {
         long hashCode = 0;
         hashCode += getFormatID().hashCode();
         final Property[] pa = getProperties();
-        for (Property aPa : pa) {
-            hashCode += aPa.hashCode();
+        for (int i = 0; i < pa.length; i++) {
+            hashCode += pa[i].hashCode();
         }
-        return (int) (hashCode & 0x0ffffffffL);
+        final int returnHashCode = (int) (hashCode & 0x0ffffffffL);
+        return returnHashCode;
     }
 
 
@@ -969,7 +970,7 @@ public class Section {
     }
     
     public String toString(PropertyIDMap idMap) {
-        final StringBuilder b = new StringBuilder();
+        final StringBuffer b = new StringBuffer();
         final Property[] pa = getProperties();
         b.append("\n\n\n");
         b.append(getClass().getName());

@@ -40,7 +40,7 @@ public interface HSSFShapeContainer extends ShapeContainer<HSSFShape>
     /**
      * set coordinates of this group relative to the parent
      */
-    void setCoordinates(int x1, int y1, int x2, int y2);
+    void setCoordinates( int x1, int y1, int x2, int y2 );
 
     void clear();
 

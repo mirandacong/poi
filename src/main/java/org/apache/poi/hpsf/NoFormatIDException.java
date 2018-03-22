@@ -20,7 +20,7 @@ package org.apache.poi.hpsf;
 /**
  * This exception is thrown if a {@link PropertySet} is to be written
  * but does not have a formatID set (see {@link Section#setFormatID(ClassID)} or
- * {@link Section#setFormatID(byte[])}.
+ * {@link org.apache.poi.hpsf.Section#setFormatID(byte[])}. 
  */
 public class NoFormatIDException extends HPSFRuntimeException {
 

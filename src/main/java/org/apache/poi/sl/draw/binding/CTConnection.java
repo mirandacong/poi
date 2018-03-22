@@ -30,25 +30,25 @@ import javax.xml.bind.annotation.XmlType;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="CT_Connection"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;attribute name="id" use="required" type="{http://schemas.openxmlformats.org/drawingml/2006/main}ST_DrawingElementId" /&gt;
- *       &lt;attribute name="idx" use="required" type="{http://www.w3.org/2001/XMLSchema}unsignedInt" /&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
+ * &lt;complexType name="CT_Connection">
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;attribute name="id" use="required" type="{http://schemas.openxmlformats.org/drawingml/2006/main}ST_DrawingElementId" />
+ *       &lt;attribute name="idx" use="required" type="{http://www.w3.org/2001/XMLSchema}unsignedInt" />
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
  * </pre>
  * 
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CT_Connection")
+@XmlType(name = "CT_Connection", namespace = "http://schemas.openxmlformats.org/drawingml/2006/main")
 public class CTConnection {
 
-    @XmlAttribute(name = "id", required = true)
+    @XmlAttribute(required = true)
     protected long id;
-    @XmlAttribute(name = "idx", required = true)
+    @XmlAttribute(required = true)
     @XmlSchemaType(name = "unsignedInt")
     protected long idx;
 

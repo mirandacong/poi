@@ -25,12 +25,13 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.poi.util.IOUtils;
+import org.apache.poi.util.CodePageUtil;
 import org.apache.poi.util.LittleEndian;
 import org.apache.poi.util.LittleEndianByteArrayInputStream;
 import org.apache.poi.util.LittleEndianConsts;
 import org.apache.poi.util.POILogFactory;
 import org.apache.poi.util.POILogger;
+import org.apache.poi.util.Removal;
 
 /**
  * Supports reading and writing of variant data.<p>
@@ -59,9 +60,6 @@ public class VariantSupport extends Variant {
 
     
     private static final POILogger logger = POILogFactory.getLogger(VariantSupport.class);
-    //arbitrarily selected; may need to increase
-    private static final int MAX_RECORD_LENGTH = 100_000;
-
     private static boolean logUnsupportedTypes;
 
     /**
@@ -109,7 +107,7 @@ public class VariantSupport extends Variant {
         if (isLogUnsupportedTypes())
         {
             if (unsupportedMessage == null) {
-                unsupportedMessage = new LinkedList<>();
+                unsupportedMessage = new LinkedList<Long>();
             }
             Long vt = Long.valueOf(ex.getVariantType());
             if (!unsupportedMessage.contains(vt))
@@ -176,7 +174,7 @@ public class VariantSupport extends Variant {
             typedPropertyValue.readValue(lei);
         } catch ( UnsupportedOperationException exc ) {
             int propLength = Math.min( length, lei.available() );
-            final byte[] v = IOUtils.safelyAllocate(propLength, MAX_RECORD_LENGTH);
+            final byte[] v = new byte[propLength];
             lei.readFully(v, 0, propLength);
             throw new ReadingNotSupportedException( type, v );
         }
@@ -252,11 +250,36 @@ public class VariantSupport extends Variant {
             default:
                 final int unpadded = lei.getReadIndex()-offset;
                 lei.setReadIndex(offset);
-                final byte[] v = IOUtils.safelyAllocate(unpadded, MAX_RECORD_LENGTH);
+                final byte[] v = new byte[unpadded];
                 lei.readFully( v, 0, unpadded );
                 throw new ReadingNotSupportedException( type, v );
         }
     }
+
+    /**
+     * Turns a codepage number into the equivalent character encoding's
+     * name.
+     *
+     * @param codepage The codepage number
+     *
+     * @return The character encoding's name. If the codepage number is 65001,
+     * the encoding name is "UTF-8". All other positive numbers are mapped to
+     * "cp" followed by the number, e.g. if the codepage number is 1252 the
+     * returned character encoding name will be "cp1252".
+     *
+     * @exception UnsupportedEncodingException if the specified codepage is
+     * less than zero.
+     *
+     * @deprecated POI 3.16 - use {@link CodePageUtil#codepageToEncoding(int)}
+     */
+    @Deprecated
+    @Removal(version="3.18")
+    public static String codepageToEncoding(final int codepage)
+    throws UnsupportedEncodingException
+    {
+        return CodePageUtil.codepageToEncoding(codepage);
+    }
+
 
     /**
      * Writes a variant value to an output stream. This method ensures that

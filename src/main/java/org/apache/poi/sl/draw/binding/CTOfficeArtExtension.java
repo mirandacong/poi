@@ -34,29 +34,29 @@ import org.w3c.dom.Element;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="CT_OfficeArtExtension"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;any processContents='lax'/&gt;
- *       &lt;/sequence&gt;
- *       &lt;attribute name="uri" type="{http://www.w3.org/2001/XMLSchema}token" /&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
+ * &lt;complexType name="CT_OfficeArtExtension">
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;any processContents='lax'/>
+ *       &lt;/sequence>
+ *       &lt;attribute name="uri" type="{http://www.w3.org/2001/XMLSchema}token" />
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
  * </pre>
  * 
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CT_OfficeArtExtension", propOrder = {
+@XmlType(name = "CT_OfficeArtExtension", namespace = "http://schemas.openxmlformats.org/drawingml/2006/main", propOrder = {
     "any"
 })
 public class CTOfficeArtExtension {
 
     @XmlAnyElement(lax = true)
     protected Object any;
-    @XmlAttribute(name = "uri")
+    @XmlAttribute
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlSchemaType(name = "token")
     protected String uri;

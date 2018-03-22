@@ -23,26 +23,26 @@ import java.util.List;
 import org.apache.poi.hssf.record.Record;
 
 public final class WorkbookRecordList {
-    private List<Record> records = new ArrayList<>();
+    private List<Record> records = new ArrayList<Record>();
 
     /** holds the position of the protect record */
-	private int protpos;
+	private int protpos	       = 0;
     /** holds the position of the last bound sheet */
-	private int bspos;
+	private int bspos	       = 0;
     /** holds the position of the tabid record */
-	private int tabpos;
+	private int tabpos	       = 0;
     /** hold the position of the last font record */
-	private int fontpos;
+	private int fontpos	       = 0;
     /** hold the position of the last extended font record */
-	private int xfpos;
+	private int xfpos	       = 0;
     /** holds the position of the backup record */
-	private int backuppos;
+	private int backuppos      = 0;
     /** holds the position of last name record */
-	private int namepos;
+	private int namepos	       = 0;
 	/** holds the position of sup book */
-	private int supbookpos;
+	private int supbookpos     = 0;
 	/** holds the position of the extern sheet */
-	private int externsheetPos;
+	private int externsheetPos = 0;
 	/** hold the position of the palette, if applicable */
 	private int palettepos     = -1;
 

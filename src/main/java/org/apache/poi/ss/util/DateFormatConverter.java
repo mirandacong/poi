@@ -81,7 +81,7 @@ public class DateFormatConverter  {
 		}
 		
 		public static String[] tokenize( String format ) {
-			List<String> result = new ArrayList<>();
+			List<String> result = new ArrayList<String>();
 			
 			DateFormatTokenizer tokenizer = new DateFormatTokenizer(format);
 			String token;
@@ -113,7 +113,7 @@ public class DateFormatConverter  {
 	private static Map<String,String> localePrefixes = prepareLocalePrefixes();
 	
 	private static Map<String,String> prepareTokenConversions() {
-		Map<String,String> result = new HashMap<>();
+		Map<String,String> result = new HashMap<String,String>();
 		
 		result.put( "EEEE", "dddd" );
 		result.put( "EEE", "ddd" );
@@ -135,7 +135,7 @@ public class DateFormatConverter  {
 	}
 	
 	private static Map<String,String> prepareLocalePrefixes() {
-		Map<String,String> result = new HashMap<>();
+		Map<String,String> result = new HashMap<String,String>();
 		
 		result.put( "af", "[$-0436]" );
 		result.put( "am", "[$-45E]" );

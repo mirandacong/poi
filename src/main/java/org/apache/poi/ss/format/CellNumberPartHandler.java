@@ -36,7 +36,7 @@ public class CellNumberPartHandler implements PartHandler {
     private Special slash;
     private Special exponent;
     private Special numerator;
-    private final List<Special> specials = new LinkedList<>();
+    private final List<Special> specials = new LinkedList<Special>();
     private boolean improperFraction;
 
     public String handlePart(Matcher m, String part, CellFormatType type, StringBuffer descBuf) {

@@ -17,14 +17,10 @@
 
 package org.apache.poi.ss.usermodel.charts;
 
-import org.apache.poi.util.Removal;
-
 /**
- * Specifies the possible ways to store a chart element's position.
- * @see org.apache.poi.xddf.usermodel.chart.LayoutMode XDDF LayoutMode instead
+ *  Specifies the possible ways to store a chart element's position.
+ * @author Roman Kashitsyn
  */
-@Deprecated
-@Removal(version="4.2")
 public enum LayoutMode {
 	/**
 	 * Specifies that the Width or Height shall be interpreted as the

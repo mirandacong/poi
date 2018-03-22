@@ -151,8 +151,9 @@ public class EscherGraphics extends Graphics
     @Override
     public Graphics create()
     {
-        return new EscherGraphics(escherGroup, workbook,
+        EscherGraphics g = new EscherGraphics(escherGroup, workbook,
                 foreground, font, verticalPointsPerPixel );
+        return g;
     }
 
     @Override
@@ -296,7 +297,7 @@ public class EscherGraphics extends Graphics
     @Override
     public void drawString(String str, int x, int y)
     {
-        if (str == null || str.isEmpty())
+        if (str == null || str.equals(""))
             return;
 
         Font excelFont = font;
@@ -398,7 +399,7 @@ public class EscherGraphics extends Graphics
      * @param xPoints array of the <code>x</code> coordinates.
      * @param yPoints array of the <code>y</code> coordinates.
      * @param nPoints the total number of points in the polygon.
-     * @see   Graphics#drawPolygon(int[], int[], int)
+     * @see   java.awt.Graphics#drawPolygon(int[], int[], int)
      */
     @Override
     public void fillPolygon(int xPoints[], int yPoints[],

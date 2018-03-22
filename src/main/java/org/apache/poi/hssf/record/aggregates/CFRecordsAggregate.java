@@ -29,8 +29,9 @@ import org.apache.poi.hssf.record.CFRuleBase;
 import org.apache.poi.hssf.record.CFRuleRecord;
 import org.apache.poi.hssf.record.Record;
 import org.apache.poi.ss.formula.FormulaShifter;
+import org.apache.poi.ss.formula.ptg.AreaErrPtg;
+import org.apache.poi.ss.formula.ptg.AreaPtg;
 import org.apache.poi.ss.formula.ptg.Ptg;
-import org.apache.poi.ss.usermodel.helpers.BaseRowColShifter;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.util.POILogFactory;
 import org.apache.poi.util.POILogger;
@@ -71,7 +72,7 @@ public final class CFRecordsAggregate extends RecordAggregate {
             throw new RecordFormatException("Mismatch number of rules");
         }
         header = pHeader;
-        rules = new ArrayList<>(pRules.length);
+        rules = new ArrayList<CFRuleBase>(pRules.length);
         for (CFRuleBase pRule : pRules) {
             checkRuleType(pRule);
             rules.add(pRule);
@@ -220,9 +221,9 @@ public final class CFRecordsAggregate extends RecordAggregate {
     public boolean updateFormulasAfterCellShift(FormulaShifter shifter, int currentExternSheetIx) {
         CellRangeAddress[] cellRanges = header.getCellRanges();
         boolean changed = false;
-        List<CellRangeAddress> temp = new ArrayList<>();
+        List<CellRangeAddress> temp = new ArrayList<CellRangeAddress>();
         for (CellRangeAddress craOld : cellRanges) {
-            CellRangeAddress craNew = BaseRowColShifter.shiftRange(shifter, craOld, currentExternSheetIx);
+            CellRangeAddress craNew = shiftRange(shifter, craOld, currentExternSheetIx);
             if (craNew == null) {
                 changed = true;
                 continue;
@@ -262,5 +263,24 @@ public final class CFRecordsAggregate extends RecordAggregate {
             }
         }
         return true;
+    }
+
+    private static CellRangeAddress shiftRange(FormulaShifter shifter, CellRangeAddress cra, int currentExternSheetIx) {
+        // FormulaShifter works well in terms of Ptgs - so convert CellRangeAddress to AreaPtg (and back) here
+        AreaPtg aptg = new AreaPtg(cra.getFirstRow(), cra.getLastRow(), cra.getFirstColumn(), cra.getLastColumn(), false, false, false, false);
+        Ptg[] ptgs = { aptg, };
+
+        if (!shifter.adjustFormula(ptgs, currentExternSheetIx)) {
+            return cra;
+        }
+        Ptg ptg0 = ptgs[0];
+        if (ptg0 instanceof AreaPtg) {
+            AreaPtg bptg = (AreaPtg) ptg0;
+            return new CellRangeAddress(bptg.getFirstRow(), bptg.getLastRow(), bptg.getFirstColumn(), bptg.getLastColumn());
+        }
+        if (ptg0 instanceof AreaErrPtg) {
+            return null;
+        }
+        throw new IllegalStateException("Unexpected shifted ptg class (" + ptg0.getClass().getName() + ")");
     }
 }

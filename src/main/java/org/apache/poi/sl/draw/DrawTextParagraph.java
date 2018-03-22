@@ -50,12 +50,13 @@ import org.apache.poi.sl.usermodel.TextParagraph.BulletStyle;
 import org.apache.poi.sl.usermodel.TextParagraph.TextAlign;
 import org.apache.poi.sl.usermodel.TextRun;
 import org.apache.poi.sl.usermodel.TextRun.FieldType;
+import org.apache.poi.sl.usermodel.TextRun.TextCap;
 import org.apache.poi.sl.usermodel.TextShape;
 import org.apache.poi.sl.usermodel.TextShape.TextDirection;
-import org.apache.poi.util.LocaleUtil;
 import org.apache.poi.util.POILogFactory;
 import org.apache.poi.util.POILogger;
 import org.apache.poi.util.Units;
+
 
 public class DrawTextParagraph implements Drawable {
     private static final POILogger LOG = POILogFactory.getLogger(DrawTextParagraph.class);
@@ -66,7 +67,7 @@ public class DrawTextParagraph implements Drawable {
 
     protected TextParagraph<?,?,?> paragraph;
     double x, y;
-    protected List<DrawTextFragment> lines = new ArrayList<>();
+    protected List<DrawTextFragment> lines = new ArrayList<DrawTextFragment>();
     protected String rawText;
     protected DrawTextFragment bullet;
     protected int autoNbrIdx;
@@ -256,7 +257,7 @@ public class DrawTextParagraph implements Drawable {
         fact.fixFonts(graphics);
         StringBuilder text = new StringBuilder();
         AttributedString at = getAttributedString(graphics, text);
-        boolean emptyParagraph = text.toString().trim().isEmpty();
+        boolean emptyParagraph = ("".equals(text.toString().trim()));
 
         AttributedCharacterIterator it = at.getIterator();
         LineBreakMeasurer measurer = new LineBreakMeasurer(it, graphics.getFontRenderContext());
@@ -378,21 +379,33 @@ public class DrawTextParagraph implements Drawable {
             Slide<?,?> slide = (Slide<?,?>)graphics.getRenderingHint(Drawable.CURRENT_SLIDE);
             return (slide == null) ? "" : Integer.toString(slide.getSlideNumber());
         }
-        return getRenderableText(tr);
-    }
+        StringBuilder buf = new StringBuilder();
+        TextCap cap = tr.getTextCap();
+        String tabs = null;
+        for (char c : tr.getRawText().toCharArray()) {
+            switch (c) {
+                case '\t':
+                    if (tabs == null) {
+                        tabs = tab2space(tr);
+                    }
+                    buf.append(tabs);
+                    break;
+                case '\u000b':
+                    buf.append('\n');
+                    break;
+                default:
+                    switch (cap) {
+                        case ALL: c = Character.toUpperCase(c); break;
+                        case SMALL: c = Character.toLowerCase(c); break;
+                        case NONE: break;
+                    }
 
-    private String getRenderableText(final TextRun tr) {
-        final String txtSpace = tr.getRawText().replace("\t", tab2space(tr)).replace('\u000b', '\n');
-        final Locale loc = LocaleUtil.getUserLocale();
-
-        switch (tr.getTextCap()) {
-            case ALL:
-                return txtSpace.toUpperCase(loc);
-            case SMALL:
-                return txtSpace.toLowerCase(loc);
-            default:
-                return txtSpace;
+                    buf.append(c);
+                    break;
+            }
         }
+
+        return buf.toString();
     }
 
     /**
@@ -550,7 +563,7 @@ public class DrawTextParagraph implements Drawable {
     }
 
     protected AttributedString getAttributedString(Graphics2D graphics, StringBuilder text){
-        List<AttributedStringData> attList = new ArrayList<>();
+        List<AttributedStringData> attList = new ArrayList<AttributedStringData>();
         if (text == null) {
             text = new StringBuilder();
         }

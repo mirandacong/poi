@@ -88,19 +88,26 @@ public final class CellValue {
      *
      * @return the cell type
      * @since POI 3.15
-     * @deprecated use <code>getCellType</code> instead
+     * Will be renamed to <code>getCellTypeEnum()</code> when we make the CellType enum transition in POI 4.0. See bug 59791.
      */
-    @Deprecated
     @Removal(version="4.2")
-    public CellType getCellTypeEnum() { return getCellType(); }
+    public CellType getCellTypeEnum() {
+        return _cellType;
+    }
 
 	/**
 	 * Return the cell type.
 	 *
+	 * Will return {@link CellType} in version 4.0 of POI.
+	 * For forwards compatibility, do not hard-code cell type literals in your code.
+	 *
 	 * @return the cell type
+	 *
+	 * @deprecated POI 3.15. Use {@link #getCellTypeEnum()} instead.
 	 */
-	public CellType getCellType() {
-		return _cellType;
+	@Deprecated
+	public int getCellType() {
+		return _cellType.getCode();
 	}
 
 	/**
@@ -111,9 +118,11 @@ public final class CellValue {
 	}
 
 	public String toString() {
-		return getClass().getName() + " [" +
-				formatAsString() +
-				"]";
+		StringBuffer sb = new StringBuffer(64);
+		sb.append(getClass().getName()).append(" [");
+		sb.append(formatAsString());
+		sb.append("]");
+		return sb.toString();
 	}
 
 	public String formatAsString() {

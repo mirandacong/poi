@@ -15,32 +15,16 @@
    limitations under the License.
 ==================================================================== */
 
-package org.apache.poi.poifs.macros;
+package org.apache.poi.hssf.util;
 
 /**
- * Representation of Macro module in office file.
+ * Holds information regarding a split plane or freeze plane for a sheet.
+ * @deprecated POI 3.15 beta 3. Use {@link org.apache.poi.ss.util.PaneInformation} instead.
  */
-public interface Module {
-    /**
-     * Type of macro module
-     */
-    public enum ModuleType {
-        Document,
-        Module,
-        Class
-    }
+public class PaneInformation extends org.apache.poi.ss.util.PaneInformation
+{
+        public PaneInformation(short x, short y, short top, short left, byte active, boolean frozen) {
+                super(x, y, top, left, active, frozen);
+        }
 
-    /**
-     * Get the module content.
-     *
-     * @return the module content
-     */
-    public String getContent();
-
-    /**
-     * Get the module type.
-     *
-     * @return the module type
-     */
-    public ModuleType geModuleType();
 }

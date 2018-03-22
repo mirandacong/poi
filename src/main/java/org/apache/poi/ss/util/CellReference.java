@@ -397,7 +397,8 @@ public class CellReference {
         String col = matcher.group(1);
         String row = matcher.group(2);
 
-        return new CellRefParts(sheetName, row, col);
+        CellRefParts cellRefParts = new CellRefParts(sheetName, row, col);
+        return cellRefParts;
     }
 
     private static String parseSheetName(String reference, int indexOfSheetNameDelimiter) {
@@ -484,7 +485,7 @@ public class CellReference {
      * @return the text representation of this cell reference as it would appear in a formula.
      */
     public String formatAsString() {
-        StringBuilder sb = new StringBuilder(32);
+        StringBuffer sb = new StringBuffer(32);
         if(_sheetName != null) {
             SheetNameFormatter.appendFormat(sb, _sheetName);
             sb.append(SHEET_NAME_DELIMITER);
@@ -523,7 +524,7 @@ public class CellReference {
      * Appends cell reference with '$' markers for absolute values as required.
      * Sheet name is not included.
      */
-    /* package */ void appendCellReference(StringBuilder sb) {
+    /* package */ void appendCellReference(StringBuffer sb) {
         if (_colIndex != -1) {
             if(_isColAbs) {
                 sb.append(ABSOLUTE_REFERENCE_MARKER);

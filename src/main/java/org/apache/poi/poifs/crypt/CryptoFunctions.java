@@ -34,7 +34,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.RC2ParameterSpec;
 
 import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.util.IOUtils;
 import org.apache.poi.util.Internal;
 import org.apache.poi.util.LittleEndian;
 import org.apache.poi.util.LittleEndianConsts;
@@ -45,10 +44,6 @@ import org.apache.poi.util.StringUtil;
  */
 @Internal
 public class CryptoFunctions {
-
-    //arbitrarily selected; may need to increase
-    private static final int MAX_RECORD_LENGTH = 100_000;
-
     /**
      * <p><cite>2.3.4.7 ECMA-376 Document Encryption Key Generation (Standard Encryption)<br>
      * 2.3.4.11 Encryption Key Generation (Agile Encryption)</cite></p>
@@ -285,7 +280,7 @@ public class CryptoFunctions {
     private static byte[] getBlockX(byte[] hash, int size, byte fill) {
         if (hash.length == size) return hash;
         
-        byte[] result = IOUtils.safelyAllocate(size, MAX_RECORD_LENGTH);
+        byte[] result = new byte[size];
         Arrays.fill(result, fill);
         System.arraycopy(hash, 0, result, 0, Math.min(result.length, hash.length));
         return result;
@@ -374,16 +369,12 @@ public class CryptoFunctions {
      * @return the verifier (actually a short value)
      */
     public static int createXorVerifier1(String password) {
-        if (password == null) {
-            throw new IllegalArgumentException("Password cannot be null");
-        }
-
         byte[] arrByteChars = toAnsiPassword(password);
         
         // SET Verifier TO 0x0000
         short verifier = 0;
 
-        if (!password.isEmpty()) {
+        if (!"".equals(password)) {
             // FOR EACH PasswordByte IN PasswordArray IN REVERSE ORDER
             for (int i = arrByteChars.length-1; i >= 0; i--) {
                 // SET Verifier TO Intermediate3 BITWISE XOR PasswordByte
@@ -416,17 +407,13 @@ public class CryptoFunctions {
      * @see <a href="http://www.aspose.com/blogs/aspose-blogs/vladimir-averkin/archive/2007/08/20/funny-how-the-new-powerful-cryptography-implemented-in-word-2007-turns-it-into-a-perfect-tool-for-document-password-removal.html">Funny: How the new powerful cryptography implemented in Word 2007 turns it into a perfect tool for document password removal.</a>
      */
     public static int createXorVerifier2(String password) {
-        if (password == null) {
-            throw new IllegalArgumentException("Password cannot be null");
-        }
-
         //Array to hold Key Values
         byte[] generatedKey = new byte[4];
 
         //Maximum length of the password is 15 chars.
         final int maxPasswordLength = 15; 
         
-        if (!password.isEmpty()) {
+        if (!"".equals(password)) {
             // Truncate the password to 15 characters
             password = password.substring(0, Math.min(password.length(), maxPasswordLength));
 
@@ -583,6 +570,7 @@ public class CryptoFunctions {
         /*
          *  SET Intermediate3 TO Intermediate1 BITWISE OR Intermediate2
          */
-        return (short)(intermediate1 | intermediate2);
+        short intermediate3 = (short)(intermediate1 | intermediate2);
+        return intermediate3;
     }
 }

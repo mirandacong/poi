@@ -77,7 +77,8 @@ public final class EndSubRecord extends SubRecord implements Cloneable {
 
     @Override
     public EndSubRecord clone() {
-
-        return new EndSubRecord();
+        EndSubRecord rec = new EndSubRecord();
+    
+        return rec;
     }
 }

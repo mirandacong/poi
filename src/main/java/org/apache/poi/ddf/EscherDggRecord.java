@@ -20,6 +20,7 @@ package org.apache.poi.ddf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public final class EscherDggRecord extends EscherRecord {
     // private int field_2_numIdClusters;
     private int field_3_numShapesSaved;
     private int field_4_drawingsSaved;
-    private final List<FileIdCluster> field_5_fileIdClusters = new ArrayList<>();
+    private final List<FileIdCluster> field_5_fileIdClusters = new ArrayList<FileIdCluster>();
     private int maxDgId;
 
     public static class FileIdCluster {
@@ -259,7 +260,7 @@ public final class EscherDggRecord extends EscherRecord {
     }
 
     private void sortCluster() {
-        field_5_fileIdClusters.sort(new Comparator<FileIdCluster>() {
+        Collections.sort(field_5_fileIdClusters, new Comparator<FileIdCluster>() {
             @Override
             public int compare(FileIdCluster f1, FileIdCluster f2) {
                 int dgDif = f1.getDrawingGroupId() - f2.getDrawingGroupId();
@@ -328,7 +329,7 @@ public final class EscherDggRecord extends EscherRecord {
     
     @Override
     protected Object[][] getAttributeMap() {
-        List<Object> fldIds = new ArrayList<>();
+        List<Object> fldIds = new ArrayList<Object>();
         fldIds.add("FileId Clusters");
         fldIds.add(field_5_fileIdClusters.size());
         for (FileIdCluster fic : field_5_fileIdClusters) {

@@ -23,6 +23,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 import org.apache.poi.hpsf.wellknown.PropertyIDMap;
+import org.apache.poi.hpsf.wellknown.SectionIDMap;
 
 /**
  * Convenience class representing a Summary Information stream in a
@@ -30,20 +31,13 @@ import org.apache.poi.hpsf.wellknown.PropertyIDMap;
  *
  * @see DocumentSummaryInformation
  */
-public final class SummaryInformation extends PropertySet {
+public final class SummaryInformation extends SpecialPropertySet {
 
     /**
      * The document name a summary information stream usually has in a POIFS filesystem.
      */
     public static final String DEFAULT_STREAM_NAME = "\005SummaryInformation";
 
-    /**
-     * The SummaryInformation's section's format ID.
-     */
-    public static final ClassID FORMAT_ID =
-        new ClassID("{F29F85E0-4FF9-1068-AB91-08002B27B3D9}");
-
-    @Override
     public PropertyIDMap getPropertySetIDMap() {
     	return PropertyIDMap.getSummaryInformationProperties();
     }
@@ -52,7 +46,7 @@ public final class SummaryInformation extends PropertySet {
      * Creates an empty {@link SummaryInformation}.
      */
     public SummaryInformation() {
-        getFirstSection().setFormatID(FORMAT_ID);
+        getFirstSection().setFormatID(SectionIDMap.SUMMARY_INFORMATION_ID);
     }
         
     /**
@@ -600,9 +594,7 @@ public final class SummaryInformation extends PropertySet {
      */
     public Thumbnail getThumbnailThumbnail() {
         byte[] data = getThumbnail();
-        if (data == null) {
-            return null;
-        }
+        if (data == null) return null;
         return new Thumbnail(data);
     }
 

@@ -15,6 +15,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 ==================================================================== */
+        
+
 package org.apache.poi.hssf.record;
 
 import org.apache.poi.util.LittleEndianOutput;
@@ -26,11 +28,15 @@ import org.apache.poi.util.LittleEndianOutput;
  * REFERENCE:  PG 372 Microsoft Excel 97 Developer's Kit (ISBN: 1-57231-498-2)<P>
  * @version 2.0-pre
  */
-public final class PrecisionRecord extends StandardRecord {
+
+public final class PrecisionRecord
+    extends StandardRecord
+{
     public final static short sid = 0xE;
     public short              field_1_precision;
 
-    public PrecisionRecord() {
+    public PrecisionRecord()
+    {
     }
 
     public PrecisionRecord(RecordInputStream in)
@@ -43,10 +49,15 @@ public final class PrecisionRecord extends StandardRecord {
      *
      * @param fullprecision - or not
      */
-    public void setFullPrecision(boolean fullprecision) {
-        if (fullprecision) {
+
+    public void setFullPrecision(boolean fullprecision)
+    {
+        if (fullprecision == true)
+        {
             field_1_precision = 1;
-        } else {
+        }
+        else
+        {
             field_1_precision = 0;
         }
     }
@@ -56,16 +67,21 @@ public final class PrecisionRecord extends StandardRecord {
      *
      * @return fullprecision - or not
      */
+
     public boolean getFullPrecision()
     {
         return (field_1_precision == 1);
     }
 
-    public String toString() {
-        return "[PRECISION]\n" +
-                "    .precision       = " + getFullPrecision() +
-                "\n" +
-                "[/PRECISION]\n";
+    public String toString()
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append("[PRECISION]\n");
+        buffer.append("    .precision       = ").append(getFullPrecision())
+            .append("\n");
+        buffer.append("[/PRECISION]\n");
+        return buffer.toString();
     }
 
     public void serialize(LittleEndianOutput out) {

@@ -69,7 +69,7 @@ public class DirectoryNode
                   final OPOIFSFileSystem filesystem,
                   final DirectoryNode parent)
     {
-       this(property, parent, filesystem, null);
+       this(property, parent, filesystem, (NPOIFSFileSystem)null);
     }
 
     /**
@@ -84,7 +84,7 @@ public class DirectoryNode
                   final NPOIFSFileSystem nfilesystem,
                   final DirectoryNode parent)
     {
-       this(property, parent, null, nfilesystem);
+       this(property, parent, (OPOIFSFileSystem)null, nfilesystem);
     }
 
     private DirectoryNode(final DirectoryProperty property,
@@ -107,14 +107,14 @@ public class DirectoryNode
                 property.getName()
             });
         }
-        _byname     = new HashMap<>();
-        _entries    = new ArrayList<>();
+        _byname     = new HashMap<String, Entry>();
+        _entries    = new ArrayList<Entry>();
         Iterator<Property> iter = property.getChildren();
 
         while (iter.hasNext())
         {
             Property child     = iter.next();
-            Entry    childNode;
+            Entry    childNode = null;
 
             if (child.isDirectory())
             {
@@ -586,11 +586,16 @@ public class DirectoryNode
      * @return an Iterator; may not be null, but may have an empty
      * back end store
      */
-    public Iterator<Object> getViewableIterator() {
-        List<Object> components = new ArrayList<>();
+    public Iterator<Object> getViewableIterator()
+    {
+        List<Object> components = new ArrayList<Object>();
 
         components.add(getProperty());
-        components.addAll(_entries);
+        Iterator<Entry> iter = _entries.iterator();
+        while (iter.hasNext())
+        {
+            components.add(iter.next());
+        }
         return components.iterator();
     }
 

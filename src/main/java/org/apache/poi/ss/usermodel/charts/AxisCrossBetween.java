@@ -17,15 +17,11 @@
 
 package org.apache.poi.ss.usermodel.charts;
 
-import org.apache.poi.util.Removal;
-
 /**
  *  Specifies the possible crossing states of an axis.
  *
- * @deprecated use XDDF AxisCrossBetween
+ * @author Roman Kashitsyn
  */
-@Deprecated
-@Removal(version="4.2")
 public enum AxisCrossBetween {
 	/**
 	 * Specifies the value axis shall cross the category axis

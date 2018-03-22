@@ -17,15 +17,14 @@
 
 package org.apache.poi.ss.usermodel.charts;
 
-import org.apache.poi.util.Removal;
+import org.apache.poi.util.Beta;
 
 /**
  * High level representation of chart element manual layout.
  *
- * @deprecated use XDDFManualLayout instead
+ * @author Roman Kashitsyn
  */
-@Deprecated
-@Removal(version="4.2")
+@Beta
 public interface ManualLayout {
 
 	/**
@@ -118,7 +117,7 @@ public interface ManualLayout {
 	public void setHeightMode(LayoutMode mode);
 
 	/**
-	 * Returns current height mode of this
+	 * Returns current height mode of this 
 	 * @return height mode of this manual layout.
 	 */
 	public LayoutMode getHeightMode();

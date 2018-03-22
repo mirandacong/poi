@@ -19,6 +19,7 @@
 package org.apache.poi.hssf.eventusermodel;
 
 import org.apache.poi.hssf.record.Record;
+import org.apache.poi.hssf.eventusermodel.HSSFUserException;
 
 /**
  * Abstract class for use with the HSSFRequest and HSSFEventFactory, which
@@ -29,9 +30,9 @@ import org.apache.poi.hssf.record.Record;
  * This should then be registered with the HSSFRequest (associating
  * it with Record SID's) as usual.
  *
- * @see HSSFEventFactory
- * @see HSSFRequest
- * @see HSSFUserException
+ * @see org.apache.poi.hssf.eventusermodel.HSSFEventFactory
+ * @see org.apache.poi.hssf.eventusermodel.HSSFRequest
+ * @see org.apache.poi.hssf.eventusermodel.HSSFUserException
  */
 
 public abstract class AbortableHSSFListener implements HSSFListener

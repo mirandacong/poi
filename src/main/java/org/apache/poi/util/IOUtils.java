@@ -17,7 +17,13 @@
 
 package org.apache.poi.util;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PushbackInputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 import java.util.zip.CRC32;
@@ -34,24 +40,10 @@ public final class IOUtils {
      * The default buffer size to use for the skip() methods.
      */
     private static final int SKIP_BUFFER_SIZE = 2048;
-    private static int BYTE_ARRAY_MAX_OVERRIDE = -1;
     private static byte[] SKIP_BYTE_BUFFER;
 
     private IOUtils() {
         // no instances of this class
-    }
-
-    /**
-     * If this value is set to > 0, {@link #safelyAllocate(long, int)} will ignore the
-     * maximum record length parameter.  This is designed to allow users to bypass
-     * the hard-coded maximum record lengths if they are willing to accept the risk
-     * of an OutOfMemoryException.
-     *
-     * @param maxOverride The number of bytes that should be possible to be allocated in one step.
-     * @since 4.0.0
-     */
-    public static void setByteArrayMaxOverride(int maxOverride) {
-        BYTE_ARRAY_MAX_OVERRIDE = maxOverride;
     }
 
     /**
@@ -95,13 +87,11 @@ public final class IOUtils {
 
         return peekedBytes;
     }
-
+    
+    
+    
     /**
      * Reads all the data from the input stream, and returns the bytes read.
-     *
-     * @param stream The byte stream of data to read.
-     * @return A byte array with the read bytes.
-     * @throws IOException If reading data fails or EOF is encountered too early for the given length.
      */
     public static byte[] toByteArray(InputStream stream) throws IOException {
         return toByteArray(stream, Integer.MAX_VALUE);
@@ -109,12 +99,6 @@ public final class IOUtils {
 
     /**
      * Reads up to {@code length} bytes from the input stream, and returns the bytes read.
-     *
-     * @param stream The byte stream of data to read.
-     * @param length The maximum length to read, use Integer.MAX_VALUE to read the stream
-     *               until EOF.
-     * @return A byte array with the read bytes.
-     * @throws IOException If reading data fails or EOF is encountered too early for the given length.
      */
     public static byte[] toByteArray(InputStream stream, int length) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(length == Integer.MAX_VALUE ? 4096 : length);
@@ -212,22 +196,18 @@ public final class IOUtils {
             }
         }
     }
-
+    
     /**
-     * Write a POI Document ({@link Workbook}, {@link org.apache.poi.sl.usermodel.SlideShow}, etc) to an output stream and close the output stream.
+     * Write a POI Document ({@link org.apache.poi.ss.usermodel.Workbook}, {@link org.apache.poi.sl.usermodel.SlideShow}, etc) to an output stream and close the output stream.
      * This will attempt to close the output stream at the end even if there was a problem writing the document to the stream.
-     *
+     * 
      * If you are using Java 7 or higher, you may prefer to use a try-with-resources statement instead.
      * This function exists for Java 6 code.
      *
      * @param doc  a writeable document to write to the output stream
      * @param out  the output stream that the document is written to
      * @throws IOException thrown on errors writing to the stream
-     *
-     * @deprecated since 4.0, use try-with-resources, will be removed in 4.2
      */
-    @Deprecated
-    @Removal(version="4.2")
     public static void write(POIDocument doc, OutputStream out) throws IOException {
         try {
             doc.write(out);
@@ -235,22 +215,18 @@ public final class IOUtils {
             closeQuietly(out);
         }
     }
-
+    
     /**
-     * Write a ({@link Workbook}) to an output stream and close the output stream.
+     * Write a ({@link org.apache.poi.ss.usermodel.Workbook}) to an output stream and close the output stream.
      * This will attempt to close the output stream at the end even if there was a problem writing the document to the stream.
-     *
+     * 
      * If you are using Java 7 or higher, you may prefer to use a try-with-resources statement instead.
      * This function exists for Java 6 code.
      *
      * @param doc  a writeable document to write to the output stream
      * @param out  the output stream that the document is written to
      * @throws IOException thrown on errors writing to the stream
-     *
-     * @deprecated since 4.0, use try-with-resources, will be removed in 4.2
      */
-    @Deprecated
-    @Removal(version="4.2")
     public static void write(Workbook doc, OutputStream out) throws IOException {
         try {
             doc.write(out);
@@ -258,23 +234,19 @@ public final class IOUtils {
             closeQuietly(out);
         }
     }
-
+    
     /**
-     * Write a POI Document ({@link Workbook}, {@link org.apache.poi.sl.usermodel.SlideShow}, etc) to an output stream and close the output stream.
+     * Write a POI Document ({@link org.apache.poi.ss.usermodel.Workbook}, {@link org.apache.poi.sl.usermodel.SlideShow}, etc) to an output stream and close the output stream.
      * This will attempt to close the output stream at the end even if there was a problem writing the document to the stream.
      * This will also attempt to close the document, even if an error occurred while writing the document or closing the output stream.
-     *
+     * 
      * If you are using Java 7 or higher, you may prefer to use a try-with-resources statement instead.
      * This function exists for Java 6 code.
      *
      * @param doc  a writeable and closeable document to write to the output stream, then close
      * @param out  the output stream that the document is written to
      * @throws IOException thrown on errors writing to the stream
-     *
-     * @deprecated since 4.0, use try-with-resources, will be removed in 4.2
      */
-    @Deprecated
-    @Removal(version="4.2")
     public static void writeAndClose(POIDocument doc, OutputStream out) throws IOException {
         try {
             write(doc, out);
@@ -282,22 +254,18 @@ public final class IOUtils {
             closeQuietly(doc);
         }
     }
-
+    
     /**
      * Like {@link #writeAndClose(POIDocument, OutputStream)}, but for writing to a File instead of an OutputStream.
      * This will attempt to close the document, even if an error occurred while writing the document.
-     *
+     * 
      * If you are using Java 7 or higher, you may prefer to use a try-with-resources statement instead.
      * This function exists for Java 6 code.
      *
      * @param doc  a writeable and closeable document to write to the output file, then close
      * @param out  the output file that the document is written to
      * @throws IOException thrown on errors writing to the stream
-     *
-     * @deprecated since 4.0, use try-with-resources, will be removed in 4.2
      */
-    @Deprecated
-    @Removal(version="4.2")
     public static void writeAndClose(POIDocument doc, File out) throws IOException {
         try {
             doc.write(out);
@@ -305,21 +273,17 @@ public final class IOUtils {
             closeQuietly(doc);
         }
     }
-
+    
     /**
      * Like {@link #writeAndClose(POIDocument, File)}, but for writing a POI Document in place (to the same file that it was opened from).
      * This will attempt to close the document, even if an error occurred while writing the document.
-     *
+     * 
      * If you are using Java 7 or higher, you may prefer to use a try-with-resources statement instead.
      * This function exists for Java 6 code.
      *
      * @param doc  a writeable document to write in-place
      * @throws IOException thrown on errors writing to the file
-     *
-     * @deprecated since 4.0, use try-with-resources, will be removed in 4.2
      */
-    @Deprecated
-    @Removal(version="4.2")
     public static void writeAndClose(POIDocument doc) throws IOException {
         try {
             doc.write();
@@ -327,15 +291,9 @@ public final class IOUtils {
             closeQuietly(doc);
         }
     }
-
+    
     // Since the Workbook interface doesn't derive from POIDocument
     // We'll likely need one of these for each document container interface
-    /**
-     *
-     * @deprecated since 4.0, use try-with-resources, will be removed in 4.2
-     */
-    @Deprecated
-    @Removal(version="4.2")
     public static void writeAndClose(Workbook doc, OutputStream out) throws IOException {
         try {
             doc.write(out);
@@ -347,10 +305,6 @@ public final class IOUtils {
     /**
      * Copies all the data from the given InputStream to the OutputStream. It
      * leaves both streams open, so you will still need to close them once done.
-     *
-     * @param inp The {@link InputStream} which provides the data
-     * @param out The {@link OutputStream} to write the data to
-     * @throws IOException If copying the data fails.
      */
     public static void copy(InputStream inp, OutputStream out) throws IOException {
         byte[] buff = new byte[4096];
@@ -362,24 +316,6 @@ public final class IOUtils {
             if (count > 0) {
                 out.write(buff, 0, count);
             }
-        }
-    }
-
-    /**
-     * Copy the contents of the stream to a new file.
-     *
-     * @param srcStream The {@link InputStream} which provides the data
-     * @param destFile The file where the data should be stored
-     * @throws IOException If the target directory does not exist and cannot be created
-     *      or if copying the data fails.
-     */
-    public static void copy(InputStream srcStream, File destFile) throws IOException {
-        File destDirectory = destFile.getParentFile();
-        if (!(destDirectory.exists() || destDirectory.mkdirs())) {
-            throw new RuntimeException("Can't create destination directory: "+destDirectory);
-        }
-        try (OutputStream destStream = new FileOutputStream(destFile)) {
-            IOUtils.copy(srcStream, destStream);
         }
     }
 
@@ -502,23 +438,12 @@ public final class IOUtils {
         if (length > (long)Integer.MAX_VALUE) {
             throw new RecordFormatException("Can't allocate an array > "+Integer.MAX_VALUE);
         }
-        if (BYTE_ARRAY_MAX_OVERRIDE > 0) {
-            if (length > BYTE_ARRAY_MAX_OVERRIDE) {
-                throwRFE(length, BYTE_ARRAY_MAX_OVERRIDE);
-            }
-        } else if (length > maxLength) {
-            throwRFE(length, maxLength);
+        if (length > maxLength) {
+            throw new RecordFormatException("Not allowed to allocate an array > "+
+                    maxLength+" for this record type." +
+                    "If the file is not corrupt, please open an issue on bugzilla to request " +
+                    "increasing the maximum allowable size for this record type");
         }
         return new byte[(int)length];
-    }
-
-    private static void throwRFE(long length, int maxLength) {
-        throw new RecordFormatException("Tried to allocate an array of length "+length +
-                ", but "+ maxLength+" is the maximum for this record type.\n" +
-                "If the file is not corrupt, please open an issue on bugzilla to request \n" +
-                "increasing the maximum allowable size for this record type.\n"+
-                "As a temporary workaround, consider setting a higher override value with " +
-                "IOUtils.setByteArrayMaxOverride()");
-
     }
 }

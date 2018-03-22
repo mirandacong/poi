@@ -42,7 +42,6 @@ import org.apache.poi.util.Internal;
 final class ForkedEvaluationSheet implements EvaluationSheet {
 
     private final EvaluationSheet _masterSheet;
-    
     /**
      * Only cells which have been split are put in this map.  (This has been done to conserve memory).
      */
@@ -50,18 +49,9 @@ final class ForkedEvaluationSheet implements EvaluationSheet {
 
     public ForkedEvaluationSheet(EvaluationSheet masterSheet) {
         _masterSheet = masterSheet;
-        _sharedCellsByRowCol = new HashMap<>();
+        _sharedCellsByRowCol = new HashMap<RowColKey, ForkedEvaluationCell>();
     }
-    
-    /* (non-Javadoc)
-     * @see org.apache.poi.ss.formula.EvaluationSheet#getlastRowNum()
-     * @since POI 4.0.0
-     */
-    @Override
-    public int getLastRowNum() {
-        return _masterSheet.getLastRowNum();
-    }
-    
+
     @Override
     public EvaluationCell getCell(int rowIndex, int columnIndex) {
         RowColKey key = new RowColKey(rowIndex, columnIndex);

@@ -66,7 +66,7 @@ public final class NameRecord extends ContinuableRecord {
 		public static final int OPT_COMPLEX =       0x0010;
 		public static final int OPT_BUILTIN =       0x0020;
 		public static final int OPT_BINDATA =       0x1000;
-		public static boolean isFormula(int optValue) {
+		public static final boolean isFormula(int optValue) {
 			return (optValue & 0x0F) == 0;
 		}
 	}
@@ -536,7 +536,7 @@ public final class NameRecord extends ContinuableRecord {
 
 	@Override
     public String toString() {
-		StringBuilder sb = new StringBuilder();
+		StringBuffer sb = new StringBuffer();
 
 		sb.append("[NAME]\n");
 		sb.append("    .option flags           = ").append(HexDump.shortToHex(field_1_option_flag)).append("\n");
@@ -553,7 +553,7 @@ public final class NameRecord extends ContinuableRecord {
 		Ptg[] ptgs = field_13_name_definition.getTokens();
 		sb.append("    .Formula (nTokens=").append(ptgs.length).append("):") .append("\n");
 		for (Ptg ptg : ptgs) {
-			sb.append("       ").append(ptg).append(ptg.getRVAType()).append("\n");
+			sb.append("       " + ptg).append(ptg.getRVAType()).append("\n");
 		}
 
 		sb.append("    .Menu text       = ").append(field_14_custom_menu_text).append("\n");

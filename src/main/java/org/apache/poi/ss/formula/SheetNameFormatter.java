@@ -47,17 +47,15 @@ public final class SheetNameFormatter {
 	 * sheet name will be converted to double single quotes ('').  
 	 */
 	public static String format(String rawSheetName) {
-        StringBuilder sb = new StringBuilder(rawSheetName.length() + 2);
+		StringBuffer sb = new StringBuffer(rawSheetName.length() + 2);
 		appendFormat(sb, rawSheetName);
 		return sb.toString();
 	}
 	
 	/**
 	 * Convenience method for ({@link #format(String)}) when a StringBuffer is already available.
-	 *
-     * @param out - sheet name will be appended here possibly with delimiting quotes
-     * @param rawSheetName - sheet name
-     * @deprecated use <code>appendFormat(StringBuilder out, String rawSheetName)</code> instead
+	 * 
+	 * @param out - sheet name will be appended here possibly with delimiting quotes 
 	 */
 	public static void appendFormat(StringBuffer out, String rawSheetName) {
 		boolean needsQuotes = needsDelimiting(rawSheetName);
@@ -69,10 +67,6 @@ public final class SheetNameFormatter {
 			out.append(rawSheetName);
 		}
 	}
-
-    /**
-     * @deprecated use <code>appendFormat(StringBuilder out, String workbookName, String rawSheetName)</code> instead
-     */
 	public static void appendFormat(StringBuffer out, String workbookName, String rawSheetName) {
 		boolean needsQuotes = needsDelimiting(workbookName) || needsDelimiting(rawSheetName);
 		if(needsQuotes) {
@@ -90,54 +84,17 @@ public final class SheetNameFormatter {
 		}
 	}
 
-	/**
-	 * Convenience method for ({@link #format(String)}) when a StringBuilder is already available.
-	 *
-	 * @param out - sheet name will be appended here possibly with delimiting quotes
-     * @param rawSheetName - sheet name
-	 */
-	public static void appendFormat(StringBuilder out, String rawSheetName) {
-		boolean needsQuotes = needsDelimiting(rawSheetName);
-		if(needsQuotes) {
-			out.append(DELIMITER);
-			appendAndEscape(out, rawSheetName);
-			out.append(DELIMITER);
-		} else {
-			out.append(rawSheetName);
+	private static void appendAndEscape(StringBuffer sb, String rawSheetName) {
+		int len = rawSheetName.length();
+		for(int i=0; i<len; i++) {
+			char ch = rawSheetName.charAt(i);
+			if(ch == DELIMITER) {
+				// single quotes (') are encoded as ('')
+				sb.append(DELIMITER);
+			}
+			sb.append(ch);
 		}
 	}
-	public static void appendFormat(StringBuilder out, String workbookName, String rawSheetName) {
-		boolean needsQuotes = needsDelimiting(workbookName) || needsDelimiting(rawSheetName);
-		if(needsQuotes) {
-			out.append(DELIMITER);
-			out.append('[');
-			appendAndEscape(out, workbookName.replace('[', '(').replace(']', ')'));
-			out.append(']');
-			appendAndEscape(out, rawSheetName);
-			out.append(DELIMITER);
-		} else {
-			out.append('[');
-			out.append(workbookName);
-			out.append(']');
-			out.append(rawSheetName);
-		}
-	}
-
-    private static void appendAndEscape(Appendable sb, String rawSheetName) {
-        int len = rawSheetName.length();
-        for(int i=0; i<len; i++) {
-            char ch = rawSheetName.charAt(i);
-            try {
-                if(ch == DELIMITER) {
-                    // single quotes (') are encoded as ('')
-                    sb.append(DELIMITER);
-                }
-                sb.append(ch);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
 
 	private static boolean needsDelimiting(String rawSheetName) {
 		int len = rawSheetName.length();
@@ -224,7 +181,7 @@ public final class SheetNameFormatter {
 	 * For better or worse this implementation attempts to replicate Excel's formula renderer.
 	 * Excel uses range checking on the apparent 'row' and 'column' components.  Note however that
 	 * the maximum sheet size varies across versions.
-	 * @see CellReference
+	 * @see org.apache.poi.ss.util.CellReference
 	 */
 	/* package */ static boolean cellReferenceIsWithinRange(String lettersPrefix, String numbersSuffix) {
 		return CellReference.cellReferenceIsWithinRange(lettersPrefix, numbersSuffix, SpreadsheetVersion.EXCEL97);

@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.apache.poi.EmptyFileException;
 import org.apache.poi.hpsf.wellknown.PropertyIDMap;
+import org.apache.poi.hpsf.wellknown.SectionIDMap;
 import org.apache.poi.poifs.filesystem.DirectoryEntry;
 import org.apache.poi.poifs.filesystem.Entry;
 import org.apache.poi.util.CodePageUtil;
@@ -133,7 +134,7 @@ public class PropertySet {
     /**
      * The sections in this {@link PropertySet}.
      */
-    private final List<Section> sections = new ArrayList<>();
+    private final List<Section> sections = new ArrayList<Section>();
 
     
     /**
@@ -157,7 +158,7 @@ public class PropertySet {
 
         /* Initialize the sections. Since property set must have at least
          * one section it is added right here. */
-        addSection(new Section());
+        addSection(new MutableSection());
     }
 
 
@@ -249,7 +250,7 @@ public class PropertySet {
         setOSVersion(ps.getOSVersion());
         setClassID(ps.getClassID());
         for (final Section section : ps.getSections()) {
-            sections.add(new Section(section));
+            sections.add(new MutableSection(section));
         }
     }
 
@@ -390,7 +391,8 @@ public class PropertySet {
          */
         try {
             final byte[] buffer = IOUtils.peekFirstNBytes(stream, BUFFER_SIZE);
-            return isPropertySetStream(buffer, 0, buffer.length);
+            final boolean isPropertySetStream = isPropertySetStream(buffer, 0, buffer.length);
+            return isPropertySetStream;
         } catch (EmptyFileException e) {
             return false;
         }
@@ -489,7 +491,7 @@ public class PropertySet {
          * "offset" accordingly.
          */
         for (int i = 0; i < sectionCount; i++) {
-            final Section s = new Section(src, o);
+            final Section s = new MutableSection(src, o);
             o += ClassID.LENGTH + LittleEndianConsts.INT_SIZE;
             sections.add(s);
         }
@@ -578,7 +580,7 @@ public class PropertySet {
      * document. The input stream represents a snapshot of the property set.
      * If the latter is modified while the input stream is still being
      * read, the modifications will not be reflected in the input stream but in
-     * the {@link PropertySet} only.
+     * the {@link MutablePropertySet} only.
      *
      * @return the contents of this property set stream
      *
@@ -658,7 +660,7 @@ public class PropertySet {
      * represents a Summary Information, else {@code false}.
      */
     public boolean isSummaryInformation() {
-        return !sections.isEmpty() && matchesSummary(getFirstSection().getFormatID(), SummaryInformation.FORMAT_ID); 
+        return !sections.isEmpty() && matchesSummary(getFirstSection().getFormatID(), SectionIDMap.SUMMARY_INFORMATION_ID); 
     }
 
     /**
@@ -668,7 +670,7 @@ public class PropertySet {
      * represents a Document Summary Information, else {@code false}.
      */
     public boolean isDocumentSummaryInformation() {
-        return !sections.isEmpty() && matchesSummary(getFirstSection().getFormatID(), DocumentSummaryInformation.FORMAT_ID); 
+        return !sections.isEmpty() && matchesSummary(getFirstSection().getFormatID(), SectionIDMap.DOCUMENT_SUMMARY_INFORMATION_ID); 
     }
     
     /* package */ static boolean matchesSummary(ClassID actual, ClassID... expected) {
@@ -753,8 +755,8 @@ public class PropertySet {
      * #getPropertyIntValue} or {@link #getProperty} tried to access
      * was available or not. This information might be important for
      * callers of {@link #getPropertyIntValue} since the latter
-     * returns 0 if the property does not exist. Using wasNull,
-     * the caller can distinguish this case from a
+     * returns 0 if the property does not exist. Using {@link
+     * #wasNull}, the caller can distiguish this case from a
      * property's real value of 0.
      *
      * @return {@code true} if the last call to {@link

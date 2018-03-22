@@ -210,10 +210,12 @@ public class ImageUtils {
         anchor.setRow2(row2);
         anchor.setDy2(dy2);
 
-        return new Dimension(
+        Dimension dim = new Dimension(
             (int)Math.round(scaledWidth*EMU_PER_PIXEL),
             (int)Math.round(scaledHeight*EMU_PER_PIXEL)
         );
+        
+        return dim;
     }
 
     /**

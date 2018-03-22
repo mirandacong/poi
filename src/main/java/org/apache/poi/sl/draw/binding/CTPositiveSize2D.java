@@ -29,25 +29,25 @@ import javax.xml.bind.annotation.XmlType;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="CT_PositiveSize2D"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;attribute name="cx" use="required" type="{http://schemas.openxmlformats.org/drawingml/2006/main}ST_PositiveCoordinate" /&gt;
- *       &lt;attribute name="cy" use="required" type="{http://schemas.openxmlformats.org/drawingml/2006/main}ST_PositiveCoordinate" /&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
+ * &lt;complexType name="CT_PositiveSize2D">
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;attribute name="cx" use="required" type="{http://schemas.openxmlformats.org/drawingml/2006/main}ST_PositiveCoordinate" />
+ *       &lt;attribute name="cy" use="required" type="{http://schemas.openxmlformats.org/drawingml/2006/main}ST_PositiveCoordinate" />
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
  * </pre>
  * 
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CT_PositiveSize2D")
+@XmlType(name = "CT_PositiveSize2D", namespace = "http://schemas.openxmlformats.org/drawingml/2006/main")
 public class CTPositiveSize2D {
 
-    @XmlAttribute(name = "cx", required = true)
+    @XmlAttribute(required = true)
     protected long cx;
-    @XmlAttribute(name = "cy", required = true)
+    @XmlAttribute(required = true)
     protected long cy;
 
     /**

@@ -19,23 +19,20 @@ package org.apache.poi.ss.usermodel;
 
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.charts.ChartAxis;
-import org.apache.poi.ss.usermodel.charts.ChartAxisFactory;
 import org.apache.poi.ss.usermodel.charts.ChartData;
-import org.apache.poi.ss.usermodel.charts.ChartDataFactory;
+import org.apache.poi.ss.usermodel.charts.ChartAxis;
 import org.apache.poi.ss.usermodel.charts.ChartLegend;
 import org.apache.poi.ss.usermodel.charts.ManuallyPositionable;
-import org.apache.poi.util.Removal;
+import org.apache.poi.ss.usermodel.charts.ChartDataFactory;
+import org.apache.poi.ss.usermodel.charts.ChartAxisFactory;
 
 /**
  * High level representation of a chart.
  *
- * @deprecated
+ * @author Roman Kashitsyn
  */
-@Deprecated
-@Removal(version="4.2")
 public interface Chart extends ManuallyPositionable {
-
+	
 	/**
 	 * @return an appropriate ChartDataFactory implementation
 	 */

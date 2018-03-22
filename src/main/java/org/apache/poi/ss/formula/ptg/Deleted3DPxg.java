@@ -65,7 +65,7 @@ public final class Deleted3DPxg extends OperandPtg implements Pxg {
     }
 
     public String toFormulaString() {
-        StringBuilder sb = new StringBuilder(64);
+        StringBuffer sb = new StringBuffer();
         if (externalWorkbookNumber >= 0) {
             sb.append('[');
             sb.append(externalWorkbookNumber);

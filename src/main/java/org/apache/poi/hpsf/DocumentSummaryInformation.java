@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.hpsf.wellknown.PropertyIDMap;
+import org.apache.poi.hpsf.wellknown.SectionIDMap;
 
 /**
  * Convenience class representing a DocumentSummary Information stream in a
@@ -32,8 +33,7 @@ import org.apache.poi.hpsf.wellknown.PropertyIDMap;
  *
  * @see SummaryInformation
  */
-public class DocumentSummaryInformation extends PropertySet {
-
+public class DocumentSummaryInformation extends SpecialPropertySet {
     /**
      * The document name a document summary information stream
      * usually has in a POIFS filesystem.
@@ -41,18 +41,6 @@ public class DocumentSummaryInformation extends PropertySet {
     public static final String DEFAULT_STREAM_NAME =
         "\005DocumentSummaryInformation";
 
-    /**
-     * The DocumentSummaryInformation's first and second sections' format ID.
-     */
-    private static final ClassID DOC_SUMMARY_INFORMATION =
-        new ClassID("{D5CDD502-2E9C-101B-9397-08002B2CF9AE}");    
-    private static final ClassID USER_DEFINED_PROPERTIES =
-        new ClassID("{D5CDD505-2E9C-101B-9397-08002B2CF9AE}");
-    
-    public static final ClassID[] FORMAT_ID = {
-        DOC_SUMMARY_INFORMATION, USER_DEFINED_PROPERTIES
-    };
-    
     @Override
     public PropertyIDMap getPropertySetIDMap() {
     	return PropertyIDMap.getDocumentSummaryInformationProperties();
@@ -63,7 +51,7 @@ public class DocumentSummaryInformation extends PropertySet {
      * Creates an empty {@link DocumentSummaryInformation}.
      */
     public DocumentSummaryInformation() {
-        getFirstSection().setFormatID(DOC_SUMMARY_INFORMATION);
+        getFirstSection().setFormatID(SectionIDMap.DOCUMENT_SUMMARY_INFORMATION_ID[0]);
     }
 
     
@@ -823,8 +811,8 @@ public class DocumentSummaryInformation extends PropertySet {
      */
     private void ensureSection2() {
         if (getSectionCount() < 2) {
-            Section s2 = new Section();
-            s2.setFormatID(USER_DEFINED_PROPERTIES);
+            Section s2 = new MutableSection();
+            s2.setFormatID(SectionIDMap.DOCUMENT_SUMMARY_INFORMATION_ID[1]);
             addSection(s2);
         }
     }
@@ -837,7 +825,7 @@ public class DocumentSummaryInformation extends PropertySet {
             throw new HPSFRuntimeException("Illegal internal format of Document SummaryInformation stream: second section is missing.");
         }
 
-        List<Section> l = new LinkedList<>(getSections());
+        List<Section> l = new LinkedList<Section>(getSections());
         clearSections();
         int idx = 0;
         for (Section s : l) {

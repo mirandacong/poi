@@ -19,17 +19,12 @@ package org.apache.poi.hssf.util;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
-import org.apache.poi.util.Removal;
 
 /**
  * Various utility functions that make working with a region of cells easier.
- * @deprecated POI 4.0.0
- * @see RegionUtil
  */
-@Removal(version="4.2")
 public final class HSSFRegionUtil {
 
 	private HSSFRegionUtil() {
@@ -47,7 +42,7 @@ public final class HSSFRegionUtil {
 	 */
 	public static void setBorderLeft(int border, CellRangeAddress region, HSSFSheet sheet,
 			HSSFWorkbook workbook) {
-		RegionUtil.setBorderLeft(BorderStyle.valueOf((short)border), region, sheet);
+		RegionUtil.setBorderLeft(border, region, sheet);
 	}
 
 	/**
@@ -73,7 +68,7 @@ public final class HSSFRegionUtil {
 	 */
 	public static void setBorderRight(int border, CellRangeAddress region, HSSFSheet sheet,
 			HSSFWorkbook workbook) {
-		RegionUtil.setBorderRight(BorderStyle.valueOf((short)border), region, sheet);
+		RegionUtil.setBorderRight(border, region, sheet);
 	}
 
 	/**
@@ -99,7 +94,7 @@ public final class HSSFRegionUtil {
 	 */
 	public static void setBorderBottom(int border, CellRangeAddress region, HSSFSheet sheet,
 			HSSFWorkbook workbook) {
-		RegionUtil.setBorderBottom(BorderStyle.valueOf((short)border), region, sheet);
+		RegionUtil.setBorderBottom(border, region, sheet);
 	}
 
 	/**
@@ -125,7 +120,7 @@ public final class HSSFRegionUtil {
 	 */
 	public static void setBorderTop(int border, CellRangeAddress region, HSSFSheet sheet,
 			HSSFWorkbook workbook) {
-		RegionUtil.setBorderTop(BorderStyle.valueOf((short)border), region, sheet);
+		RegionUtil.setBorderTop(border, region, sheet);
 	}
 
 	/**

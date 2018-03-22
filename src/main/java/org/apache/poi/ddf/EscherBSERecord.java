@@ -17,7 +17,6 @@
 
 package org.apache.poi.ddf;
 
-import org.apache.poi.util.IOUtils;
 import org.apache.poi.util.LittleEndian;
 
 /**
@@ -28,10 +27,6 @@ import org.apache.poi.util.LittleEndian;
  * @see EscherBlipRecord
  */
 public final class EscherBSERecord extends EscherRecord {
-
-    //arbitrarily selected; may need to increase
-    private static final int MAX_RECORD_LENGTH = 100_000;
-
     public static final short RECORD_ID = (short) 0xF007;
     public static final String RECORD_DESCRIPTION = "MsofbtBSE";
 
@@ -89,7 +84,7 @@ public final class EscherBSERecord extends EscherRecord {
         pos += 36 + bytesRead;
         bytesRemaining -= bytesRead;
 
-        _remainingData = IOUtils.safelyAllocate(bytesRemaining, MAX_RECORD_LENGTH);
+        _remainingData = new byte[bytesRemaining];
         System.arraycopy( data, pos, _remainingData, 0, bytesRemaining );
         return bytesRemaining + 8 + 36 + (field_12_blipRecord == null ? 0 : field_12_blipRecord.getRecordSize()) ;
 

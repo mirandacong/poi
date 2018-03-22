@@ -23,7 +23,7 @@ package org.apache.poi.hpsf;
  * properties have an optional name. If the name is not {@code null} it
  * will be maintained in the section's dictionary.
  */
-public class CustomProperty extends Property
+public class CustomProperty extends MutableProperty
 {
 
     private String name;
@@ -86,7 +86,7 @@ public class CustomProperty extends Property
      * @return {@code true} if both custom properties are equal, else
      *         {@code false}.
      * 
-     * @see java.util.AbstractSet#equals(Object)
+     * @see java.util.AbstractSet#equals(java.lang.Object)
      */
     public boolean equalsContents(final Object o) {
         final CustomProperty c = (CustomProperty) o;

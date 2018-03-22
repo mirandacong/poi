@@ -157,7 +157,7 @@ public class DateUtil {
      *
      *  @param date  The Excel date.
      *  @return Java representation of the date, or null if date is not a valid Excel date
-     *  @see TimeZone
+     *  @see java.util.TimeZone
      */
     public static Date getJavaDate(double date) {
         return getJavaDate(date, false, null, false);
@@ -220,7 +220,7 @@ public class DateUtil {
      *  @param use1904windowing  true if date uses 1904 windowing,
      *   or false if using 1900 date windowing.
      *  @return Java representation of the date, or null if date is not a valid Excel date
-     *  @see TimeZone
+     *  @see java.util.TimeZone
      */
     public static Date getJavaDate(double date, boolean use1904windowing) {
         return getJavaDate(date, use1904windowing, null, false);
@@ -258,7 +258,7 @@ public class DateUtil {
      *  @return Java representation of the date, or null if date is not a valid Excel date
      */
     public static Calendar getJavaCalendar(double date) {
-        return getJavaCalendar(date, false, null, false);
+        return getJavaCalendar(date, false, (TimeZone)null, false);
     }
 
     /**
@@ -270,7 +270,7 @@ public class DateUtil {
      *  @return Java representation of the date, or null if date is not a valid Excel date
      */
     public static Calendar getJavaCalendar(double date, boolean use1904windowing) {
-        return getJavaCalendar(date, use1904windowing, null, false);
+        return getJavaCalendar(date, use1904windowing, (TimeZone)null, false);
     }
 
     /**
@@ -333,8 +333,8 @@ public class DateUtil {
             return -1;
         }
     };
-    private static ThreadLocal<String> lastFormatString = new ThreadLocal<>();
-    private static ThreadLocal<Boolean> lastCachedResult = new ThreadLocal<>();
+    private static ThreadLocal<String> lastFormatString = new ThreadLocal<String>();
+    private static ThreadLocal<Boolean> lastCachedResult = new ThreadLocal<Boolean>();
     
     private static boolean isCached(String formatString, int formatIndex) {
         String cachedFormatString = lastFormatString.get();
@@ -487,7 +487,7 @@ public class DateUtil {
     /**
      * Given a format ID this will check whether the format represents
      *  an internal excel date format or not.
-     * @see #isADateFormat(int, String)
+     * @see #isADateFormat(int, java.lang.String)
      */
     public static boolean isInternalDateFormat(int format) {
             switch(format) {

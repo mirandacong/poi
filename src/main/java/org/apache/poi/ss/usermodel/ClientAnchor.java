@@ -262,7 +262,7 @@ public interface ClientAnchor {
      * @param anchorType the anchor type to set
      * @since POI 3.14
      */
-    public void setAnchorType(AnchorType anchorType);
+    public void setAnchorType( AnchorType anchorType );
 
     /**
      * Gets the anchor type

@@ -127,7 +127,8 @@ public final class EscherGraphics2d extends Graphics2D {
 
     public Graphics create()
     {
-        return new EscherGraphics2d(_escherGraphics);
+        EscherGraphics2d g2d = new EscherGraphics2d(_escherGraphics);
+        return g2d;
     }
 
     public void dispose()
@@ -341,7 +342,7 @@ public final class EscherGraphics2d extends Graphics2D {
      * @param xPoints array of the <code>x</code> coordinates.
      * @param yPoints array of the <code>y</code> coordinates.
      * @param nPoints the total number of points in the polygon.
-     * @see   Graphics#drawPolygon(int[], int[], int)
+     * @see   java.awt.Graphics#drawPolygon(int[], int[], int)
      */
     public void fillPolygon(int xPoints[], int yPoints[], int nPoints)
     {
@@ -420,7 +421,7 @@ public final class EscherGraphics2d extends Graphics2D {
         return _paint;
     }
 
-    public Object getRenderingHint(RenderingHints.Key key)
+    public Object getRenderingHint(java.awt.RenderingHints.Key key)
     {
         return getG2D().getRenderingHint(key);
     }
@@ -508,7 +509,7 @@ public final class EscherGraphics2d extends Graphics2D {
         getEscherGraphics().setPaintMode();
     }
 
-    public void setRenderingHint(RenderingHints.Key key, Object obj)
+    public void setRenderingHint(java.awt.RenderingHints.Key key, Object obj)
     {
         getG2D().setRenderingHint(key, obj);
     }

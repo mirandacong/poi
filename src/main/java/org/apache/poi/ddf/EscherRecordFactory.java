@@ -30,5 +30,5 @@ public interface EscherRecordFactory {
      * @param offset The starting offset into the byte array
      * @return The generated escher record
      */
-    EscherRecord createRecord(byte[] data, int offset);
+    EscherRecord createRecord( byte[] data, int offset );
 }

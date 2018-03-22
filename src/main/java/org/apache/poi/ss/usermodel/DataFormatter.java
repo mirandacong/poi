@@ -59,7 +59,7 @@ import org.apache.poi.util.POILogger;
  * codes, etc.
  * <p>
  * Internally, formats will be implemented using subclasses of {@link Format}
- * such as {@link DecimalFormat} and {@link SimpleDateFormat}. Therefore the
+ * such as {@link DecimalFormat} and {@link java.text.SimpleDateFormat}. Therefore the
  * formats used by this class must obey the same pattern rules as these Format
  * subclasses. This means that only legal number pattern characters ("0", "#",
  * ".", "," etc.) may appear in number formats. Other characters can be
@@ -128,7 +128,7 @@ public class DataFormatter implements Observer {
     private static final Pattern daysAsText = Pattern.compile("([d]{3,})", Pattern.CASE_INSENSITIVE);
 
     /** Pattern to find "AM/PM" marker */
-    private static final Pattern amPmPattern = Pattern.compile("(([AP])[M/P]*)", Pattern.CASE_INSENSITIVE);
+    private static final Pattern amPmPattern = Pattern.compile("((A|P)[M/P]*)", Pattern.CASE_INSENSITIVE);
     
     /** Pattern to find formats with condition ranges e.g. [>=100] */
     private static final Pattern rangeConditionalPattern = Pattern.compile(".*\\[\\s*(>|>=|<|<=|=)\\s*[0-9]*\\.*[0-9].*");
@@ -137,7 +137,7 @@ public class DataFormatter implements Observer {
      * A regex to find locale patterns like [$$-1009] and [$?-452].
      * Note that we don't currently process these into locales 
      */
-    private static final Pattern localePatternGroup = Pattern.compile("(\\[\\$[^-\\]]*-[0-9A-Z]+])");
+    private static final Pattern localePatternGroup = Pattern.compile("(\\[\\$[^-\\]]*-[0-9A-Z]+\\])");
 
     /**
      * A regex to match the colour formattings rules.
@@ -202,7 +202,7 @@ public class DataFormatter implements Observer {
      * A map to cache formats.
      *  Map<String,Format> formats
      */
-    private final Map<String,Format> formats = new HashMap<>();
+    private final Map<String,Format> formats = new HashMap<String,Format>();
 
     private final boolean emulateCSV;
 
@@ -508,7 +508,7 @@ public class DataFormatter implements Observer {
         StringBuilder sb = new StringBuilder();
         char[] chars = formatStr.toCharArray();
         boolean mIsMonth = true;
-        List<Integer> ms = new ArrayList<>();
+        List<Integer> ms = new ArrayList<Integer>();
         boolean isElapsed = false;
         for(int j=0; j<chars.length; j++) {
             char c = chars[j];
@@ -693,7 +693,7 @@ public class DataFormatter implements Observer {
         private BigDecimal divider;
         private static final BigDecimal ONE_THOUSAND = new BigDecimal(1000);
         private final DecimalFormat df;
-        private static String trimTrailingCommas(String s) {
+        private static final String trimTrailingCommas(String s) {
             return s.replaceAll(",+$", "");
         }
 
@@ -843,7 +843,7 @@ public class DataFormatter implements Observer {
         if (numberFormat == null) {
             return String.valueOf(d);
         }
-        String formatted = numberFormat.format(Double.valueOf(d));
+        String formatted = numberFormat.format(new Double(d));
         return formatted.replaceFirst("E(\\d)", "E+$1"); // to match Excel's E-notation
     }
 
@@ -894,7 +894,7 @@ public class DataFormatter implements Observer {
         String result;
         final String textValue = NumberToTextConverter.toText(value);
         if (textValue.indexOf('E') > -1) {
-            result = numberFormat.format(Double.valueOf(value));
+            result = numberFormat.format(new Double(value));
         }
         else {
             result = numberFormat.format(new BigDecimal(textValue));
@@ -978,12 +978,12 @@ public class DataFormatter implements Observer {
             return "";
         }
 
-        CellType cellType = cell.getCellType();
+        CellType cellType = cell.getCellTypeEnum();
         if (cellType == CellType.FORMULA) {
             if (evaluator == null) {
                 return cell.getCellFormula();
             }
-            cellType = evaluator.evaluateFormulaCell(cell);
+            cellType = evaluator.evaluateFormulaCellEnum(cell);
         }
         switch (cellType) {
             case NUMERIC :
@@ -1023,7 +1023,7 @@ public class DataFormatter implements Observer {
      * </p>
      *
      * @param format A Format instance to be used as a default
-     * @see Format#format
+     * @see java.text.Format#format
      */
     public void setDefaultNumberFormat(Format format) {
         for (Map.Entry<String, Format> entry : formats.entrySet()) {

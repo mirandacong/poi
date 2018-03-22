@@ -17,6 +17,7 @@
 package org.apache.poi.ddf;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -29,7 +30,7 @@ import org.apache.poi.util.LittleEndian;
  */
 public abstract class AbstractEscherOptRecord extends EscherRecord
 {
-    private List<EscherProperty> properties = new ArrayList<>();
+    private List<EscherProperty> properties = new ArrayList<EscherProperty>();
 
     /**
      * Add a property to this record.
@@ -134,14 +135,16 @@ public abstract class AbstractEscherOptRecord extends EscherRecord
      */
     public void sortProperties()
     {
-        properties.sort(new Comparator<EscherProperty>() {
+        Collections.sort( properties, new Comparator<EscherProperty>()
+        {
             @Override
-            public int compare(EscherProperty p1, EscherProperty p2) {
+            public int compare( EscherProperty p1, EscherProperty p2 )
+            {
                 short s1 = p1.getPropertyNumber();
                 short s2 = p2.getPropertyNumber();
-                return Short.compare(s1, s2);
+                return s1 < s2 ? -1 : s1 == s2 ? 0 : 1;
             }
-        });
+        } );
     }
 
     /**
@@ -173,7 +176,7 @@ public abstract class AbstractEscherOptRecord extends EscherRecord
 
     @Override
     protected Object[][] getAttributeMap() {
-        List<Object> attrList = new ArrayList<>(properties.size() * 2 + 2);
+        List<Object> attrList = new ArrayList<Object>(properties.size()*2+2);
         attrList.add("properties");
         attrList.add(properties.size());
         for ( EscherProperty property : properties ) {

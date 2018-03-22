@@ -71,12 +71,12 @@ public interface Drawable {
      *  how to render text:
      *
      *  {@link #TEXT_AS_CHARACTERS} (default) means to draw via
-     *   {@link Graphics2D#drawString(java.text.AttributedCharacterIterator, float, float)}.
+     *   {@link java.awt.Graphics2D#drawString(java.text.AttributedCharacterIterator, float, float)}.
      *   This mode draws text as characters. Use it if the target graphics writes the actual
      *   character codes instead of glyph outlines (PDFGraphics2D, SVGGraphics2D, etc.)
      *
      *   {@link #TEXT_AS_SHAPES} means to render via
-     *   {@link java.awt.font.TextLayout#draw(Graphics2D, float, float)}.
+     *   {@link java.awt.font.TextLayout#draw(java.awt.Graphics2D, float, float)}.
      *   This mode draws glyphs as shapes and provides some advanced capabilities such as
      *   justification and font substitution. Use it if the target graphics is an image.
      *
@@ -96,12 +96,12 @@ public interface Drawable {
     DrawableHint PRESET_GEOMETRY_CACHE = new DrawableHint(6);
     
     /**
-     * draw text via {@link Graphics2D#drawString(java.text.AttributedCharacterIterator, float, float)}
+     * draw text via {@link java.awt.Graphics2D#drawString(java.text.AttributedCharacterIterator, float, float)}
      */
     int TEXT_AS_CHARACTERS = 1;
 
     /**
-     * draw text via {@link java.awt.font.TextLayout#draw(Graphics2D, float, float)}
+     * draw text via {@link java.awt.font.TextLayout#draw(java.awt.Graphics2D, float, float)}
      */
     int TEXT_AS_SHAPES = 2;
 

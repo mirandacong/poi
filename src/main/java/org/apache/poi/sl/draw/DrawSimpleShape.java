@@ -119,7 +119,7 @@ public class DrawSimpleShape extends DrawShape {
         }
         graphics.setPaint(line);
 
-        List<Outline> lst = new ArrayList<>();
+        List<Outline> lst = new ArrayList<Outline>();
         LineDecoration deco = getShape().getLineDecoration();
         Outline head = getHeadDecoration(graphics, deco, stroke);
         if (head != null) {
@@ -347,7 +347,7 @@ public class DrawSimpleShape extends DrawShape {
             : (Map<String, CustomGeometry>)graphics.getRenderingHint(Drawable.PRESET_GEOMETRY_CACHE);
 
         if (presets == null) {
-            presets = new HashMap<>();
+            presets = new HashMap<String,CustomGeometry>();
             if (graphics != null) {
                 graphics.setRenderingHint(Drawable.PRESET_GEOMETRY_CACHE, presets);
             }
@@ -377,7 +377,7 @@ public class DrawSimpleShape extends DrawShape {
                     StartElement evRoot = (StartElement)staxFiltRd.peek();
                     String cusName = evRoot.getName().getLocalPart();
                     // XMLEvent ev = staxReader.nextEvent();
-                    JAXBElement<CTCustomGeometry2D> el = unmarshaller.unmarshal(staxReader, CTCustomGeometry2D.class);
+                    JAXBElement<org.apache.poi.sl.draw.binding.CTCustomGeometry2D> el = unmarshaller.unmarshal(staxReader, CTCustomGeometry2D.class);
                     CTCustomGeometry2D cusGeom = el.getValue();
 
                     presets.put(cusName, new CustomGeometry(cusGeom));
@@ -398,7 +398,7 @@ public class DrawSimpleShape extends DrawShape {
     protected Collection<Outline> computeOutlines(Graphics2D graphics) {
         final SimpleShape<?,?> sh = getShape();
 
-        List<Outline> lst = new ArrayList<>();
+        List<Outline> lst = new ArrayList<Outline>();
         CustomGeometry geom = sh.getGeometry();
         if(geom == null) {
             return lst;

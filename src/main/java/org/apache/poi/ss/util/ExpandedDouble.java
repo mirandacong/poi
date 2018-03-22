@@ -62,7 +62,8 @@ final class ExpandedDouble {
 			_significand = frac.shiftLeft(expAdj);
 			_binaryExponent = (biasedExp & 0x07FF) - 1023 - expAdj;
 		} else {
-            _significand = getFrac(rawBits);
+			BigInteger frac = getFrac(rawBits);
+			_significand = frac;
 			_binaryExponent = (biasedExp & 0x07FF) - 1023;
 		}
 	}

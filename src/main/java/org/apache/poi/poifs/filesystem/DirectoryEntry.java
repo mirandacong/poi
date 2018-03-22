@@ -84,7 +84,7 @@ public interface DirectoryEntry
      * Checks if entry with specified name present
      */
 
-    public boolean hasEntry(final String name);
+    public boolean hasEntry( final String name );
 
     /**
      * get a specified Entry by name

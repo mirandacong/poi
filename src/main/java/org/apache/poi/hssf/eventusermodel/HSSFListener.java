@@ -26,7 +26,7 @@ import org.apache.poi.hssf.record.Record;
  * it with Record SID's).
  *
  * @see org.apache.poi.hssf.eventusermodel.HSSFEventFactory
- * @see HSSFRequest
+ * @see org.apache.poi.hssf.eventusermodel.HSSFRequest
  */
 
 public interface HSSFListener

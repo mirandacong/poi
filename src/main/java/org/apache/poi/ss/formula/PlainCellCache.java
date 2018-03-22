@@ -78,7 +78,7 @@ final class PlainCellCache {
 	private Map<Loc, PlainValueCellCacheEntry> _plainValueEntriesByLoc;
 
 	public PlainCellCache() {
-		_plainValueEntriesByLoc = new HashMap<>();
+		_plainValueEntriesByLoc = new HashMap<Loc, PlainValueCellCacheEntry>();
 	}
 	public void put(Loc key, PlainValueCellCacheEntry cce) {
 		_plainValueEntriesByLoc.put(key, cce);

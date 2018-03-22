@@ -40,6 +40,7 @@ import org.apache.poi.hssf.record.NumberRecord;
 import org.apache.poi.hssf.record.Record;
 import org.apache.poi.hssf.record.SSTRecord;
 import org.apache.poi.hssf.record.StringRecord;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.DirectoryNode;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
@@ -62,7 +63,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 public class EventBasedExcelExtractor extends POIOLE2TextExtractor implements org.apache.poi.ss.extractor.ExcelExtractor {
     private DirectoryNode _dir;
     boolean _includeSheetNames = true;
-    boolean _formulasNotResults;
+    boolean _formulasNotResults = false;
 
     public EventBasedExcelExtractor( DirectoryNode dir )
     {
@@ -127,7 +128,7 @@ public class EventBasedExcelExtractor extends POIOLE2TextExtractor implements or
     * Retreives the text contents of the file
     */
    public String getText() {
-       String text;
+       String text = null;
        try {
            TextListener tl = triggerExtraction();
 
@@ -166,11 +167,11 @@ public class EventBasedExcelExtractor extends POIOLE2TextExtractor implements or
        private int sheetNum = -1;
        private int rowNum;
 
-       private boolean outputNextStringValue;
+       private boolean outputNextStringValue = false;
        private int nextRow = -1;
 
        public TextListener() {
-           sheetNames = new ArrayList<>();
+           sheetNames = new ArrayList<String>();
        }
        public void processRecord(Record record) {
            String thisText = null;
@@ -202,7 +203,7 @@ public class EventBasedExcelExtractor extends POIOLE2TextExtractor implements or
                thisRow = frec.getRow();
 
                if(_formulasNotResults) {
-                   thisText = HSSFFormulaParser.toFormulaString(null, frec.getParsedExpression());
+                   thisText = HSSFFormulaParser.toFormulaString((HSSFWorkbook)null, frec.getParsedExpression());
                } else {
                    if(frec.hasCachedResultString()) {
                        // Formula result is a string

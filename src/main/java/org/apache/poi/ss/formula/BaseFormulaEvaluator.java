@@ -27,7 +27,6 @@ import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.util.Removal;
 
 /**
  * Common functionality across file formats for evaluating formula cells.<p>
@@ -93,7 +92,7 @@ public abstract class BaseFormulaEvaluator implements FormulaEvaluator, Workbook
             return null;
         }
 
-        switch (cell.getCellType()) {
+        switch (cell.getCellTypeEnum()) {
             case BOOLEAN:
                 return CellValue.valueOf(cell.getBooleanCellValue());
             case ERROR:
@@ -107,7 +106,7 @@ public abstract class BaseFormulaEvaluator implements FormulaEvaluator, Workbook
             case BLANK:
                 return null;
             default:
-                throw new IllegalStateException("Bad cell type (" + cell.getCellType() + ")");
+                throw new IllegalStateException("Bad cell type (" + cell.getCellTypeEnum() + ")");
         }
     }
     
@@ -117,15 +116,15 @@ public abstract class BaseFormulaEvaluator implements FormulaEvaluator, Workbook
      *  of the old formula.
      * Else if cell does not contain formula, this method leaves
      *  the cell unchanged.
-     * Note that the same instance of {@link Cell} is returned to
+     * Note that the same instance of HSSFCell is returned to
      * allow chained calls like:
      * <pre>
      * int evaluatedCellType = evaluator.evaluateInCell(cell).getCellType();
      * </pre>
      * Be aware that your cell value will be changed to hold the
      *  result of the formula. If you simply want the formula
-     *  value computed for you, use {@link #evaluateFormulaCell(Cell)}}
-     * @param cell The {@link Cell} to evaluate and modify.
+     *  value computed for you, use {@link #evaluateFormulaCellEnum(Cell)}}
+     * @param cell
      * @return the {@code cell} that was passed in, allowing for chained calls
      */
     @Override
@@ -133,51 +132,36 @@ public abstract class BaseFormulaEvaluator implements FormulaEvaluator, Workbook
         if (cell == null) {
             return null;
         }
-        if (cell.getCellType() == CellType.FORMULA) {
+        Cell result = cell;
+        if (cell.getCellTypeEnum() == CellType.FORMULA) {
             CellValue cv = evaluateFormulaCellValue(cell);
-
             setCellValue(cell, cv);
             setCellType(cell, cv); // cell will no longer be a formula cell
-
-            // Due to bug 46479 we should call setCellValue() before setCellType(),
-            // but bug 61148 showed a case where it would be better the other
-            // way around, so for now we call setCellValue() a second time to
-            // handle both cases correctly. There is surely a better way to do this, though...
-            setCellValue(cell, cv);
         }
-        return cell;
+        return result;
     }
 
     protected abstract CellValue evaluateFormulaCellValue(Cell cell);
 
     /**
-     * If cell contains formula, it evaluates the formula,
-     *  and saves the result of the formula. The cell
-     *  remains as a formula cell.
-     * Else if cell does not contain formula, this method leaves
-     *  the cell unchanged.
-     * Note that the type of the formula result is returned,
-     *  so you know what kind of value is also stored with
-     *  the formula.
+     * If cell contains formula, it evaluates the formula, and saves the result of the formula. The
+     * cell remains as a formula cell. If the cell does not contain formula, this method returns -1
+     * and leaves the cell unchanged.
+     *
+     * Note that the type of the <em>formula result</em> is returned, so you know what kind of
+     * cached formula result is also stored with  the formula.
      * <pre>
-     * CellType evaluatedCellType = evaluator.evaluateFormulaCell(cell);
+     * int evaluatedCellType = evaluator.evaluateFormulaCell(cell);
      * </pre>
-     * Be aware that your cell will hold both the formula,
-     *  and the result. If you want the cell replaced with
-     *  the result of the formula, use {@link #evaluate(org.apache.poi.ss.usermodel.Cell)} }
+     * Be aware that your cell will hold both the formula, and the result. If you want the cell
+     * replaced with the result of the formula, use {@link #evaluateInCell(org.apache.poi.ss.usermodel.Cell)}
      * @param cell The cell to evaluate
-     * @return The type of the formula result (the cell's type remains as CellType.FORMULA however)
-     *         If cell is not a formula cell, returns {@link CellType#_NONE} rather than throwing an exception.
+     * @return -1 for non-formula cells, or the type of the <em>formula result</em>
+     * @deprecated 3.15. Will return a {@link CellType} enum in the future.
      */
     @Override
-    public CellType evaluateFormulaCell(Cell cell) {
-        if (cell == null || cell.getCellType() != CellType.FORMULA) {
-            return CellType._NONE;
-        }
-        CellValue cv = evaluateFormulaCellValue(cell);
-        // cell remains a formula cell, but the cached value is changed
-        setCellValue(cell, cv);
-        return cv.getCellType();
+    public int evaluateFormulaCell(Cell cell) {
+        return evaluateFormulaCellEnum(cell).getCode();
     }
     
     /**
@@ -190,7 +174,7 @@ public abstract class BaseFormulaEvaluator implements FormulaEvaluator, Workbook
      *  so you know what kind of value is also stored with
      *  the formula.
      * <pre>
-     * CellType evaluatedCellType = evaluator.evaluateFormulaCell(cell);
+     * CellType evaluatedCellType = evaluator.evaluateFormulaCellEnum(cell);
      * </pre>
      * Be aware that your cell will hold both the formula,
      *  and the result. If you want the cell replaced with
@@ -199,17 +183,20 @@ public abstract class BaseFormulaEvaluator implements FormulaEvaluator, Workbook
      * @return The type of the formula result (the cell's type remains as CellType.FORMULA however)
      *         If cell is not a formula cell, returns {@link CellType#_NONE} rather than throwing an exception.
      * @since POI 3.15 beta 3
-     * @deprecated use <code>evaluateFormulaCell(cell)</code> instead
      */
-    @Deprecated
-    @Removal(version = "4.2")
     @Override
     public CellType evaluateFormulaCellEnum(Cell cell) {
-        return evaluateFormulaCell(cell);
+        if (cell == null || cell.getCellTypeEnum() != CellType.FORMULA) {
+            return CellType._NONE;
+        }
+        CellValue cv = evaluateFormulaCellValue(cell);
+        // cell remains a formula cell, but the cached value is changed
+        setCellValue(cell, cv);
+        return cv.getCellTypeEnum();
     }
 
     protected static void setCellType(Cell cell, CellValue cv) {
-        CellType cellType = cv.getCellType();
+        CellType cellType = cv.getCellTypeEnum();
         switch (cellType) {
             case BOOLEAN:
             case ERROR:
@@ -231,7 +218,7 @@ public abstract class BaseFormulaEvaluator implements FormulaEvaluator, Workbook
     protected abstract RichTextString createRichTextString(String str);
     
     protected void setCellValue(Cell cell, CellValue cv) {
-        CellType cellType = cv.getCellType();
+        CellType cellType = cv.getCellTypeEnum();
         switch (cellType) {
             case BOOLEAN:
                 cell.setCellValue(cv.getBooleanValue());
@@ -276,8 +263,8 @@ public abstract class BaseFormulaEvaluator implements FormulaEvaluator, Workbook
 
             for(Row r : sheet) {
                 for (Cell c : r) {
-                    if (c.getCellType() == CellType.FORMULA) {
-                        evaluator.evaluateFormulaCell(c);
+                    if (c.getCellTypeEnum() == CellType.FORMULA) {
+                        evaluator.evaluateFormulaCellEnum(c);
                     }
                 }
             }

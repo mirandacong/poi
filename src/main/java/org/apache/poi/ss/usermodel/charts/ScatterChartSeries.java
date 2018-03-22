@@ -17,15 +17,12 @@
 
 package org.apache.poi.ss.usermodel.charts;
 
-import org.apache.poi.util.Removal;
+import org.apache.poi.util.Beta;
 
 /**
  * Represents scatter charts series.
- *
- * @deprecated use XDFFScatterChartData.Series instead
  */
-@Deprecated
-@Removal(version="4.2")
+@Beta
 public interface ScatterChartSeries extends ChartSeries {
 
     /**

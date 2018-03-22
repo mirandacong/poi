@@ -214,9 +214,9 @@ public class OLE2ExtractorFactory {
             throws IOException
     {
         // All the embedded directories we spotted
-        List<Entry> dirs = new ArrayList<>();
+        List<Entry> dirs = new ArrayList<Entry>();
         // For anything else not directly held in as a POIFS directory
-        List<InputStream> nonPOIFS = new ArrayList<>();
+        List<InputStream> nonPOIFS = new ArrayList<InputStream>();
 
         // Find all the embedded directories
         DirectoryEntry root = ext.getRoot();
@@ -250,7 +250,7 @@ public class OLE2ExtractorFactory {
             return new POITextExtractor[0];
         }
 
-        ArrayList<POITextExtractor> e = new ArrayList<>();
+        ArrayList<POITextExtractor> e = new ArrayList<POITextExtractor>();
         for (Entry dir : dirs) {
             e.add(createExtractor(
                     (DirectoryNode) dir
