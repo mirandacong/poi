@@ -261,25 +261,32 @@ public class FormulaUtil {
      */
     public String getFomulaName(Ptg[] arr_ptg) {
         try {
-
             for (int index = arr_ptg.length - 1; index > -1; index--) {
                 Ptg ptg = arr_ptg[index];
                 if (ptg instanceof OperationPtg) {
                     OperationPtg operationPtg = (OperationPtg) ptg;
-                    String funcName = "";
-                    if (ptg instanceof FuncVarPtg) {
-                        FuncVarPtg funcVarPtg = (FuncVarPtg) ptg;
-                        funcName = funcVarPtg.getName();
-                    } else if (ptg instanceof FuncPtg) {
-                        FuncPtg funcPtg = (FuncPtg) ptg;
-                        funcName = funcPtg.getName();
-                    } else {
-                        funcName = operationPtg.getClass().getSimpleName();
+                    if(!(operationPtg instanceof UnaryPlusPtg || operationPtg instanceof UnaryMinusPtg))
+                    {
+                        String funcName = "";
+                        if (ptg instanceof FuncVarPtg) {
+                            FuncVarPtg funcVarPtg = (FuncVarPtg) ptg;
+                            funcName = funcVarPtg.getName();
+                        } else if (ptg instanceof FuncPtg) {
+                            FuncPtg funcPtg = (FuncPtg) ptg;
+                            funcName = funcPtg.getName();
+                        } else {
+                            funcName = operationPtg.getClass().getSimpleName();
+                        }
+                        if (funcName.lastIndexOf("Ptg") != -1) {
+                            funcName = funcName.substring(0, funcName.lastIndexOf("Ptg"));
+                        }
+                        return funcName;
                     }
-                    if (funcName.lastIndexOf("Ptg") != -1) {
-                        funcName = funcName.substring(0, funcName.lastIndexOf("Ptg"));
-                    }
-                    return funcName;
+                }else if(ptg instanceof AttrPtg)
+                {
+                    AttrPtg attrPtg= (AttrPtg) ptg;
+                    String attrPtgStr = attrPtg.toFormulaString();
+                    return attrPtgStr;
                 }
             }
         } catch (Exception e) {
