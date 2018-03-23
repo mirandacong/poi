@@ -37,7 +37,7 @@ public class ExcelFormulaSplitTransferFuncNew {
         } else {
             // oss文件
             fileName = Util.pathToFileName(filePath);
-            file = new OSSUtil().downloadFile("./resource/tmp/" + fileName);
+            file = new OSSUtil().downloadFile(FileUtil.getBasePath()+"/resource/tmp/" + fileName);
         }
         FileInputStream fis = new FileInputStream(file);
         Workbook workbook = null;
