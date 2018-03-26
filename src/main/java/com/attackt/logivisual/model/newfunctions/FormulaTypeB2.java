@@ -4,9 +4,9 @@ package com.attackt.logivisual.model.newfunctions;
  * B2类公式
  */
 public enum FormulaTypeB2 {
-    MMULT(112),
-    MINVERSE(113),
-    TRANSPOSE(114);
+    MMULT(113),
+    MINVERSE(114),
+    TRANSPOSE(115);
     // 成员变量
     private int index;
     // 构造方法
