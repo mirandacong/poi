@@ -56,7 +56,8 @@ public enum FormulaTypeB1 {
     ADD(108),
     SUBTRACT(109),
     MULTIPLY(110),
-    DIVIDE(111);
+    DIVIDE(111),
+    EQUAL(112);
     // 成员变量
     private int index;
     // 构造方法

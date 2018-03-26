@@ -4,16 +4,16 @@ package com.attackt.logivisual.model.newfunctions;
  * 搜索类函数
  */
 public enum FormulaTypeSearch {
-    ADDRESS(115),
-    AREAS(116),
-    CHOOSE(117),
-    INDEX(118),
-    INDIRECT(119),
-    OFFSET(120),
-    VLOOKUP(121),
-    HLOOKUP(122),
-    LOOKUP(123),
-    MATCH(124);
+    ADDRESS(116),
+    AREAS(117),
+    CHOOSE(118),
+    INDEX(119),
+    INDIRECT(120),
+    OFFSET(121),
+    VLOOKUP(122),
+    HLOOKUP(123),
+    LOOKUP(124),
+    MATCH(125);
     // 成员变量
     private int index;
     // 构造方法
