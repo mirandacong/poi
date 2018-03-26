@@ -47,3 +47,4 @@ sonar/*/target
 build
 dist
 lib/
+target/

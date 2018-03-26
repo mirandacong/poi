@@ -4,10 +4,6 @@ package com.attackt.logivisual.model.newfunctions;
  * A类公式
  */
 public enum FormulaTypeA {
-    ADD(1),
-    SUBTRACT(2),
-    MULTIPLY(3),
-    DIVIDE(4),
     ABS(5),
     ACOS(6),
     ACOSH(7),

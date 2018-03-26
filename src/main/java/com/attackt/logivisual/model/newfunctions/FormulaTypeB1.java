@@ -52,7 +52,11 @@ public enum FormulaTypeB1 {
     SUMSQ(104),
     SUMX2MY2(105),
     SUMX2PY2(106),
-    SUMXMY2(107);
+    SUMXMY2(107),
+    ADD(108),
+    SUBTRACT(109),
+    MULTIPLY(110),
+    DIVIDE(111);
     // 成员变量
     private int index;
     // 构造方法
