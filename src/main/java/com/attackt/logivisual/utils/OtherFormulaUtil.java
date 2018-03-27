@@ -66,8 +66,14 @@ public class OtherFormulaUtil {
                     cellIndexList.add(new CellIndex(cellReference.getRow(), cellReference.getCol(), sheetIndex, ref3DPxg.getSheetName()));
                 } else {
                     if (arrFlag) {
-                        // 含跨表数组
-                        tempRefList.add(ref3DPxg.toFormulaString());
+                        if(tempRefList.size()%2==0)
+                        {
+                            // 含跨表数组
+                            tempRefList.add(ref3DPxg.toFormulaString());
+                        }else{
+                            tempRefList.add(ref3DPxg.format2DRefAsString());
+                        }
+
                     }
                 }
             } else if (ptg instanceof RangePtg) {
