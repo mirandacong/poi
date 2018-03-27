@@ -23,7 +23,7 @@ public enum FormulaTypeB4 {
      */
     public static boolean isContainStr(String str)
     {
-        for (FormulaTypeSearch temp: FormulaTypeSearch.values()) {
+        for (FormulaTypeB4 temp: FormulaTypeB4.values()) {
             if(temp.name().equals(str.toUpperCase()))
             {
                 return true;
