@@ -44,8 +44,15 @@ public class AreaOperateUtil {
                     // 不含数组
                     result.add(ref3DPxg.toFormulaString());
                 } else {
-                    // 含跨表数组
-                    tempRefList.add(ref3DPxg.toFormulaString());
+                    if(tempRefList.size()%2==0)
+                    {
+                        // 含跨表数组
+                        tempRefList.add(ref3DPxg.toFormulaString());
+                    }else{
+                        tempRefList.add(ref3DPxg.format2DRefAsString());
+                    }
+//                    // 含跨表数组
+//                    tempRefList.add(ref3DPxg.toFormulaString());
                 }
             } else if (ptg instanceof RangePtg) {
                 {
