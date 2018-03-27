@@ -265,7 +265,7 @@ public class FormulaUtil {
                 Ptg ptg = arr_ptg[index];
                 if (ptg instanceof OperationPtg) {
                     OperationPtg operationPtg = (OperationPtg) ptg;
-                    if(!(operationPtg instanceof UnaryPlusPtg || operationPtg instanceof UnaryMinusPtg))
+                    if(!(operationPtg instanceof UnaryPlusPtg || operationPtg instanceof UnaryMinusPtg || operationPtg instanceof MultiplyPtg))
                     {
                         String funcName = "";
                         if (ptg instanceof FuncVarPtg) {
