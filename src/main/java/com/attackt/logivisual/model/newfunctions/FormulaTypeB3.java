@@ -1,8 +1,6 @@
 package com.attackt.logivisual.model.newfunctions;
 
-import org.apache.poi.ss.formula.ptg.Ptg;
-import org.apache.poi.ss.formula.ptg.Ref3DPxg;
-import org.apache.poi.ss.formula.ptg.RefPtg;
+import org.apache.poi.ss.formula.ptg.*;
 
 /**
  * B3类型
@@ -16,9 +14,16 @@ public enum FormulaTypeB3 {
      */
     public static boolean isContainPtg(Ptg[] ptgs)
     {
-        if (ptgs.length == 1)
+        if (ptgs.length >= 1)
         {
             Ptg ptg = ptgs[0];
+            if(ptg instanceof UnaryPlusPtg || ptg instanceof UnaryMinusPtg)
+            {
+                if(ptgs.length>1)
+                {
+                    ptg = ptgs[1];
+                }
+            }
             if(ptg instanceof RefPtg || ptg instanceof Ref3DPxg)
             {
                 return true;
