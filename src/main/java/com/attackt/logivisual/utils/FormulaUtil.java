@@ -397,9 +397,9 @@ public class FormulaUtil {
                 evaluator.evaluateInCell(cell);
             } catch (NotImplementedException notImplementedException) {
             } catch (Exception e) {
-                System.out.println("------通用数据公式重算失败begin---------");
-                System.out.println(e);
-                System.out.println("------通用数据公式重算失败end---------");
+//                System.out.println("------通用数据公式重算失败begin---------");
+//                System.out.println(e);
+//                System.out.println("------通用数据公式重算失败end---------");
             }
             // 取得结果
             if (status == 2) {

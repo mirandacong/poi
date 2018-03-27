@@ -1,5 +1,6 @@
 package com.attackt.logivisual.web;
 
+import com.attackt.logivisual.model.ErrorInfo;
 import com.attackt.logivisual.model.newfunctions.*;
 import com.attackt.logivisual.mysql.OperationUtils;
 import com.attackt.logivisual.utils.*;
@@ -182,7 +183,13 @@ public class ExcelFormulaSplitTransferFuncNew {
                                     }
                                 }
                             } catch (Exception e) {
-                                System.out.println(e);
+                                try {
+                                    ErrorInfo errorInfo = new ErrorInfo(uid,file.getName(),e.toString(),cell.getCellFormula(),cell.getSheet().getSheetName(),cell.getAddress().formatAsString());
+                                    operationUtils.saveError(errorInfo);
+                                }catch (Exception e1)
+                                {
+                                    System.out.println(e);
+                                }
                             }
                             break;
                     }

@@ -1,6 +1,7 @@
 package com.attackt.logivisual.mysql;
 
 import com.alibaba.fastjson.JSON;
+import com.attackt.logivisual.model.ErrorInfo;
 import com.attackt.logivisual.model.newfunctions.CellJsonObject;
 
 import java.util.ArrayList;
@@ -119,6 +120,31 @@ public class OperationUtils {
             List<Object> params = new ArrayList<Object>();
             params.add(status);
             params.add(excel_uid);
+            boolean flag = this.jdbcUtils.updateByPreparedStatement(sql, params);
+            return flag;
+        } catch (Exception e) {
+            System.out.println(e);
+        }finally {
+            this.jdbcUtils.releaseConnection();
+        }
+        return false;
+    }
+    /**
+     * 保存Error
+     * @param errorInfo
+     * @return
+     */
+    public boolean saveError(ErrorInfo errorInfo){
+        try {
+            this.jdbcUtils = new JdbcUtils();
+            String sql = "insert into excel_error (excel_uid, excel_file,excel_error,excel_formula,excel_sheet,excel_address,create_time) values(?,?,?,?,?,?,now());";
+            List<Object> params = new ArrayList<Object>();
+            params.add(errorInfo.getExcelUid());
+            params.add(errorInfo.getExcelFile());
+            params.add(errorInfo.getExcelError());
+            params.add(JSON.toJSONString(errorInfo.getExcelFormula()));
+            params.add(errorInfo.getExcelSheet());
+            params.add(errorInfo.getExcelAddress());
             boolean flag = this.jdbcUtils.updateByPreparedStatement(sql, params);
             return flag;
         } catch (Exception e) {
