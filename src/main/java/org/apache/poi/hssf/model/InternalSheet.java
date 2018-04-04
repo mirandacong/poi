@@ -186,7 +186,7 @@ public final class InternalSheet {
             }
 
             if (CustomViewSettingsRecordAggregate.isBeginRecord(recSid)) {
-                // This happens three times in test sample file "29982.xls"
+                // This happens three times in tests sample file "29982.xls"
                 // Also several times in bugzilla samples 46840-23373 and 46840-23374
                 records.add(new CustomViewSettingsRecordAggregate(rs));
                 continue;
@@ -221,7 +221,7 @@ public final class InternalSheet {
             if (recSid == BOFRecord.sid) {
                 ChartSubstreamRecordAggregate chartAgg = new ChartSubstreamRecordAggregate(rs);
 //                if (false) {
-//                    // TODO - would like to keep the chart aggregate packed, but one unit test needs attention
+//                    // TODO - would like to keep the chart aggregate packed, but one unit tests needs attention
 //                    records.add(chartAgg);
 //                } else {
                     spillAggregate(chartAgg, records);

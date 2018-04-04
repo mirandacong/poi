@@ -609,7 +609,7 @@ public final class InternalWorkbook {
      * Determines whether a workbook contains the provided sheet name.  For the purpose of
      * comparison, long names are truncated to 31 chars.
      *
-     * @param name the name to test (case insensitive match)
+     * @param name the name to tests (case insensitive match)
      * @param excludeSheetIdx the sheet to exclude from the check or -1 to include all sheets in the check.
      * @return true if the sheet contains the name, false otherwise.
      */

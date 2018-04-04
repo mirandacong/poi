@@ -515,7 +515,7 @@ public class FormulaUtil {
      * @param uid uid
      * @param file file
      */
-    public void saveJSON( OperationUtils operationUtils, String uid,File file) {
+    public boolean saveJSON( OperationUtils operationUtils, String uid,File file) {
         // 统一合并文件
         List<Map<String, Object>> mapList = operationUtils.findUidQueryAll(uid);
         JSONArray jsonArrayBase = new JSONArray();
@@ -577,6 +577,7 @@ public class FormulaUtil {
             e.printStackTrace();
         }
         System.out.println(fileJSONPath);
+        return true;
     }
     /**
      * 生成json对象

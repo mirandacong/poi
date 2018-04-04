@@ -225,7 +225,7 @@ public final class OPOIFSDocument implements BATManaged, BlockWritable, POIFSVie
 	 *
 	 * @param buffer the buffer to write to
 	 * @param offset the offset into our storage to read from
-	 * This method is currently (Oct 2008) only used by test code. Perhaps it can be deleted
+	 * This method is currently (Oct 2008) only used by tests code. Perhaps it can be deleted
 	 */
 	void read(byte[] buffer, int offset) {
 		int len = buffer.length;

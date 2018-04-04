@@ -902,7 +902,7 @@ public final class FormulaParser {
             return  new ParseNode(BoolPtg.valueOf(name.equalsIgnoreCase("TRUE")));
         }
         if (_book == null) {
-            // Only test cases omit the book (expecting it not to be needed)
+            // Only tests cases omit the book (expecting it not to be needed)
             throw new IllegalStateException("Need book to evaluate name '" + name + "'");
         }
         EvaluationName evalName = _book.getName(name, _sheetIndex);
@@ -1297,7 +1297,7 @@ public final class FormulaParser {
             // in the token tree, the name is more or less the first argument
 
             if (_book == null) {
-                // Only test cases omit the book (expecting it not to be needed)
+                // Only tests cases omit the book (expecting it not to be needed)
                 throw new IllegalStateException("Need book to evaluate name '" + name + "'");
             }
             // Check to see if name is a named range in the workbook
@@ -1418,7 +1418,7 @@ public final class FormulaParser {
             if(_book != null) {
                 maxArgs = _book.getSpreadsheetVersion().getMaxFunctionArgs();
             } else {
-                //_book can be omitted by test cases
+                //_book can be omitted by tests cases
                 maxArgs = fm.getMaxParams(); // just use BIFF8
             }
         } else {

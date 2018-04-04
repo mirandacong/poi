@@ -51,7 +51,7 @@ public class Formula {
 //			if (nUnusedBytes > 0) {
 //				// TODO - this seems to occur when IntersectionPtg is present
 //				// This example file "IntersectionPtg.xls"
-//				// used by test: TestIntersectionPtg.testReading()
+//				// used by tests: TestIntersectionPtg.testReading()
 //				// has 10 bytes unused at the end of the formula
 //				// 10 extra bytes are just 0x01 and 0x00
 //				System.out.println(nUnusedBytes + " unused bytes at end of formula");

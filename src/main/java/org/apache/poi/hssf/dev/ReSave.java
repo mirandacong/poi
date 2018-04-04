@@ -26,7 +26,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 /**
- *  Utility to test that POI produces readable output
+ *  Utility to tests that POI produces readable output
  *  after re-saving xls files.
  *
  *  Usage: ReSave [-dg] input.xls

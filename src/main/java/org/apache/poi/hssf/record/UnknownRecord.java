@@ -38,7 +38,7 @@ public final class UnknownRecord extends StandardRecord {
     /**
      * seems to be part of the {@link PageSettingsBlock}. Not interpreted by POI.
      * The name 'PRINTSIZE' was taken from OOO source.<p>
-     * The few POI test samples with this record have data { 0x03, 0x00 }.
+     * The few POI tests samples with this record have data { 0x03, 0x00 }.
      */
     public static final int PRINTSIZE_0033       = 0x0033;
     /**

@@ -26,7 +26,7 @@ import org.apache.poi.ss.usermodel.Cell;
 
 /**
  * Class {@code SheetBuilder} provides an easy way of building workbook sheets
- * from 2D array of Objects. It can be used in test cases to improve code
+ * from 2D array of Objects. It can be used in tests cases to improve code
  * readability or in Swing applications with tables.
  *
  * @author Roman Kashitsyn

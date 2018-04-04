@@ -266,7 +266,7 @@ public class DrawTextParagraph implements Drawable {
 
             // add a pixel to compensate rounding errors
             double wrappingWidth = getWrappingWidth(lines.isEmpty(), graphics) + 1;
-            // shape width can be smaller that the sum of insets (this was proved by a test file)
+            // shape width can be smaller that the sum of insets (this was proved by a tests file)
             if(wrappingWidth < 0) {
                 wrappingWidth = 1;
             }

@@ -388,7 +388,7 @@ public class EvaluationConditionalFormatRule implements Comparable<EvaluationCon
             return ((BoolEval) comp).getBooleanValue();
         }
         // empirically tested in Excel - 0=false, any other number = true/valid
-        // see test file DataValidationEvaluations.xlsx
+        // see tests file DataValidationEvaluations.xlsx
         if (comp instanceof NumberEval) {
             return ((NumberEval) comp).getNumberValue() != 0;
         }
