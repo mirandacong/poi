@@ -103,7 +103,7 @@ public class RecordGenerator {
                           new File(recordStyleDir + "/" + extendstg.toLowerCase(Locale.ROOT) + ".xsl"));
                 System.out.println("Generated " + suffix + ": " + destinationFilepath);
 
-                // Generate test (if not already generated)
+                // Generate tests (if not already generated)
                 destinationPath = testSrcPathDir + "/" + packageName;
                 destinationPathFile = new File(destinationPath);
                 if(!destinationPathFile.mkdirs()) {
@@ -115,9 +115,9 @@ public class RecordGenerator {
                 if (!new File(destinationFilepath).exists()) {
                     String temp = (recordStyleDir + "/" + extendstg.toLowerCase(Locale.ROOT) + "_test.xsl");
                     transform(file, new File(destinationFilepath), new File(temp));
-                    System.out.println("Generated test: " + destinationFilepath);
+                    System.out.println("Generated tests: " + destinationFilepath);
                 } else {
-                    System.out.println("Skipped test generation: " + destinationFilepath);
+                    System.out.println("Skipped tests generation: " + destinationFilepath);
                 }
             }
         }

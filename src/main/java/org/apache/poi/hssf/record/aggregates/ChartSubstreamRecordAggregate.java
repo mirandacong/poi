@@ -43,7 +43,7 @@ public final class ChartSubstreamRecordAggregate extends RecordAggregate {
 			if (PageSettingsBlock.isComponentRecord(rs.peekNextSid())) {
 				if (_psBlock != null) {
 					if (rs.peekNextSid() == HeaderFooterRecord.sid) {
-						// test samples: 45538_classic_Footer.xls, 45538_classic_Header.xls
+						// tests samples: 45538_classic_Footer.xls, 45538_classic_Header.xls
 						_psBlock.addLateHeaderFooter((HeaderFooterRecord)rs.getNext());
 						continue;
 					}

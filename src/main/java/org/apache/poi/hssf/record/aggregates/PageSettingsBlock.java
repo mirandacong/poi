@@ -630,9 +630,9 @@ public final class PageSettingsBlock extends RecordAggregate {
      * <ul>
      * <li><b>HEADER_FOOTER(0x089C) after WINDOW2</b> - This record is new in 2007.  Some apps
      * seem to have scattered this record long after the PageSettingsBlock where it belongs
-     * test samples: SharedFormulaTest.xls, ex44921-21902.xls, ex42570-20305.xls</li>
+     * tests samples: SharedFormulaTest.xls, ex44921-21902.xls, ex42570-20305.xls</li>
      * <li><b>PLS, WSBOOL, PageSettingsBlock</b> - WSBOOL is not a PSB record.
-     * This happens in the test sample file "NoGutsRecords.xls" and "WORKBOOK_in_capitals.xls"</li>
+     * This happens in the tests sample file "NoGutsRecords.xls" and "WORKBOOK_in_capitals.xls"</li>
      * <li><b>Margins after DIMENSION</b> - All of PSB should be before DIMENSION. (Bug-47199)</li>
      * </ul>
      * 

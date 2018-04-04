@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 /**
  * Utilities to read hex from files.
- * TODO - move to test packages
+ * TODO - move to tests packages
  */
 public class HexRead {
     /**

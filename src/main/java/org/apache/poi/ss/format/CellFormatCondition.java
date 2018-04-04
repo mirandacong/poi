@@ -61,7 +61,7 @@ public abstract class CellFormatCondition {
             String constStr) {
 
         if (!TESTS.containsKey(opString))
-            throw new IllegalArgumentException("Unknown test: " + opString);
+            throw new IllegalArgumentException("Unknown tests: " + opString);
         int test = TESTS.get(opString);
 
         final double c = Double.parseDouble(constStr);
@@ -105,17 +105,17 @@ public abstract class CellFormatCondition {
             };
         default:
             throw new IllegalArgumentException(
-                    "Cannot create for test number " + test + "(\"" + opString +
+                    "Cannot create for tests number " + test + "(\"" + opString +
                             "\")");
         }
     }
 
     /**
-     * Returns <tt>true</tt> if the given value passes the constraint's test.
+     * Returns <tt>true</tt> if the given value passes the constraint's tests.
      *
      * @param value The value to compare against.
      *
-     * @return <tt>true</tt> if the given value passes the constraint's test.
+     * @return <tt>true</tt> if the given value passes the constraint's tests.
      */
     public abstract boolean pass(double value);
 }

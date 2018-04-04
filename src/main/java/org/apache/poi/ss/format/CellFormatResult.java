@@ -30,7 +30,7 @@ public class CellFormatResult {
     /**
      * This is <tt>true</tt> if no condition was given that applied to the
      * value, or if the condition is satisfied.  If a condition is relevant, and
-     * when applied the value fails the test, this is <tt>false</tt>.
+     * when applied the value fails the tests, this is <tt>false</tt>.
      */
     public final boolean applies;
 

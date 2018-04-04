@@ -47,7 +47,7 @@ public final class CRNCountRecord extends StandardRecord {
 		field_1_number_crn_records = in.readShort();
 		if(field_1_number_crn_records < 0) {
 			// TODO - seems like the sign bit of this field might be used for some other purpose
-			// see example file for test case "TestBugs.test19599()"
+			// see example file for tests case "TestBugs.test19599()"
 			field_1_number_crn_records = (short)-field_1_number_crn_records;
 		}
 		field_2_sheet_table_index = in.readShort();

@@ -66,7 +66,7 @@ public final class ErrorEval implements ValueEval {
 
     /**
      * Converts error codes to text.  Handles non-standard error codes OK.  
-     * For debug/test purposes (and for formatting error messages).
+     * For debug/tests purposes (and for formatting error messages).
      * @return the String representation of the specified Excel error code.
      */
     public static String getText(int errorCode) {

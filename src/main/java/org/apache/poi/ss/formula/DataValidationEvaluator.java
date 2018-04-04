@@ -308,7 +308,7 @@ public class DataValidationEvaluator {
                         // do we need to allow a "close enough" double fractional range?
                         // I see 17 digits after the decimal separator in XSSF files, and for time values,
                         // there are sometimes discrepancies in the final decimal place.  
-                        // I don't have a validation test case yet though. - GW
+                        // I don't have a validation tests case yet though. - GW
                         if (isType(cell, CellType.NUMERIC) && ((NumberEval) comp).getNumberValue() == cell.getNumericCellValue()) {
                             return true;
                         } else {
@@ -357,7 +357,7 @@ public class DataValidationEvaluator {
                     return ((BoolEval) comp).getBooleanValue();
                 }
                 // empirically tested in Excel - 0=false, any other number = true/valid
-                // see test file DataValidationEvaluations.xlsx
+                // see tests file DataValidationEvaluations.xlsx
                 if (comp instanceof NumberEval) {
                     return ((NumberEval) comp).getNumberValue() != 0;
                 }

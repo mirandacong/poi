@@ -19,7 +19,7 @@ package org.apache.poi.ss.formula;
 
 /**
  * This exception thrown when a supplied formula has incorrect syntax (or syntax currently not
- * supported by POI).  It  is primarily used by test code to confirm specific parsing exceptions.
+ * supported by POI).  It  is primarily used by tests code to confirm specific parsing exceptions.
  * Application code should also handle this exception if it potentially supplies formula text
  * that is not guaranteed to be well-formed.
  *

@@ -28,7 +28,7 @@ import org.apache.poi.ss.formula.eval.ValueEval;
  */
 interface IEvaluationListener {
 	/**
-	 * A (mostly) opaque interface to allow test clients to trace cache values
+	 * A (mostly) opaque interface to allow tests clients to trace cache values
 	 * Each spreadsheet cell gets one unique cache entry instance.  These objects
 	 * are safe to use as keys in {@link java.util.HashMap}s
 	 */

@@ -137,7 +137,7 @@ public class BitField
     }
 
     /**
-     * Are all of the bits set or not? This is a stricter test than
+     * Are all of the bits set or not? This is a stricter tests than
      * isSet, in that all of the bits in a multi-bit set must be set
      * for this method to return true
      *

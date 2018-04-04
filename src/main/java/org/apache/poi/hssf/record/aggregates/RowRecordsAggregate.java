@@ -103,7 +103,7 @@ public final class RowRecordsAggregate extends RecordAggregate {
      * Handles UnknownRecords which appear within the row/cell records
      */
     private void addUnknownRecord(Record rec) {
-        // ony a few distinct record IDs are encountered by the existing POI test cases:
+        // ony a few distinct record IDs are encountered by the existing POI tests cases:
         // 0x1065 // many
         // 0x01C2 // several
         // 0x0034 // few

@@ -39,7 +39,7 @@ import java.util.Map;
 /**
  * Translates Graphics2d calls into escher calls.  The translation is lossy so
  * many features are not supported and some just aren't implemented yet.  If
- * in doubt test the specific calls you wish to make. Graphics calls are
+ * in doubt tests the specific calls you wish to make. Graphics calls are
  * always drawn into an EscherGroup so one will need to be created.
  * <p>
  * <b>Important:</b>

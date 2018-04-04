@@ -779,7 +779,7 @@ public final class EscherDump {
     }
 
     /**
-     * A simple test stub.
+     * A simple tests stub.
      * 
      * @param args the args
      */

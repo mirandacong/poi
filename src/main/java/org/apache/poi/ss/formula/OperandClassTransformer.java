@@ -51,7 +51,7 @@ import org.apache.poi.util.Removal;
  * investigated). The implementation in this class has been heavily modified in order to satisfy
  * concrete examples of how Excel performs the same logic (see TestRVA).<p>
  *
- * Hopefully, as additional important test cases are identified and added to the test suite,
+ * Hopefully, as additional important tests cases are identified and added to the tests suite,
  * patterns might become more obvious in this code and allow for simplification.
  *
  * @author Josh Micich

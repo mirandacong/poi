@@ -173,7 +173,7 @@ public abstract class TextFunction implements Function {
          * use the SUBSTITUTE function to replace the higher value Unicode characters with the 7-bit ASCII
          * characters for which the TRIM and CLEAN functions were designed.
          *
-         * @param c the character to test
+         * @param c the character to tests
          * @return  whether the character is printable
          */
         private boolean isPrintable(char c){

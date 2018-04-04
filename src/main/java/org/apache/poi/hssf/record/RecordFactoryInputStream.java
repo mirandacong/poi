@@ -93,7 +93,7 @@ public final class RecordFactoryInputStream {
 				}
 			} else {
 				// Invalid in a normal workbook stream.
-				// However, some test cases work on sub-sections of
+				// However, some tests cases work on sub-sections of
 				// the workbook stream that do not begin with BOF
 				_hasBOFRecord = false;
 			}
@@ -137,7 +137,7 @@ public final class RecordFactoryInputStream {
 		}
 
 		/**
-		 * <code>false</code> in some test cases
+		 * <code>false</code> in some tests cases
 		 */
 		public boolean hasBOFRecord() {
 			return _hasBOFRecord;

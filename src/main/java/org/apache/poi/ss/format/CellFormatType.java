@@ -90,7 +90,7 @@ public enum CellFormatType {
     /**
      * Returns <tt>true</tt> if the format is special and needs to be quoted.
      *
-     * @param ch The character to test.
+     * @param ch The character to tests.
      *
      * @return <tt>true</tt> if the format is special and needs to be quoted.
      */

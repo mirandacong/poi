@@ -40,7 +40,7 @@ public final class SSTRecord extends ContinuableRecord {
 
     private static final UnicodeString EMPTY_STRING = new UnicodeString("");
 
-    // TODO - move these constants to test class (the only consumer)
+    // TODO - move these constants to tests class (the only consumer)
     /** standard record overhead: two shorts (record id plus data space size)*/
     static final int STD_RECORD_OVERHEAD = 2 * LittleEndianConsts.SHORT_SIZE;
 

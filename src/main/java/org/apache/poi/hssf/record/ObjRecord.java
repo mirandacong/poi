@@ -60,7 +60,7 @@ public final class ObjRecord extends Record implements Cloneable {
 		// TODO - problems with OBJ sub-records stream
 		// MS spec says first sub-record is always CommonObjectDataSubRecord,
 		// and last is always EndSubRecord. OOO spec does not mention ObjRecord(0x005D).
-		// Existing POI test data seems to violate that rule. Some test data
+		// Existing POI tests data seems to violate that rule. Some tests data
 		// seems to contain garbage, and a crash is only averted by stopping at
                 // what looks like the 'EndSubRecord'
 
@@ -98,7 +98,7 @@ public final class ObjRecord extends Record implements Cloneable {
 		}
 		int nRemainingBytes = bais.available();
 		if (nRemainingBytes > 0) {
-			// At present (Oct-2008), most unit test samples have (subRecordData.length % 2 == 0)
+			// At present (Oct-2008), most unit tests samples have (subRecordData.length % 2 == 0)
 			_isPaddedToQuadByteMultiple = subRecordData.length % MAX_PAD_ALIGNMENT == 0;
 			if (nRemainingBytes >= (_isPaddedToQuadByteMultiple ? MAX_PAD_ALIGNMENT : NORMAL_PAD_ALIGNMENT)) {
 				if (!canPaddingBeDiscarded(subRecordData, nRemainingBytes)) {
