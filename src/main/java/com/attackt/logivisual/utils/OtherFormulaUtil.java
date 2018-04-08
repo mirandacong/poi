@@ -1,8 +1,8 @@
 package com.attackt.logivisual.utils;
 
-import com.attackt.logivisual.model.retry.KeyValueFormula;
 import com.attackt.logivisual.model.newfunctions.CellIndex;
 import com.attackt.logivisual.model.newfunctions.KeyValueEntity;
+import com.attackt.logivisual.model.retry.KeyValueFormula;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.apache.poi.ss.formula.ptg.*;
@@ -20,7 +20,6 @@ public class OtherFormulaUtil {
     private static Config config = ConfigFactory.load();
     private static boolean arrFlag = config.getBoolean("arr.flag");
     Workbook workbook = null;
-
     public OtherFormulaUtil(Workbook workbook) {
         this.workbook = workbook;
     }

@@ -318,6 +318,39 @@ public class FormulaUtil {
     }
 
     /**
+     * 替换别名
+     * @param arr_ptg
+     * @param util
+     * @return
+     */
+    public Ptg[] replaceName(Ptg[] arr_ptg,Util util)
+    {
+        for(int j=0;j<arr_ptg.length;j++)
+        {
+            Ptg ptg = arr_ptg[j];
+            if(ptg instanceof NamePtg)
+            {
+                // 别名
+                NamePtg temp1 = (NamePtg) ptg;
+                String nameStr = null;
+                if (workbook instanceof XSSFWorkbook) {
+                    nameStr = temp1
+                            .toFormulaString(XSSFEvaluationWorkbook.create((XSSFWorkbook) workbook));
+                } else {
+                    nameStr = temp1
+                            .toFormulaString(HSSFEvaluationWorkbook.create((HSSFWorkbook) workbook));
+                }
+                Cell cellInfo = util.getFormulaCell(workbook, nameStr);
+                if (cellInfo != null) {
+                    CellReference cellReference = new CellReference(cellInfo);
+                    RefPtg refPtg = new RefPtg(cellReference);
+                    arr_ptg[j] = refPtg;
+                }
+            }
+        }
+        return arr_ptg;
+    }
+    /**
      * 绑定数据
      *
      * @param cellIndexList

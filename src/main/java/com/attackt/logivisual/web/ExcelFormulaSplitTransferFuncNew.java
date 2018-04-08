@@ -116,6 +116,8 @@ public class ExcelFormulaSplitTransferFuncNew {
                                 Stack<String> elementStack = new Stack<String>();
                                 // 获得ptg数组
                                 Ptg[] arr_ptg = formulaUtils.getPtgs(cell);
+                                // 处理别名问题
+                                arr_ptg = formulaUtils.replaceName(arr_ptg,util);
                                 // 循环ptg，生成波兰表达式和设置存储对象属性
                                 util.dataMachining(workbook, sourceExcelInfo, arr_ptg, operatorStack, elementStack);
                                 // 初始化集合信息
