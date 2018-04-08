@@ -5,11 +5,15 @@ import com.attackt.logivisual.model.newfunctions.CellIndex;
 import com.attackt.logivisual.model.newfunctions.KeyValueEntity;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.formula.ptg.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.XSSFEvaluationWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.*;
 
@@ -20,7 +24,6 @@ public class OtherFormulaUtil {
     private static Config config = ConfigFactory.load();
     private static boolean arrFlag = config.getBoolean("arr.flag");
     Workbook workbook = null;
-
     public OtherFormulaUtil(Workbook workbook) {
         this.workbook = workbook;
     }
