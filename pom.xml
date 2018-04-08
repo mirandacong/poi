@@ -19,6 +19,11 @@
                 </configuration>
             </plugin>
         </plugins>
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+            </testResource>
+        </testResources>
     </build>
     <dependencies>
         <!--poi编译的相关引用库开始-->
@@ -143,5 +148,6 @@
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <POI.testdata.path>/src/</POI.testdata.path>
     </properties>
 </project>
