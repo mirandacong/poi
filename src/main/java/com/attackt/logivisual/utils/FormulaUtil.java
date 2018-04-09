@@ -296,6 +296,20 @@ public class FormulaUtil {
     }
 
     /**
+     * 用户自定义函数得到公式名称
+     * @param arr_ptg 单元格ptg
+     * @return 公式名称
+     */
+    public String getFomulaNameX(Ptg[] arr_ptg) {
+        Ptg ptg = arr_ptg[0];
+        if(ptg instanceof NameXPxg)
+        {
+            NameXPxg nameXPxg= (NameXPxg) ptg;
+            return nameXPxg.getNameName();
+        }
+        return "";
+    }
+    /**
      * 根据单元格获得ptg数组
      *
      * @param cell
