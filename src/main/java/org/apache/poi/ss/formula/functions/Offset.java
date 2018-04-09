@@ -266,7 +266,7 @@ public final class Offset implements Function {
 				}
 			}catch (Exception e)
 			{
-				System.out.println("函数内部重算出错"+e);
+				System.out.println(getClass().getName()+" 函数内部重算出错 "+e);
 			}
 			//-------处理数据结束---------
 			return areaEval;

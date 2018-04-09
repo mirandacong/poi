@@ -29,6 +29,7 @@ import org.apache.poi.ss.formula.ptg.Area3DPxg;
 import org.apache.poi.ss.usermodel.Table;
 import org.apache.poi.ss.util.CellReference;
 
+import javax.xml.bind.SchemaOutputResolver;
 import java.util.Map;
 
 /**
@@ -82,7 +83,7 @@ public final class Indirect implements FreeRefFunction {
         //-------处理数据开始---------
         try {
             ValueEval valueEval;
-            if (ec.isSingleValue()) {
+            if (ec.isSingleValue()&&!(valueEval1 instanceof ErrorEval)) {
                 valueEval = OperandResolver.getSingleValue(valueEval1, ec.getRowIndex(), ec.getColumnIndex());
             } else {
                 valueEval = valueEval1;
@@ -133,7 +134,7 @@ public final class Indirect implements FreeRefFunction {
             }
         }catch (Exception e)
         {
-            System.out.println("函数内部重算出错"+e);
+            System.out.println(getClass().getName()+" 函数内部重算出错 "+e);
         }
         //-------处理数据结束---------
         return valueEval1;

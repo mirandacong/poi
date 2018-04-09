@@ -122,7 +122,7 @@ public final class Vlookup extends Var3or4ArgFunction {
 					}
 				}catch (Exception e)
 				{
-					System.out.println("函数内部重算出错"+e);
+					System.out.println(getClass().getName()+" 函数内部重算出错 "+e);
 				}
 
 			}
