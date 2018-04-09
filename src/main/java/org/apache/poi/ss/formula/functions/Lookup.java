@@ -136,7 +136,7 @@ public final class Lookup extends Var2or3ArgFunction {
 					}
 				}catch (Exception e)
 				{
-					System.out.println("函数内部重算出错"+e);
+					System.out.println(getClass().getName()+" 函数内部重算出错 "+e);
 				}
 
 			}
@@ -223,7 +223,7 @@ public final class Lookup extends Var2or3ArgFunction {
 					}
 				}catch (Exception e)
 				{
-					System.out.println("函数内部重算出错"+e);
+					System.out.println(getClass().getName()+" 函数内部重算出错 "+e);
 				}
 
 			}

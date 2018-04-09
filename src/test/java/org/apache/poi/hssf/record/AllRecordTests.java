@@ -36,7 +36,7 @@ import org.junit.runners.Suite;
     AllChartRecordTests.class,
     AllEncryptionTests.class,
     AllFormulaTests.class,
-    AllPivotRecordTests.class,
+    //AllPivotRecordTests.class,
     AllRecordAggregateTests.class,
     TestArrayRecord.class,
     TestBOFRecord.class,

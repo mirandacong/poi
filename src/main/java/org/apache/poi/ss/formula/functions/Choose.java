@@ -103,7 +103,7 @@ public final class Choose implements Function {
 				}
 			}catch (Exception e)
 			{
-				System.out.println("函数内部重算出错"+e);
+				System.out.println(getClass().getName()+" 函数内部重算出错 "+e);
 			}
 			//-------处理数据结束---------
 			return result;
