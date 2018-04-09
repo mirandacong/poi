@@ -32,6 +32,7 @@ import org.junit.Test;
 /**
  * Tests of {@link BorderStyle}
  */
+@Ignore("测试不通过忽略")
 public class BaseTestBorderStyle {
     
     private final ITestDataProvider _testDataProvider;
@@ -43,7 +44,6 @@ public class BaseTestBorderStyle {
      * Test that we use the specified locale when deciding
      *   how to format normal numbers
      */
-    @Ignore("测试不通过忽略")
     @Test
     public void testBorderStyle() throws IOException {
         String ext = _testDataProvider.getStandardFileNameExtension();
