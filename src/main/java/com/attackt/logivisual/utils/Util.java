@@ -125,7 +125,7 @@ public class Util {
                 if (ptg instanceof FuncVarPtg) {
                     FuncVarPtg funcVarPtg = (FuncVarPtg) ptg;
                     sourceExcelInfo.setNodeAttr(funcVarPtg.getName());
-                    sourceExcelInfo.setNumArgs(funcVarPtg.getSize());
+                    sourceExcelInfo.setNumArgs(funcVarPtg.getNumberOfOperands());
                     sourceExcelInfo.setNodeType(Integer.parseInt(SourceNodeType.valueOf(ptg.getClass().getSimpleName()).toString()));
                     operatorStack.push(funcVarPtg.getName());
                 } else if (ptg instanceof FuncPtg) {

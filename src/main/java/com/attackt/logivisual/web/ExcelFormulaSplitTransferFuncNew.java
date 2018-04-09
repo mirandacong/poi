@@ -155,7 +155,6 @@ public class ExcelFormulaSplitTransferFuncNew {
                                                 String areaResultPositon = cell.getArrayFormulaRange().formatAsString();
                                                 new TransposeFormula(workbook).save(formulaUtils, sourceExcelInfoList, sourceExcelInfo, 1, arr_ptg, srcCellSheetIndex, srcCellSheetName, util, operatorStack, elementStack, uid, srcCellRowIndex, srcCellColumnIndex, cellFormulaStr, operationUtils, cell, sheetNames, areaResultPositon, true, "B2");
                                             } else {
-                                                // 判断是否是B2类函数
                                                 formulaUtils.commonSave(sourceExcelInfoList, sourceExcelInfo, 1, arr_ptg, srcCellSheetIndex, srcCellSheetName, util, operatorStack, elementStack, uid, srcCellRowIndex, srcCellColumnIndex, cellFormulaStr, operationUtils, cell, sheetNames, true, "B2");
                                             }
                                         } else {
@@ -179,8 +178,28 @@ public class ExcelFormulaSplitTransferFuncNew {
                                             // 判断函数是函数类型B1
                                             formulaUtils.commonSave(sourceExcelInfoList, sourceExcelInfo, 1, arr_ptg, srcCellSheetIndex, srcCellSheetName, util, operatorStack, elementStack, uid, srcCellRowIndex, srcCellColumnIndex, cellFormulaStr, operationUtils, cell, sheetNames, true, "B1");
                                         } else {
-                                            //对于其他类别函数，筛选出数值类型单元格，作为该函数的引用
-                                            formulaUtils.commonSave(sourceExcelInfoList, sourceExcelInfo, 1, arr_ptg, srcCellSheetIndex, srcCellSheetName, util, operatorStack, elementStack, uid, srcCellRowIndex, srcCellColumnIndex, cellFormulaStr, operationUtils, cell, sheetNames, true, "Other");
+                                            if(FormulaTypeB3.isContainPtg(arr_ptg))
+                                            {
+                                                // 判断是否为B3类函数
+                                                formulaUtils.commonSave(sourceExcelInfoList, sourceExcelInfo, 2, arr_ptg, srcCellSheetIndex, srcCellSheetName, util, operatorStack, elementStack, uid, srcCellRowIndex, srcCellColumnIndex, cellFormulaStr, operationUtils, cell, sheetNames, false, "B3");
+                                            }else if(FormulaTypeB5.isContainPtg(arr_ptg)){
+                                                String nameStrX = formulaUtils.getFomulaNameX(arr_ptg);
+                                                if(!"".equals(nameStrX))
+                                                {
+                                                    sourceExcelInfo.setNodeAttr(nameStrX);
+                                                }
+                                                // 判断是否为B5类函数
+                                                formulaUtils.commonSave(sourceExcelInfoList, sourceExcelInfo, 2, arr_ptg, srcCellSheetIndex, srcCellSheetName, util, operatorStack, elementStack, uid, srcCellRowIndex, srcCellColumnIndex, cellFormulaStr, operationUtils, cell, sheetNames, false, "B5");
+                                            }else{
+                                                if(FormulaTypeB4.isContainStr(formulaNameStr))
+                                                {
+                                                    // 判断是否为B4类函数
+                                                    formulaUtils.commonSave(sourceExcelInfoList, sourceExcelInfo, 2, arr_ptg, srcCellSheetIndex, srcCellSheetName, util, operatorStack, elementStack, uid, srcCellRowIndex, srcCellColumnIndex, cellFormulaStr, operationUtils, cell, sheetNames, false, "B4");
+                                                }else{
+                                                    //对于其他类别函数，筛选出数值类型单元格，作为该函数的引用
+                                                    formulaUtils.commonSave(sourceExcelInfoList, sourceExcelInfo, 1, arr_ptg, srcCellSheetIndex, srcCellSheetName, util, operatorStack, elementStack, uid, srcCellRowIndex, srcCellColumnIndex, cellFormulaStr, operationUtils, cell, sheetNames, true, "Other");
+                                                }
+                                            }
                                         }
                                     }
                                 }
