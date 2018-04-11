@@ -88,7 +88,6 @@ public final class Indirect implements FreeRefFunction {
             } else {
                 valueEval = valueEval1;
             }
-            CellReference cellReference = new CellReference(text);
             String excelId = new ThreadUtil().getExcelUid();
             int funcValueType = Integer.parseInt(SourceValueType.valueOf(valueEval.getClass().getSimpleName()).toString());
             String funcValue = "";
@@ -120,6 +119,7 @@ public final class Indirect implements FreeRefFunction {
                 jsonObject.put("funcValue", funcValue);
                 if (!(valueEval instanceof ErrorEval)) {
                     // 添加新的
+                    CellReference cellReference = new CellReference(text);
                     JSONObject newJsonObject = new JSONObject();
                     newJsonObject.put("nodeType", Integer.parseInt(SourceNodeType.valueOf("RefPtg").toString()));
                     newJsonObject.put("nodeAttr", cellReference.formatAsString());
