@@ -11,6 +11,7 @@ import org.apache.poi.poifs.crypt.EncryptionInfo;
 import org.apache.poi.poifs.filesystem.NPOIFSFileSystem;
 import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -84,6 +85,7 @@ public class ExcelFormulaSplitTransferFuncNew {
         Util util = new Util();
         OperationUtils operationUtils = new OperationUtils();
         int numberOfSheets = workbook.getNumberOfSheets();
+        int areaErrorCount = 0;
         List<String> sheetNames = util.getSheetNames(workbook, numberOfSheets);
         for (int i = 0; i < numberOfSheets; i++) {
             Sheet spreadsheet = workbook.getSheetAt(i);
@@ -127,15 +129,39 @@ public class ExcelFormulaSplitTransferFuncNew {
                                     String formulaNameStr = formulaUtils.getFomulaName(arr_ptg);
                                     // 判断是否属于数组函数
                                     if (cell.isPartOfArrayFormulaGroup()) {
-                                        // 判断是否属于函数A
-                                        if (FormulaTypeA.isContainStr(formulaNameStr)) {
+                                        // 判断是否是B2类函数
+                                        if (FormulaTypeB2.isContainStr(formulaNameStr)) {
+                                            if (formulaNameStr.equals("TRANSPOSE")) {
+                                                // 取结果的Area
+                                                String areaResultPositon = cell.getArrayFormulaRange().formatAsString();
+                                                new TransposeFormula(workbook).save(formulaUtils, sourceExcelInfoList, sourceExcelInfo, 1, arr_ptg, srcCellSheetIndex, srcCellSheetName, util, operatorStack, elementStack, uid, srcCellRowIndex, srcCellColumnIndex, cellFormulaStr, operationUtils, cell, sheetNames, areaResultPositon, true, "B2");
+                                            } else {
+                                                formulaUtils.commonSave(sourceExcelInfoList, sourceExcelInfo, 1, arr_ptg, srcCellSheetIndex, srcCellSheetName, util, operatorStack, elementStack, uid, srcCellRowIndex, srcCellColumnIndex, cellFormulaStr, operationUtils, cell, sheetNames, true, "B2");
+                                            }
+                                        } else {
+                                            // 属于函数A
+                                            // -1 为正常，非-1为出错
+                                            int errorCode = -1;
+                                            try {
+                                                errorCode = cell.getErrorCellValue();
+                                                areaErrorCount += 1;
+                                            }catch (Exception e)
+                                            {
+                                                // 不必捕获,正常公式
+                                            }
                                             // 取结果的Area
                                             String areaResultPositon = cell.getArrayFormulaRange().formatAsString();
+                                            // 当遍历到该块最后一个单元格是将累加跳过重置为0
+                                            AreaReference areaReferencea = new AreaReference(areaResultPositon, workbook.getSpreadsheetVersion());
+                                            if(cell.getAddress().formatAsString().equals(areaReferencea.getLastCell().formatAsString()))
+                                            {
+                                                areaErrorCount = 0;
+                                            }
                                             // 一些必须参数
                                             List<String> areaBlock = areaOperateUtil.searchAreaBlock(arr_ptg);
                                             Map<String, List<CellIndex>> areaBlockMap = areaOperateUtil.returnIndex(srcCellSheetName, areaBlock);
                                             // 搜索AreaIndex 数组中实际所对应的引用(list无记录为N/A)
-                                            List<CellIndex> cellIndexList = areaOperateUtil.searchAreaOfSrcIndex(srcCellSheetName, areaResultPositon, areaBlock, areaBlockMap, srcCellRowIndex, srcCellColumnIndex);
+                                            List<CellIndex> cellIndexList = areaOperateUtil.searchAreaOfSrcIndex(srcCellSheetName, areaResultPositon, areaBlock, areaBlockMap, srcCellRowIndex, srcCellColumnIndex, errorCode,areaErrorCount);
                                             // 绑定cellIndexList 到 sourceExcelInfo
                                             formulaUtils.bindData(cellIndexList, sourceExcelInfo);
                                             // 完成状态
@@ -147,19 +173,7 @@ public class ExcelFormulaSplitTransferFuncNew {
                                             // 套壳
                                             CellJsonObject cellJsonObject = formulaUtils.dataHousing(String.valueOf(uid), srcCellSheetIndex, srcCellRowIndex, srcCellColumnIndex, bolanStr, sourceExcelInfoList, cellFormulaStr, status, sheetNames, "A");
                                             // 保存数据
-                                            formulaUtils.saveData(operationUtils, cellJsonObject, uid, false, cell);
-                                        } else if (FormulaTypeB2.isContainStr(formulaNameStr)) {
-                                            // 判断是否是B2类函数
-                                            if (formulaNameStr.equals("TRANSPOSE")) {
-                                                // 取结果的Area
-                                                String areaResultPositon = cell.getArrayFormulaRange().formatAsString();
-                                                new TransposeFormula(workbook).save(formulaUtils, sourceExcelInfoList, sourceExcelInfo, 1, arr_ptg, srcCellSheetIndex, srcCellSheetName, util, operatorStack, elementStack, uid, srcCellRowIndex, srcCellColumnIndex, cellFormulaStr, operationUtils, cell, sheetNames, areaResultPositon, true, "B2");
-                                            } else {
-                                                formulaUtils.commonSave(sourceExcelInfoList, sourceExcelInfo, 1, arr_ptg, srcCellSheetIndex, srcCellSheetName, util, operatorStack, elementStack, uid, srcCellRowIndex, srcCellColumnIndex, cellFormulaStr, operationUtils, cell, sheetNames, true, "B2");
-                                            }
-                                        } else {
-                                            // 对于其他类别函数，筛选出数值类型单元格，作为该函数的引用
-                                            formulaUtils.commonSave(sourceExcelInfoList, sourceExcelInfo, 1, arr_ptg, srcCellSheetIndex, srcCellSheetName, util, operatorStack, elementStack, uid, srcCellRowIndex, srcCellColumnIndex, cellFormulaStr, operationUtils, cell, sheetNames, true, "Other");
+                                            formulaUtils.saveData(operationUtils, cellJsonObject, uid, cell,errorCode);
                                         }
                                     } else {
                                         if (FormulaTypeSearch.isContainStr(formulaNameStr)) {

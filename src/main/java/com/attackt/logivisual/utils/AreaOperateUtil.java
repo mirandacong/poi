@@ -186,4 +186,84 @@ public class AreaOperateUtil {
         }
         return cellIndexList;
     }
+    /**
+     * 搜索公式块中的结果
+     *
+     * @param srcSheetName
+     * @param areaResult
+     * @param areaBlock
+     * @param areaBlockMap
+     * @param srcCellRowIndex
+     * @param srcCellColumnIndex
+     * @param errorCode
+     * @param areaErrorCount
+     * @return
+     */
+    public List<CellIndex> searchAreaOfSrcIndex(String srcSheetName, String areaResult, List<String> areaBlock, Map<String, List<CellIndex>> areaBlockMap, int srcCellRowIndex, int srcCellColumnIndex,int errorCode,int areaErrorCount) {
+        List<CellIndex> cellIndexList = new ArrayList<>();
+        for (String area : areaBlock) {
+            AreaReference areaReference = new AreaReference(area, workbook.getSpreadsheetVersion());
+            AreaPtg areaPtg = new AreaPtg(areaReference);
+            String sheetName = areaReference.getFirstCell().getSheetName();
+            if (sheetName == null) {
+                sheetName = srcSheetName;
+            }
+            int sheetIndex = workbook.getSheetIndex(sheetName);
+            if (areaPtg.getFirstColumn() == areaPtg.getLastColumn()) {
+                // 一列
+                int row = srcCellRowIndex;
+                int column = areaPtg.getFirstColumn();
+                cellIndexList.add(new CellIndex(row, column, sheetIndex, sheetName));
+            } else if (areaPtg.getFirstRow() == areaPtg.getLastRow()) {
+                // 一行
+                int row = areaPtg.getFirstRow();
+                int column = srcCellColumnIndex;
+                cellIndexList.add(new CellIndex(row, column, sheetIndex, sheetName));
+            } else {
+                AreaReference areaReferencea = new AreaReference(areaResult, workbook.getSpreadsheetVersion());
+                AreaPtg areaPtg1 = new AreaPtg(areaReferencea);
+                //F7:H11
+                int firstRow = areaPtg1.getFirstRow();
+                int firstColumn = areaPtg1.getFirstColumn();
+                int lastRow = areaPtg1.getLastRow();
+                int lastColumn = areaPtg1.getLastColumn();
+                List<CellIndex> cellIndexList1 = new ArrayList<>();
+                for (int rowIndex = firstRow; rowIndex <= lastRow; rowIndex++) {
+                    for (int columnIndex = firstColumn; columnIndex <= lastColumn; columnIndex++) {
+                        cellIndexList1.add(new CellIndex(rowIndex, columnIndex, sheetIndex, sheetName));
+                    }
+                }
+                // 寻找srcCellRowIndex srcCellColumnIndex 在F7:H11中位置position
+                int temp = -1;
+                if(errorCode == -1)
+                {
+                    for (int i = 0; i < cellIndexList1.size(); i++) {
+                        CellIndex cellIndex = cellIndexList1.get(i);
+                        if (cellIndex.getRowIndex() == srcCellRowIndex && cellIndex.getColumnIndex() == srcCellColumnIndex) {
+                            temp = i;
+                            break;
+                        }
+                    }
+                    temp -= areaErrorCount;
+                }
+                //A1:B3 B2:C3 寻找temp在这两块block中的位置(一次循环只匹配一个block)
+                if (temp != -1) {
+                    for (String key : areaBlockMap.keySet()) {
+                        if (key.equals(area)) {
+                            List<CellIndex> cellIndexList2 = areaBlockMap.get(key);
+                            if (temp < cellIndexList2.size()) {
+                                CellIndex cellIndex = cellIndexList2.get(temp);
+                                cellIndexList.add(cellIndex);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (cellIndexList.size() != areaBlockMap.keySet().size()) {
+            cellIndexList = new ArrayList<CellIndex>();
+        }
+        return cellIndexList;
+    }
 }

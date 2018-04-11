@@ -227,7 +227,7 @@ public final class Offset implements Function {
 					StringEval ne = (StringEval) valueEval;
 					funcValue = String.valueOf(ne.getStringValue());
 				}else if (valueEval instanceof ErrorEval) {
-					funcValue = String.valueOf(((ErrorEval)valueEval).getErrorCode());
+					funcValue = ErrorEval.getText(((ErrorEval)valueEval).getErrorCode());
 				}else if (valueEval instanceof LazyAreaEval){
 					LazyAreaEval lazyAreaEval= (LazyAreaEval) valueEval;
 					CellReference crA = new CellReference(lazyAreaEval.getFirstRow(), lazyAreaEval.getFirstColumn());
