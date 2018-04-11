@@ -11,10 +11,7 @@ import org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.formula.FormulaParser;
 import org.apache.poi.ss.formula.FormulaType;
-import org.apache.poi.ss.formula.eval.BoolEval;
-import org.apache.poi.ss.formula.eval.NotImplementedException;
-import org.apache.poi.ss.formula.eval.NumberEval;
-import org.apache.poi.ss.formula.eval.StringEval;
+import org.apache.poi.ss.formula.eval.*;
 import org.apache.poi.ss.formula.ptg.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.AreaReference;
@@ -265,8 +262,7 @@ public class FormulaUtil {
                 Ptg ptg = arr_ptg[index];
                 if (ptg instanceof OperationPtg) {
                     OperationPtg operationPtg = (OperationPtg) ptg;
-                    if(!(operationPtg instanceof UnaryPlusPtg || operationPtg instanceof UnaryMinusPtg || operationPtg instanceof MultiplyPtg))
-                    {
+                    if (!(operationPtg instanceof UnaryPlusPtg || operationPtg instanceof UnaryMinusPtg || operationPtg instanceof MultiplyPtg)) {
                         String funcName = "";
                         if (ptg instanceof FuncVarPtg) {
                             FuncVarPtg funcVarPtg = (FuncVarPtg) ptg;
@@ -282,9 +278,8 @@ public class FormulaUtil {
                         }
                         return funcName;
                     }
-                }else if(ptg instanceof AttrPtg)
-                {
-                    AttrPtg attrPtg= (AttrPtg) ptg;
+                } else if (ptg instanceof AttrPtg) {
+                    AttrPtg attrPtg = (AttrPtg) ptg;
                     String attrPtgStr = attrPtg.toFormulaString();
                     return attrPtgStr;
                 }
@@ -297,18 +292,19 @@ public class FormulaUtil {
 
     /**
      * 用户自定义函数得到公式名称
+     *
      * @param arr_ptg 单元格ptg
      * @return 公式名称
      */
     public String getFomulaNameX(Ptg[] arr_ptg) {
         Ptg ptg = arr_ptg[0];
-        if(ptg instanceof NameXPxg)
-        {
-            NameXPxg nameXPxg= (NameXPxg) ptg;
+        if (ptg instanceof NameXPxg) {
+            NameXPxg nameXPxg = (NameXPxg) ptg;
             return nameXPxg.getNameName();
         }
         return "";
     }
+
     /**
      * 根据单元格获得ptg数组
      *
@@ -333,17 +329,15 @@ public class FormulaUtil {
 
     /**
      * 替换别名
+     *
      * @param arr_ptg
      * @param util
      * @return
      */
-    public Ptg[] replaceName(Ptg[] arr_ptg,Util util)
-    {
-        for(int j=0;j<arr_ptg.length;j++)
-        {
+    public Ptg[] replaceName(Ptg[] arr_ptg, Util util) {
+        for (int j = 0; j < arr_ptg.length; j++) {
             Ptg ptg = arr_ptg[j];
-            if(ptg instanceof NamePtg)
-            {
+            if (ptg instanceof NamePtg) {
                 // 别名
                 NamePtg temp1 = (NamePtg) ptg;
                 String nameStr = null;
@@ -364,6 +358,7 @@ public class FormulaUtil {
         }
         return arr_ptg;
     }
+
     /**
      * 绑定数据
      *
@@ -426,6 +421,149 @@ public class FormulaUtil {
     }
 
     /**
+     * 搜索函数保存数据
+     *
+     * @param operationUtils 操作utils
+     * @param cellJsonObject cellJsonObject
+     * @param uid            excelId
+     * @param cell           单元格
+     */
+    public void saveData(OperationUtils operationUtils, CellJsonObject cellJsonObject, String uid, Cell cell) {
+        // 保存数据
+        operationUtils.saveData(uid, cellJsonObject);
+        int is_Valid = 0;
+        // 执行重算
+        try {
+            evaluator.evaluateInCell(cell);
+            is_Valid = 1;
+        } catch (NotImplementedException notImplementedException) {
+        } catch (Exception e) {
+//                System.out.println("------通用数据公式重算失败begin---------");
+//                System.out.println(e);
+//                System.out.println("------通用数据公式重算失败end---------");
+        }
+        // 取得结果
+        if (is_Valid == 1) {
+            try {
+                String excelId = null;
+                int funcValueType = 0;
+                String funcValue = null;
+                Map<String, Object> map = null;
+                switch (cell.getCellType()) {
+                    case Cell.CELL_TYPE_NUMERIC:
+                        excelId = new ThreadUtil().getExcelUid();
+                        funcValueType = Integer.parseInt(SourceValueType.valueOf(NumberEval.class.getSimpleName()).toString());
+                        funcValue = String.valueOf(cell.getNumericCellValue());
+                        // 查找对应的记录
+                        map = operationUtils.findData(excelId);
+                        if (map.size() > 0) {
+                            String text = map.get("content").toString();
+                            Integer recordId = Integer.valueOf(map.get("id").toString());
+                            JSONArray jsonArray = JSONArray.parseArray(text);
+                            JSONObject jsonObject = jsonArray.getJSONObject(0);
+                            jsonObject.put("funcValueType", funcValueType);
+                            jsonObject.put("funcValue", funcValue);
+                            // 更改有效性数据
+                            operationUtils.updateData(recordId, jsonArray.toJSONString());
+                        }
+                        break;
+                    case Cell.CELL_TYPE_STRING:
+                        excelId = new ThreadUtil().getExcelUid();
+                        funcValueType = Integer.parseInt(SourceValueType.valueOf(StringEval.class.getSimpleName()).toString());
+                        funcValue = cell.getStringCellValue();
+                        // 查找对应的记录
+                        map = operationUtils.findData(excelId);
+                        if (map.size() > 0) {
+                            String text = map.get("content").toString();
+                            Integer recordId = Integer.valueOf(map.get("id").toString());
+                            JSONArray jsonArray = JSONArray.parseArray(text);
+                            JSONObject jsonObject = jsonArray.getJSONObject(0);
+                            jsonObject.put("funcValueType", funcValueType);
+                            jsonObject.put("funcValue", funcValue);
+                            // 更改有效性数据
+                            operationUtils.updateData(recordId, jsonArray.toJSONString());
+                        }
+                        break;
+                    case Cell.CELL_TYPE_BOOLEAN:
+                        excelId = new ThreadUtil().getExcelUid();
+                        funcValueType = Integer.parseInt(SourceValueType.valueOf(BoolEval.class.getSimpleName()).toString());
+                        funcValue = String.valueOf(cell.getBooleanCellValue());
+                        // 查找对应的记录
+                        map = operationUtils.findData(excelId);
+                        if (map.size() > 0) {
+                            String text = map.get("content").toString();
+                            Integer recordId = Integer.valueOf(map.get("id").toString());
+                            JSONArray jsonArray = JSONArray.parseArray(text);
+                            JSONObject jsonObject = jsonArray.getJSONObject(0);
+                            jsonObject.put("funcValueType", funcValueType);
+                            jsonObject.put("funcValue", funcValue);
+                            // 更改有效性数据
+                            operationUtils.updateData(recordId, jsonArray.toJSONString());
+                        }
+                        break;
+                    case Cell.CELL_TYPE_ERROR:
+                        excelId = new ThreadUtil().getExcelUid();
+                        funcValueType = Integer.parseInt(SourceValueType.valueOf(ErrorEval.class.getSimpleName()).toString());
+                        funcValue = ErrorEval.getText(cell.getErrorCellValue());
+                        // 查找对应的记录
+                        map = operationUtils.findData(excelId);
+                        if (map.size() > 0) {
+                            String text = map.get("content").toString();
+                            Integer recordId = Integer.valueOf(map.get("id").toString());
+                            JSONArray jsonArray = JSONArray.parseArray(text);
+                            JSONObject jsonObject = jsonArray.getJSONObject(0);
+                            jsonObject.put("funcValueType", funcValueType);
+                            jsonObject.put("funcValue", funcValue);
+                            // 更改有效性数据
+                            operationUtils.updateData(recordId, jsonArray.toJSONString());
+                        }
+                        break;
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+
+        }
+
+    }
+
+
+    /**
+     * A类函数保存数据
+     *
+     * @param operationUtils 操作utils
+     * @param cellJsonObject cellJsonObject
+     * @param uid            excelId
+     * @param cell           单元格
+     * @param errorCode      错误码
+     */
+    public void saveData(OperationUtils operationUtils, CellJsonObject cellJsonObject, String uid, Cell cell, int errorCode) {
+        // 保存数据
+        operationUtils.saveData(uid, cellJsonObject);
+        if (errorCode != -1) {
+            String excelId = null;
+            int funcValueType = 0;
+            String funcValue = null;
+            Map<String, Object> map = null;
+            excelId = new ThreadUtil().getExcelUid();
+            funcValueType = Integer.parseInt(SourceValueType.valueOf(ErrorEval.class.getSimpleName()).toString());
+            funcValue = ErrorEval.getText(cell.getErrorCellValue());
+            // 查找对应的记录
+            map = operationUtils.findData(excelId);
+            if (map.size() > 0) {
+                String text = map.get("content").toString();
+                Integer recordId = Integer.valueOf(map.get("id").toString());
+                JSONArray jsonArray = JSONArray.parseArray(text);
+                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                jsonObject.put("funcValueType", funcValueType);
+                jsonObject.put("funcValue", funcValue);
+                // 更改有效性数据
+                operationUtils.updateData(recordId, jsonArray.toJSONString());
+            }
+        }
+    }
+
+    /**
      * 保存数据
      *
      * @param operationUtils 操作utils
@@ -439,9 +577,11 @@ public class FormulaUtil {
         // 保存数据
         operationUtils.saveData(uid, cellJsonObject);
         if (isRetry == true) {
+            int is_Valid = 0;
             // 执行重算
             try {
                 evaluator.evaluateInCell(cell);
+                is_Valid = 1;
             } catch (NotImplementedException notImplementedException) {
             } catch (Exception e) {
 //                System.out.println("------通用数据公式重算失败begin---------");
@@ -507,6 +647,23 @@ public class FormulaUtil {
                                 operationUtils.updateData(recordId, jsonArray.toJSONString());
                             }
                             break;
+                        case Cell.CELL_TYPE_ERROR:
+                            excelId = new ThreadUtil().getExcelUid();
+                            funcValueType = Integer.parseInt(SourceValueType.valueOf(ErrorEval.class.getSimpleName()).toString());
+                            funcValue = ErrorEval.getText(cell.getErrorCellValue());
+                            // 查找对应的记录
+                            map = operationUtils.findData(excelId);
+                            if (map.size() > 0) {
+                                String text = map.get("content").toString();
+                                Integer recordId = Integer.valueOf(map.get("id").toString());
+                                JSONArray jsonArray = JSONArray.parseArray(text);
+                                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                                jsonObject.put("funcValueType", funcValueType);
+                                jsonObject.put("funcValue", funcValue);
+                                // 更改有效性数据
+                                operationUtils.updateData(recordId, jsonArray.toJSONString());
+                            }
+                            break;
                     }
                 } catch (Exception e) {
                     System.out.println(e);
@@ -537,7 +694,7 @@ public class FormulaUtil {
      * @param sheetNames
      * @param isRetry
      */
-    public void commonSave(List<SourceExcelInfo> sourceExcelInfoList, SourceExcelInfo sourceExcelInfo, int status, Ptg[] arr_ptg, int srcCellSheetIndex, String srcCellSheetName, Util util, Stack<String> operatorStack, Stack<String> elementStack, String uid, int srcCellRowIndex, int srcCellColumnIndex, String cellFormulaStr, OperationUtils operationUtils, Cell cell, List<String> sheetNames, boolean isRetry,String formulaType) {
+    public void commonSave(List<SourceExcelInfo> sourceExcelInfoList, SourceExcelInfo sourceExcelInfo, int status, Ptg[] arr_ptg, int srcCellSheetIndex, String srcCellSheetName, Util util, Stack<String> operatorStack, Stack<String> elementStack, String uid, int srcCellRowIndex, int srcCellColumnIndex, String cellFormulaStr, OperationUtils operationUtils, Cell cell, List<String> sheetNames, boolean isRetry, String formulaType) {
         // 添加进excelInfo集合
         sourceExcelInfoList.add(sourceExcelInfo);
         // 完成状态
@@ -550,7 +707,7 @@ public class FormulaUtil {
         // 获得逆波兰表达式
         String bolanStr = util.getBolanStr(operatorStack, elementStack);
         // 套壳
-        CellJsonObject cellJsonObject = dataHousing(String.valueOf(uid), srcCellSheetIndex, srcCellRowIndex, srcCellColumnIndex, bolanStr, sourceExcelInfoList, cellFormulaStr, status, sheetNames,formulaType);
+        CellJsonObject cellJsonObject = dataHousing(String.valueOf(uid), srcCellSheetIndex, srcCellRowIndex, srcCellColumnIndex, bolanStr, sourceExcelInfoList, cellFormulaStr, status, sheetNames, formulaType);
         // 保存数据
         saveData(operationUtils, cellJsonObject, uid, isRetry, cell, status);
     }
@@ -558,11 +715,12 @@ public class FormulaUtil {
 
     /**
      * 生成json对象
+     *
      * @param operationUtils 数据库操作类
-     * @param uid uid
-     * @param file file
+     * @param uid            uid
+     * @param file           file
      */
-    public boolean saveJSON( OperationUtils operationUtils, String uid,File file) {
+    public boolean saveJSON(OperationUtils operationUtils, String uid, File file) {
         // 统一合并文件
         List<Map<String, Object>> mapList = operationUtils.findUidQueryAll(uid);
         JSONArray jsonArrayBase = new JSONArray();
@@ -582,7 +740,7 @@ public class FormulaUtil {
             JSONArray jsonArrayInfo = new JSONArray();
             if (jsonArrayParaInfo != null) {
                 for (int i = 0; i < jsonArrayParaInfo.size(); i++) {
-                    try{
+                    try {
                         JSONObject jsonObjectParse = jsonArrayParaInfo.getJSONObject(i);
                         CellReference cellReferenceTemp = new CellReference(jsonObjectParse.getString("nodeAttr"));
                         JSONObject jsonObjectTemp = new JSONObject();
@@ -591,11 +749,9 @@ public class FormulaUtil {
                         jsonObjectTemp.put("sheet", sheetNameArray.getString(jsonObjectParse.getIntValue("sheetIndex")));
                         jsonObjectTemp.put("showValue", jsonObjectParse.getString("nodeAttr"));
                         jsonArrayInfo.add(jsonObjectTemp);
-                    }catch (IndexOutOfBoundsException index)
-                    {
-                        System.out.println("生成json时引用了一个不存在的sheet"+index);
-                    }catch (Exception e)
-                    {
+                    } catch (IndexOutOfBoundsException index) {
+                        System.out.println("生成json时引用了一个不存在的sheet" + index);
+                    } catch (Exception e) {
                         System.out.println(e);
                     }
                 }
@@ -626,11 +782,13 @@ public class FormulaUtil {
         System.out.println(fileJSONPath);
         return true;
     }
+
     /**
      * 生成json对象
+     *
      * @param operationUtils 数据库操作类
-     * @param uid uid
-     * @param file file
+     * @param uid            uid
+     * @param file           file
      * @return json字符串
      */
     public String returnJSON(OperationUtils operationUtils, String uid, File file) {
@@ -652,7 +810,7 @@ public class FormulaUtil {
             JSONArray jsonArrayInfo = new JSONArray();
             if (jsonArrayParaInfo != null) {
                 for (int i = 0; i < jsonArrayParaInfo.size(); i++) {
-                    try{
+                    try {
                         JSONObject jsonObjectParse = jsonArrayParaInfo.getJSONObject(i);
                         CellReference cellReferenceTemp = new CellReference(jsonObjectParse.getString("nodeAttr"));
                         JSONObject jsonObjectTemp = new JSONObject();
@@ -661,11 +819,9 @@ public class FormulaUtil {
                         jsonObjectTemp.put("sheet", sheetNameArray.getString(jsonObjectParse.getIntValue("sheetIndex")));
                         jsonObjectTemp.put("showValue", jsonObjectParse.getString("nodeAttr"));
                         jsonArrayInfo.add(jsonObjectTemp);
-                    }catch (IndexOutOfBoundsException index)
-                    {
-                        System.out.println("生成json时引用了一个不存在的sheet"+index);
-                    }catch (Exception e)
-                    {
+                    } catch (IndexOutOfBoundsException index) {
+                        System.out.println("生成json时引用了一个不存在的sheet" + index);
+                    } catch (Exception e) {
                         System.out.println(e);
                     }
                 }
@@ -687,26 +843,25 @@ public class FormulaUtil {
 
     /**
      * 保存文件并返回路径
+     *
      * @param operationUtils 操作类
-     * @param uid uid
-     * @param file 文件
-     * @param fileName 文件名称
+     * @param uid            uid
+     * @param file           文件
+     * @param fileName       文件名称
      * @return 文件路径
      */
-    public String saveFileInfo(OperationUtils operationUtils,String uid,File file,String fileName){
+    public String saveFileInfo(OperationUtils operationUtils, String uid, File file, String fileName) {
         // 写入文件
         String resultJsonStr = null;
         try {
             // 获取json串
             resultJsonStr = this.returnJSON(operationUtils, uid, file);
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         FileWriter writer;
         String fileJSONPath = null;
-        if(resultJsonStr != null)
-        {
+        if (resultJsonStr != null) {
             try {
                 fileJSONPath = file.getParent() + "/" + Util.splitFile(fileName)[0] + "-quote.json";
                 writer = new FileWriter(fileJSONPath);
@@ -722,11 +877,12 @@ public class FormulaUtil {
 
     /**
      * 得到公式
-     * @param cell 单元格
+     *
+     * @param cell            单元格
      * @param otherFomulaUtil 数组搜索对象
      * @return 拆分的结果
      */
-    public LinkedList<KeyValueFormula> getFormula(Cell cell,OtherFormulaUtil otherFomulaUtil){
+    public LinkedList<KeyValueFormula> getFormula(Cell cell, OtherFormulaUtil otherFomulaUtil) {
         Ptg[] arrPtg = this.getPtgs(cell);
         // 改为list
         List<Ptg> listPtg = new ArrayList<>();
@@ -736,13 +892,13 @@ public class FormulaUtil {
         LinkedList<KeyValueFormula> formulaList = new LinkedList<>();
         // 对于数组公式不重算
         if (cell.isPartOfArrayFormulaGroup()) {
-            KeyValueFormula keyValueFormula = new KeyValueFormula(cell.getCellFormula(),2);
+            KeyValueFormula keyValueFormula = new KeyValueFormula(cell.getCellFormula(), 2);
             formulaList.add(keyValueFormula);
             return formulaList;
         }
         for (int index = 0; index < listPtg.size(); index++) {
             Ptg ptg = listPtg.get(index);
-            if (ptg instanceof OperationPtg|| ptg instanceof AttrPtg) {
+            if (ptg instanceof OperationPtg || ptg instanceof AttrPtg) {
                 int numberOperands = 0;
                 if (ptg instanceof AttrPtg) {
                     AttrPtg attrPtg = (AttrPtg) ptg;
