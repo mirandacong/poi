@@ -538,6 +538,9 @@ public class FormulaUtil {
      * @param errorCode      错误码
      */
     public void saveData(OperationUtils operationUtils, CellJsonObject cellJsonObject, String uid, Cell cell, int errorCode) {
+        if (errorCode != -1) {
+            cellJsonObject.setStatus(1);
+        }
         // 保存数据
         operationUtils.saveData(uid, cellJsonObject);
         if (errorCode != -1) {
@@ -589,7 +592,7 @@ public class FormulaUtil {
 //                System.out.println("------通用数据公式重算失败end---------");
             }
             // 取得结果
-            if (status == 2) {
+            if (is_Valid == 1) {
                 try {
                     String excelId = null;
                     int funcValueType = 0;
@@ -697,8 +700,6 @@ public class FormulaUtil {
     public void commonSave(List<SourceExcelInfo> sourceExcelInfoList, SourceExcelInfo sourceExcelInfo, int status, Ptg[] arr_ptg, int srcCellSheetIndex, String srcCellSheetName, Util util, Stack<String> operatorStack, Stack<String> elementStack, String uid, int srcCellRowIndex, int srcCellColumnIndex, String cellFormulaStr, OperationUtils operationUtils, Cell cell, List<String> sheetNames, boolean isRetry, String formulaType) {
         // 添加进excelInfo集合
         sourceExcelInfoList.add(sourceExcelInfo);
-        // 完成状态
-        status = 2;
         // 不是搜索类函数
         OtherFormulaUtil otherFomulaUtil = new OtherFormulaUtil(workbook);
         List<CellIndex> cellIndexList = otherFomulaUtil.searchQuote(arr_ptg, srcCellSheetIndex, srcCellSheetName);

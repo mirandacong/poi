@@ -107,7 +107,7 @@ public final class Lookup extends Var2or3ArgFunction {
 						funcValue = String.valueOf(ne.getStringValue());
 					}
 					if (valueEval instanceof ErrorEval) {
-						funcValue = String.valueOf(((ErrorEval)valueEval).getErrorCode());
+						funcValue = ErrorEval.getText(((ErrorEval)valueEval).getErrorCode());
 					}
 					// 查找对应的记录
 					OperationUtils operationUtils = new OperationUtils();
@@ -194,7 +194,7 @@ public final class Lookup extends Var2or3ArgFunction {
 						funcValue = String.valueOf(ne.getStringValue());
 					}
 					if (valueEval instanceof ErrorEval) {
-						funcValue = String.valueOf(((ErrorEval)valueEval).getErrorCode());
+						funcValue = ErrorEval.getText(((ErrorEval)valueEval).getErrorCode());
 					}
 					// 查找对应的记录
 					OperationUtils operationUtils = new OperationUtils();

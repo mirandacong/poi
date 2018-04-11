@@ -34,12 +34,12 @@ import java.util.Map;
 
 /**
  * Implementation for Excel function INDIRECT<p>
- *
+ * <p>
  * INDIRECT() returns the cell or area reference denoted by the text argument.<p>
- *
+ * <p>
  * <b>Syntax</b>:</br>
  * <b>INDIRECT</b>(<b>ref_text</b>,isA1Style)<p>
- *
+ * <p>
  * <b>ref_text</b> a string representation of the desired reference as it would
  * normally be written in a cell formula.<br>
  * <b>isA1Style</b> (default TRUE) specifies whether the ref_text should be
@@ -83,7 +83,7 @@ public final class Indirect implements FreeRefFunction {
         //-------处理数据开始---------
         try {
             ValueEval valueEval;
-            if (ec.isSingleValue()&&!(valueEval1 instanceof ErrorEval)) {
+            if (ec.isSingleValue() && !(valueEval1 instanceof ErrorEval)) {
                 valueEval = OperandResolver.getSingleValue(valueEval1, ec.getRowIndex(), ec.getColumnIndex());
             } else {
                 valueEval = valueEval1;
@@ -105,36 +105,36 @@ public final class Indirect implements FreeRefFunction {
                 funcValue = String.valueOf(ne.getStringValue());
             }
             if (valueEval instanceof ErrorEval) {
-                funcValue = String.valueOf(((ErrorEval)valueEval).getErrorCode());
+                funcValue = ErrorEval.getText(((ErrorEval) valueEval).getErrorCode());
             }
             // 查找对应的记录
             OperationUtils operationUtils = new OperationUtils();
             Map<String, Object> map = operationUtils.findData(excelId);
-            if(map.size()>0)
-            {
+            if (map.size() > 0) {
                 String text1 = map.get("content").toString();
                 Integer recordId = Integer.valueOf(map.get("id").toString());
                 //
                 JSONArray jsonArray = JSONArray.parseArray(text1);
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
-                jsonObject.put("funcValueType",funcValueType);
-                jsonObject.put("funcValue",funcValue);
-                // 添加新的
-                JSONObject newJsonObject = new JSONObject();
-                newJsonObject.put("nodeType",Integer.parseInt(SourceNodeType.valueOf("RefPtg").toString()));
-                newJsonObject.put("nodeAttr", cellReference.formatAsString());
-                newJsonObject.put("numArgs", 0);
-                newJsonObject.put("sheetIndex",((LazyRefEval)valueEval1).getFirstSheetIndex());
-                // 连接旧的
-                JSONArray jsonArray1 = new JSONArray();
-                jsonArray1.add(newJsonObject);
-                jsonObject.put("para_info",jsonArray1);
+                jsonObject.put("funcValueType", funcValueType);
+                jsonObject.put("funcValue", funcValue);
+                if (!(valueEval instanceof ErrorEval)) {
+                    // 添加新的
+                    JSONObject newJsonObject = new JSONObject();
+                    newJsonObject.put("nodeType", Integer.parseInt(SourceNodeType.valueOf("RefPtg").toString()));
+                    newJsonObject.put("nodeAttr", cellReference.formatAsString());
+                    newJsonObject.put("numArgs", 0);
+                    newJsonObject.put("sheetIndex", ((LazyRefEval) valueEval1).getFirstSheetIndex());
+                    // 连接旧的
+                    JSONArray jsonArray1 = new JSONArray();
+                    jsonArray1.add(newJsonObject);
+                    jsonObject.put("para_info", jsonArray1);
+                }
                 // 更改有效性数据
-                operationUtils.updateData(recordId,jsonArray.toJSONString());
+                operationUtils.updateData(recordId, jsonArray.toJSONString());
             }
-        }catch (Exception e)
-        {
-            System.out.println(getClass().getName()+" 函数内部重算出错 "+e);
+        } catch (Exception e) {
+            System.out.println(getClass().getName() + " 函数内部重算出错 " + e);
         }
         //-------处理数据结束---------
         return valueEval1;
@@ -153,8 +153,8 @@ public final class Indirect implements FreeRefFunction {
     }
 
     private static ValueEval evaluateIndirect(final OperationEvaluationContext ec, String text,
-            boolean isA1style) {
-        
+                                              boolean isA1style) {
+
         // Search backwards for '!' because sheet names can contain '!'
         int plingPos = text.lastIndexOf('!');
 
@@ -190,8 +190,8 @@ public final class Indirect implements FreeRefFunction {
             String refStrPart2;
             int colonPos = refText.indexOf(':');
             if (colonPos < 0) {
-                 refStrPart1 = refText.trim();
-                 refStrPart2 = null;            
+                refStrPart1 = refText.trim();
+                refStrPart2 = null;
             } else {
                 refStrPart1 = refText.substring(0, colonPos).trim();
                 refStrPart2 = refText.substring(colonPos + 1).trim();
@@ -247,10 +247,10 @@ public final class Indirect implements FreeRefFunction {
             // else - just sheet name
             String sheetName = unescapeString(text.subSequence(sheetStartPos, lastIx));
             if (sheetName == null) { // note - when quoted, sheetName can
-                                     // start/end with whitespace
+                // start/end with whitespace
                 return null;
             }
-            return new String[] { wbName, sheetName, };
+            return new String[]{wbName, sheetName,};
         }
 
         if (firstChar == '[') {
@@ -266,10 +266,10 @@ public final class Indirect implements FreeRefFunction {
             if (canTrim(sheetName)) {
                 return null;
             }
-            return new String[] { wbName.toString(), sheetName.toString(), };
+            return new String[]{wbName.toString(), sheetName.toString(),};
         }
         // else - just sheet name
-        return new String[] { null, text.toString(), };
+        return new String[]{null, text.toString(),};
     }
 
     /**
