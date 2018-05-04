@@ -1,0 +1,51 @@
+server {
+  port = {{ formula_server.port }}
+}
+
+client {
+  ip = "{{ process_manager.url }}"
+  port = {{ process_manager.port }}
+}
+
+oss {
+  endpoint = "{{ oss.endpoint}}"
+  accessKeyId = "{{ oss.akid }}"
+  accessKeySecret = "{{ oss.aksecret }}"
+  bucketName = "{{ oss.name }}"
+}
+
+# do not use redis
+redis {
+  maxTota = 10000
+  maxIdle = 2000
+  maxWaitMillis = 100
+  testOnBorrow = true
+  ip = "127.0.0.1"
+  port = 6379
+  timeout = 100000
+}
+
+mysql {
+  username = "{{ mysql.formula.username }}"
+  password = "{{ mysql.formula.password }}"
+  url = "jdbc:mysql://{{ mysql.url }}:{{ mysql.port }}/{{ mysql.formula.database }}?characterEncoding=utf8&useSSL=false"
+  diverClass = "com.mysql.jdbc.Driver"
+  initialSize = 5
+  minIdle = 5
+  maxActive = 50
+  maxWait = 60000
+  timeBetweenEvictionRunsMillis = 60000
+  minEvictableIdleTimeMillis = 300000
+  validationQuery = "SELECT 'x'"
+  testWhileIdle = true
+  testOnBorrow = false
+  testOnReturn = false
+  poolPreparedStatements = true
+  maxPoolPreparedStatementPerConnectionSize = 20
+  filters = "stat"
+}
+
+arr {
+  flag = true
+}
+
