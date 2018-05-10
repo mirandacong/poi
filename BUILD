@@ -72,6 +72,7 @@ java_test(
     srcs = glob([
         'src/test/**/*.java',
     ]),
+    resources = ['src/main/resources/application.conf'],
     deps = [
         ':poi',
     ],
