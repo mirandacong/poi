@@ -8,6 +8,7 @@ java_library(
     srcs = glob([
         'src/main/**/*.java',
     ]),
+    resources = ['src/main/resources/application.conf'],
     deps = [
         '@aliyun_sdk_oss//jar',
         '@bcpkix_jdk15on//jar',
@@ -71,6 +72,7 @@ java_test(
     srcs = glob([
         'src/test/**/*.java',
     ]),
+    resources = ['src/main/resources/application.conf'],
     deps = [
         ':poi',
     ],
