@@ -2,3 +2,5 @@ target/
 .DS_Store
 .idea/
 *.iml
+__pycache__/
+src/main/resources/application.conf
